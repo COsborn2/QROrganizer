@@ -1,0 +1,16 @@
+{
+  "webProject": {
+    "projectFile": "./QROrganizer.Web/QROrganizer.Web.csproj"
+  },
+  "dataProject": {
+    "projectFile": "./QROrganizer.Data/QROrganizer.Data.csproj"
+  },
+
+  "rootGenerator": "Vue",
+
+  "generatorConfig": {
+    "Scripts": {
+      "targetDirectory": "../src"
+    }
+  }
+}
