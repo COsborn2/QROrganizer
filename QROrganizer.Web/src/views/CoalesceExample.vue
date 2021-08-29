@@ -30,18 +30,17 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { ApplicationUserViewModel } from "@/viewmodels.g";
 
 @Component
 export default class CoalesceExample extends Vue {
   @Prop({ required: true, type: String })
   public title!: string;
 
-  private user = new ApplicationUserViewModel();
-
-  async created() {
-    await this.user.$load(1);
-    this.user.$startAutoSave(this, { wait: 500, debounce: { maxWait: 3000 } });
-  }
+  // private user = new ApplicationUserViewModel();
+  //
+  // async created() {
+  //   await this.user.$load(1);
+  //   this.user.$startAutoSave(this, { wait: 500, debounce: { maxWait: 3000 } });
+  // }
 }
 </script>

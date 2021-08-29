@@ -87,6 +87,13 @@
             </v-simple-table>
           </v-card-text>
         </v-card>
+
+        <v-card class="mt-5">
+          <v-card-title> Sign-In </v-card-title>
+          <v-card-text class="black--text">
+            Test
+          </v-card-text>
+        </v-card>
       </v-col>
 
       <v-col cols="12" lg="5">
@@ -148,6 +155,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+const axios = require('axios');
 
 import $metadata from "@/metadata.g";
 
@@ -155,7 +163,11 @@ import $metadata from "@/metadata.g";
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
-  adminTypes = Object.values($metadata.types).filter((t) => t.type == "model");
+  // adminTypes = Object.values($metadata.types).filter((t) => t.type == "model");
+
+  // login() {
+  //   axios.get
+  // }
 }
 </script>
 

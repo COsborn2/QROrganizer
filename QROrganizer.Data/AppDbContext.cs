@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using QROrganizer.Data.Models;
 using IntelliTect.Coalesce;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace QROrganizer.Data
 {
     [Coalesce]
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext
     {
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
         public AppDbContext()
         {
         }
@@ -41,7 +41,7 @@ namespace QROrganizer.Data
             try
             {
                 this.Database.Migrate();
-                
+
                 // TODO: Or, use Database.EnsureCreated() instead:
                 // this.Database.EnsureCreated();
             }
