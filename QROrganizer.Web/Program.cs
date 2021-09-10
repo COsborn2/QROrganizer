@@ -1,3 +1,4 @@
+using System;
 using QROrganizer.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -31,8 +32,14 @@ namespace QROrganizer.Web
                 .ConfigureAppConfiguration((builder, config) =>
                 {
                     config
-                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddEnvironmentVariables();
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+#if DEBUG
+                    if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    {
+                        config.AddJsonFile("appsettings.dockerdb.json");
+                    }
+#endif
+                    config.AddEnvironmentVariables();
                 })
                 .ConfigureLogging(logging =>
                 {
