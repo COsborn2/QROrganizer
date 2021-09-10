@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QROrganizer.Data.Models;
@@ -34,11 +30,15 @@ namespace QROrganizer.Web.Controllers
         {
             var user = await _userManager.FindByEmailAsync(creds.Email);
 
-            var res = await _signInManager.PasswordSignInAsync(user, creds.Password, false, false);
+            var res = await _signInManager.PasswordSignInAsync(
+                user,
+                creds.Password,
+                false,
+                false);
 
             if (!res.Succeeded)
             {
-                return Json(new { error = "login failed" });
+                return new UnauthorizedResult();
             }
 
             return new OkResult();
@@ -57,13 +57,10 @@ namespace QROrganizer.Web.Controllers
 
             if (!res.Succeeded)
             {
-                return Json(new { error = "Create failed" });
+                return new UnauthorizedResult();
             }
 
-            return Json(new
-            {
-                email = user.Email
-            });
+            return new OkResult();
         }
     }
 }

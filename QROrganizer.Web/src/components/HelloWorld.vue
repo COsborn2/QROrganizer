@@ -92,7 +92,9 @@
           <v-card-title> Sign-In </v-card-title>
           <v-card-text class="black--text">
             Test
-            <v-btn @click="login">Button</v-btn>
+            <v-btn @click="create">Create</v-btn>
+            <v-btn @click="login">Login</v-btn>
+            <v-btn @click="test">Test</v-btn>
             <v-btn @click="requestInfo">User Service</v-btn>
           </v-card-text>
         </v-card>
@@ -165,10 +167,19 @@ import {UserServiceViewModel} from "@/viewmodels.g";
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
-  userService = new UserServiceViewModel()
+  userService = new UserServiceViewModel();
+  testService = new TestServiceViewModel();
+
+  async create() {
+    let res = await axios.post('/create', {Email: 'email', Password: 'password'})
+  }
 
   async login() {
     let res = await axios.post('/login', {Email: 'email', Password: 'password'})
+  }
+
+  async test() {
+    let res = await this.testService.testMethod.invoke();
   }
 
   async requestInfo() {
