@@ -1,7 +1,5 @@
 using QROrganizer.Data;
 using IntelliTect.Coalesce;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +12,11 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
+using QROrganizer.Data.Models;
+using QROrganizer.Data.Services;
 
 namespace QROrganizer.Web
 {
@@ -59,15 +57,16 @@ namespace QROrganizer.Web
 
             services.AddSwaggerGen();
 
+            services.AddScoped<UserService>();
+
             services
-                .AddDefaultIdentity<IdentityUser>()
+                .AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddEntityFrameworkStores<AppDbContext>();
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
 
-            // TODO: Cookie auth
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+            services.AddAuthentication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -67,23 +67,23 @@
                   <th>Admin Table</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr v-for="type in adminTypes" :key="type.name">
-                  <td>
-                    {{ type.displayName }}
-                  </td>
-                  <td>
-                    <router-link
-                      :to="{
-                        name: 'coalesce-admin-list',
-                        params: { type: type.name },
-                      }"
-                    >
-                      Table
-                    </router-link>
-                  </td>
-                </tr>
-              </tbody>
+<!--              <tbody>-->
+<!--                <tr v-for="type in adminTypes" :key="type.name">-->
+<!--                  <td>-->
+<!--                    {{ type.displayName }}-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <router-link-->
+<!--                      :to="{-->
+<!--                        name: 'coalesce-admin-list',-->
+<!--                        params: { type: type.name },-->
+<!--                      }"-->
+<!--                    >-->
+<!--                      Table-->
+<!--                    </router-link>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--              </tbody>-->
             </v-simple-table>
           </v-card-text>
         </v-card>
@@ -92,6 +92,8 @@
           <v-card-title> Sign-In </v-card-title>
           <v-card-text class="black--text">
             Test
+            <v-btn @click="login">Button</v-btn>
+            <v-btn @click="requestInfo">User Service</v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -157,17 +159,23 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 const axios = require('axios');
 
-import $metadata from "@/metadata.g";
+import {UserServiceViewModel} from "@/viewmodels.g";
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
-  // adminTypes = Object.values($metadata.types).filter((t) => t.type == "model");
+  userService = new UserServiceViewModel()
 
-  // login() {
-  //   axios.get
-  // }
+  async login() {
+    let res = await axios.post('/login', {Email: 'email', Password: 'password'})
+  }
+
+  async requestInfo() {
+    let res = await this.userService.userInfo.invoke();
+    console.log(res.data.object?.roles)
+    console.log(res.data.object?.userName)
+  }
 }
 </script>
 

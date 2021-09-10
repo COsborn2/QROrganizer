@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using QROrganizer.Data.Models;
 using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +9,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace QROrganizer.Data
 {
     [Coalesce]
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext
+        : IdentityDbContext<
+            ApplicationUser,
+            IdentityRole,
+            string,
+            IdentityUserClaim<string>,
+            IdentityUserRole<string>,
+            IdentityUserLogin<string>,
+            IdentityRoleClaim<string>,
+            IdentityUserToken<string>>
     {
         public AppDbContext()
         {
@@ -40,10 +46,7 @@ namespace QROrganizer.Data
         {
             try
             {
-                this.Database.Migrate();
-
-                // TODO: Or, use Database.EnsureCreated() instead:
-                // this.Database.EnsureCreated();
+                Database.Migrate();
             }
             catch (InvalidOperationException e) when (e.Message == "No service for type 'Microsoft.EntityFrameworkCore.Migrations.IMigrator' has been registered.")
             {

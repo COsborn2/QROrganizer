@@ -13,18 +13,18 @@
     Below is a very simple example of using components from coalesce-vue-vuetify
     to display and edit properties of a model. Autosave is enabled.
 
-    <c-loader-status
-      #default
-      :loaders="{
-        'no-error-content no-intial-content': [user.$load],
-        '': [user.$save],
-      }"
-    >
-      <div class="title py-2">
-        Editing User ID: <c-display :model="user" for="applicationUserId" />
-      </div>
-      <c-input :model="user" for="name" />
-    </c-loader-status>
+<!--    <c-loader-status-->
+<!--      #default-->
+<!--      :loaders="{-->
+<!--        'no-error-content no-intial-content': [user.$load],-->
+<!--        '': [user.$save],-->
+<!--      }"-->
+<!--    >-->
+<!--      <div class="title py-2">-->
+<!--        Editing User ID: <c-display :model="user" for="applicationUserId" />-->
+<!--      </div>-->
+<!--      <c-input :model="user" for="name" />-->
+<!--    </c-loader-status>-->
   </v-container>
 </template>
 
