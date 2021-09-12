@@ -60,7 +60,18 @@ namespace QROrganizer.Web
             services.AddScoped<UserService>();
 
             services
-                .AddDefaultIdentity<ApplicationUser>()
+                .AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.Password = new PasswordOptions
+                    {
+                        RequiredLength = 6,
+                        RequiredUniqueChars = 1,
+                        RequireNonAlphanumeric = true,
+                        RequireLowercase = true,
+                        RequireUppercase = true,
+                        RequireDigit = true
+                    };
+                })
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<AppDbContext>()

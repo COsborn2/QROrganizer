@@ -23,7 +23,7 @@ const vuetify = new Vuetify({
     },
     themes: {
       light: {
-        // primary: "#9ccc6f",
+        primary: "#2fad7b",
         // secondary: "#4d97bc",
         // accent: "#e98f07",
         error: "#df323b", // This is the default error color with darken-1

@@ -1,6 +1,6 @@
 <template>
   <v-app id="vue-app">
-    <v-navigation-drawer v-model="drawer" app clipped>
+    <v-navigation-drawer v-if="!routeMeta.hideAppBar" v-model="drawer" app clipped>
       <v-list>
         <v-list-item link to="/">
           <v-list-item-action>
@@ -22,11 +22,11 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary" dark dense clipped-left>
+    <v-app-bar v-if="!routeMeta.hideAppBar" app color="primary" dark dense clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>
         <router-link to="/" class="white--text" style="text-decoration: none">
-          Coalesce Vue Template
+          Coalesce Vue
         </router-link>
       </v-toolbar-title>
     </v-app-bar>

@@ -3,8 +3,8 @@ import Router from "vue-router";
 
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
-import CoalesceExample from "./views/CoalesceExample.vue";
 import { CAdminTablePage, CAdminEditorPage } from "coalesce-vue-vuetify";
+import AccountEntry from "@/views/AccountEntry.vue";
 
 Vue.use(Router);
 
@@ -20,6 +20,28 @@ export default new Router({
       path: "/about",
       name: "about",
       component: About,
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: AccountEntry,
+      meta: {
+        hideAppBar: true
+      },
+      props: _ => ({
+        login: true
+      })
+    },
+    {
+      path: "/signup",
+      name: "Sign Up",
+      component: AccountEntry,
+      meta: {
+        hideAppBar: true
+      },
+      props: _ => ({
+        login: false
+      })
     },
 
     // Coalesce admin routes
