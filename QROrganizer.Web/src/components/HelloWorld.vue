@@ -168,7 +168,6 @@ export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
   userService = new UserServiceViewModel();
-  testService = new TestServiceViewModel();
 
   async create() {
     let res = await axios.post('/create', {Email: 'email', Password: 'password'})
@@ -176,10 +175,6 @@ export default class HelloWorld extends Vue {
 
   async login() {
     let res = await axios.post('/login', {Email: 'email', Password: 'password'})
-  }
-
-  async test() {
-    let res = await this.testService.testMethod.invoke();
   }
 
   async requestInfo() {
