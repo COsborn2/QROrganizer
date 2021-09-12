@@ -1,36 +1,40 @@
 <template>
-  <v-container style="height: 100%; position: fixed" class="primary d-flex align-center justify-center text-center align-center">
-    <div style="width: 90%">
-      <h1 class="text-uppercase mb-5" style="color: white">{{headerText(this.isInLoginMode)}}</h1>
-      <v-form ref="form" v-model="formValid" lazy-validation>
-        <v-text-field filled dark color="white" placeholder="Email" type="text" v-model="email" />
-        <v-text-field filled dark color="white" placeholder="Password" :type="passwordType"
-                      @click:append="showPassword = !showPassword"
-                      @focusout="$refs.form.validate()"
-                      :append-icon="passwordAppendIcon"
-                      v-model="password"
-        />
-        <v-expand-transition>
-          <v-text-field v-if="!isInLoginMode" filled dark color="white" placeholder="Confirm Password" type="text"
-                        :validate-on-blur="validateOnBlur"
-                        @focusout="confirmPasswordFocusOut"
-                        v-model="confirmPassword"
-                        :rules="[passwordsMatchRule]"
+  <div class="d-flex justify-center" style="height: 100%; width: 100%">
+    <v-container fill-height style="position: fixed" class="d-flex align-center justify-center text-center align-center">
+      <div style="width: 90%">
+        <h1 class="text-uppercase mb-5" style="color: white">{{headerText(this.isInLoginMode)}}</h1>
+        <v-form ref="form" v-model="formValid" lazy-validation>
+          <v-text-field filled dark color="white" placeholder="Email" type="text" v-model="email" autocomplete="username"/>
+          <v-text-field filled dark color="white" placeholder="Password" :type="passwordType"
+                        :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
+                        @click:append="showPassword = !showPassword"
+                        @focusout="$refs.form.validate()"
+                        :append-icon="passwordAppendIcon"
+                        v-model="password"
           />
+          <v-expand-transition>
+            <v-text-field v-if="!isInLoginMode" filled dark color="white" placeholder="Confirm Password" type="text"
+                          :autocomplete="isInLoginMode ? '' : 'new-password'"
+                          :validate-on-blur="validateOnBlur"
+                          @focusout="confirmPasswordFocusOut"
+                          v-model="confirmPassword"
+                          :rules="[passwordsMatchRule]"
+            />
+          </v-expand-transition>
+        </v-form>
+
+        <v-expand-transition>
+          <h4 v-if="!formValid" class="error--text text-bold">Passwords do not match</h4>
         </v-expand-transition>
-      </v-form>
+        <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton">{{headerText(this.isInLoginMode)}}</v-btn>
 
-      <v-expand-transition>
-        <h4 v-if="!formValid" class="error--text text-bold">Passwords do not match</h4>
-      </v-expand-transition>
-      <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton">{{headerText(this.isInLoginMode)}}</v-btn>
-
-      <div class="d-flex mt-10 text-center justify-center">
-        <h4 style="color: white">{{linkText + '\xa0'}}</h4>
-        <h4 @click="changeState" class="linktext">{{headerText(!this.isInLoginMode)}}</h4>
+        <div class="d-flex mt-10 text-center justify-center">
+          <h4 style="color: white">{{linkText + '\xa0'}}</h4>
+          <h4 @click="changeState" class="linktext">{{headerText(!this.isInLoginMode)}}</h4>
+        </div>
       </div>
-    </div>
-  </v-container>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -93,6 +97,15 @@ export default class AccountEntry extends Vue {
 
     // Disables mobile scrolling
     document.body.addEventListener('touchmove', this.preventDefault, {passive: false});
+  }
+
+  mounted() {
+    let element = document.getElementById('vue-app');
+
+    if (!element) return;
+    element.setAttribute('style', `background: ${this.$vuetify.theme.currentTheme.primary} !important;`);
+
+    document.body.setAttribute('style', `background: ${this.$vuetify.theme.currentTheme.primary} !important;`);
   }
 
   preventDefault(e: any) {
