@@ -1,5 +1,4 @@
 
-using QROrganizer.Web.Models;
 using IntelliTect.Coalesce;
 using IntelliTect.Coalesce.Api;
 using IntelliTect.Coalesce.Api.Controllers;
@@ -11,6 +10,7 @@ using IntelliTect.Coalesce.TypeDefinition;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QROrganizer.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +34,7 @@ namespace QROrganizer.Web.Api
         [HttpGet("get/{id}")]
         [Authorize]
         public virtual Task<ItemResult<ApplicationUserDtoGen>> Get(
-            int id,
+            string id,
             DataSourceParameters parameters,
             IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
             => GetImplementation(id, parameters, dataSource);
@@ -65,7 +65,7 @@ namespace QROrganizer.Web.Api
         [HttpPost("delete/{id}")]
         [Authorize]
         public virtual Task<ItemResult<ApplicationUserDtoGen>> Delete(
-            int id,
+            string id,
             IBehaviors<QROrganizer.Data.Models.ApplicationUser> behaviors,
             IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
             => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);

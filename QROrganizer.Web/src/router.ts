@@ -21,12 +21,6 @@ export default new Router({
       name: "about",
       component: About,
     },
-    {
-      path: "/coalesce-example",
-      name: "coalesce-example",
-      component: CoalesceExample,
-      props: { title: "Coalesce Example" },
-    },
 
     // Coalesce admin routes
     {
