@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center" style="height: 100%; width: 100%">
-    <v-container fill-height style="position: fixed" class="d-flex align-center justify-center text-center align-center">
+    <v-container fill-height style="position: fixed; max-width: 800px" class="d-flex align-center justify-center text-center align-center">
       <div style="width: 90%">
         <h1 class="text-uppercase mb-5" style="color: white">{{headerText(this.isInLoginMode)}}</h1>
         <v-form ref="form" v-model="formValid" lazy-validation>
@@ -23,9 +23,22 @@
           </v-expand-transition>
         </v-form>
 
+        <v-alert v-if="loginError" border="left" color="error" dark>
+          The email/password you entered did not match our records
+        </v-alert>
+
+        <v-alert v-if="validationErrors.length > 0" border="left" color="error" dark>
+          <ul>
+            <li v-for="error in validationErrors">
+              {{error}}
+            </li>
+          </ul>
+        </v-alert>
+
         <v-expand-transition>
           <h4 v-if="!formValid" class="error--text text-bold">Passwords do not match</h4>
         </v-expand-transition>
+        <!-- TODO: Add validation from Account Controller in second expand transition -->
         <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton">{{headerText(this.isInLoginMode)}}</v-btn>
 
         <div class="d-flex mt-10 text-center justify-center">
@@ -39,19 +52,26 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
+const axios = require('axios');
 
 @Component({})
 export default class AccountEntry extends Vue {
-  linkText: string = 'New User?'
   showPassword: boolean = false;
   isInLoginMode: boolean = false;
   formValid: boolean = true;
   errorText: string = 'Passwords do not match';
   validateOnBlur: boolean = true;
+  loginError: boolean = false;
+  accountCreateError: boolean = false;
+  validationErrors: Array<string> = [];
 
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+
+  get linkText(): string {
+    return this.isInLoginMode ? 'New User?' : 'Returning User?';
+  }
 
   confirmPasswordFocusOut() {
     (this.$refs.form as any).validate();
@@ -116,7 +136,7 @@ export default class AccountEntry extends Vue {
     return (!this.isInLoginMode && this.confirmPassword.length < 1) || this.password.length < 1 || this.email.length < 1 || !this.formValid;
   }
 
-  submit() {
+  async submit() {
     this.validateOnBlur = false;
     (this.$refs.form as any).validate();
     if (!this.formValid) return;
@@ -125,6 +145,35 @@ export default class AccountEntry extends Vue {
     console.log(this.email);
     console.log(this.password);
     console.log(this.confirmPassword);
+
+    this.loginError = false;
+    this.validationErrors = [];
+
+    if (this.isInLoginMode) {
+      await this.axiosHandler(
+          '/login',
+          { email: this.email, password: this.password, confirmPassword: '' },
+          _ => this.loginError = false);
+    } else {
+      await this.axiosHandler(
+          '/create',
+          {email: this.email, password: this.password, confirmPassword: this.confirmPassword},
+          (e) => {
+            console.log(e);
+          });
+    }
+  }
+
+  async axiosHandler(url: string, data: {email: string, password: string, confirmPassword: string}, errorFunc: (error: any) => void): Promise<boolean> {
+    try {
+      await axios.post(url, data);
+    } catch(e) {
+      debugger;
+      errorFunc(e);
+      return false;
+    }
+
+    return true;
   }
 }
 </script>

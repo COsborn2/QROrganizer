@@ -10,6 +10,7 @@ namespace QROrganizer.Web.Controllers
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 
     public class AccountController : Controller
@@ -30,13 +31,15 @@ namespace QROrganizer.Web.Controllers
         {
             var user = await _userManager.FindByEmailAsync(creds.Email);
 
-            var res = await _signInManager.PasswordSignInAsync(
-                user,
-                creds.Password,
-                false,
-                false);
+            var res = user is not null
+                ? await _signInManager.PasswordSignInAsync(
+                    user,
+                    creds.Password,
+                    false,
+                    false)
+                : null;
 
-            if (!res.Succeeded)
+            if (res is null || !res.Succeeded)
             {
                 return new UnauthorizedResult();
             }
@@ -47,6 +50,8 @@ namespace QROrganizer.Web.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] LoginCredentials creds)
         {
+            if (creds.Password != creds.ConfirmPassword) return new UnauthorizedResult();
+
             var user = new ApplicationUser
             {
                 UserName = creds.Email,
