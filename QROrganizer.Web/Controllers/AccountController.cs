@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace QROrganizer.Web.Controllers
 
             if (!res.Succeeded)
             {
-                return new UnauthorizedResult();
+                return new UnauthorizedObjectResult(res);
             }
 
             return new OkResult();

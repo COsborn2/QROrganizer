@@ -1,5 +1,11 @@
 <template>
   <div class="d-flex justify-center" style="height: 100%; width: 100%">
+    <v-dialog v-model="success" width="500" fullscreen>
+      <div class="d-flex align-center flex-column justify-center text-center align-center" style="width: 100%; height: 100%; backdrop-filter: blur(10px)">
+        <v-icon style="font-size: 120px">fas fa-5x fa-check-circle</v-icon>
+        <h1>Redirecting...</h1>
+      </div>
+    </v-dialog>
     <v-container fill-height style="position: fixed; max-width: 800px" class="d-flex align-center justify-center text-center align-center">
       <div style="width: 90%">
         <h1 class="text-uppercase mb-5" style="color: white">{{headerText(this.isInLoginMode)}}</h1>
@@ -29,17 +35,21 @@
 
         <v-alert v-if="validationErrors.length > 0" border="left" color="error" dark>
           <ul>
-            <li v-for="error in validationErrors">
+            <li v-for="error in validationErrors" style="text-align: start">
               {{error}}
             </li>
           </ul>
         </v-alert>
 
-        <v-expand-transition>
-          <h4 v-if="!formValid" class="error--text text-bold">Passwords do not match</h4>
-        </v-expand-transition>
+        <v-alert v-if="!formValid" color="error" border="left" dark>Passwords do not match</v-alert>
+
         <!-- TODO: Add validation from Account Controller in second expand transition -->
-        <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton">{{headerText(this.isInLoginMode)}}</v-btn>
+        <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton && !isLoading" :loading="isLoading">
+<!--          <div v-if="!success">-->
+            {{headerText(this.isInLoginMode)}}
+<!--          </div>-->
+<!--          <v-icon v-else>fas fa-check-circle</v-icon>-->
+        </v-btn>
 
         <div class="d-flex mt-10 text-center justify-center">
           <h4 style="color: white">{{linkText + '\xa0'}}</h4>
@@ -64,6 +74,8 @@ export default class AccountEntry extends Vue {
   loginError: boolean = false;
   accountCreateError: boolean = false;
   validationErrors: Array<string> = [];
+  isLoading: boolean = false;
+  success: boolean = false;
 
   email: string = '';
   password: string = '';
@@ -150,29 +162,34 @@ export default class AccountEntry extends Vue {
     this.validationErrors = [];
 
     if (this.isInLoginMode) {
-      await this.axiosHandler(
+      this.success = await this.axiosHandler(
           '/login',
           { email: this.email, password: this.password, confirmPassword: '' },
-          _ => this.loginError = false);
+          _ => this.loginError = true);
     } else {
-      await this.axiosHandler(
+      this.success = await this.axiosHandler(
           '/create',
           {email: this.email, password: this.password, confirmPassword: this.confirmPassword},
           (e) => {
-            console.log(e);
+            let errors: {code: string, description: string}[] = e.response.data.errors;
+            this.validationErrors = errors.map(x => x.description);
           });
     }
+
+    if (this.success) window.location.href = '/';
   }
 
   async axiosHandler(url: string, data: {email: string, password: string, confirmPassword: string}, errorFunc: (error: any) => void): Promise<boolean> {
+    this.isLoading = true;
     try {
       await axios.post(url, data);
     } catch(e) {
-      debugger;
       errorFunc(e);
+      this.isLoading = false;
       return false;
     }
 
+    this.isLoading = false;
     return true;
   }
 }
