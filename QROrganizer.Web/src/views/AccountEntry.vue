@@ -1,30 +1,59 @@
 <template>
-  <div class="d-flex justify-center" style="height: 100%; width: 100%">
+  <div class="d-flex justify-center primary-background" style="height: 100%; width: 100%">
     <v-dialog v-model="success" width="500" fullscreen>
-      <div class="d-flex align-center flex-column justify-center text-center align-center" style="width: 100%; height: 100%; backdrop-filter: blur(10px)">
+      <div
+        class="d-flex align-center flex-column justify-center text-center align-center"
+        style="width: 100%; height: 100%; backdrop-filter: blur(10px)"
+      >
         <v-icon style="font-size: 120px">fas fa-5x fa-check-circle</v-icon>
         <h1>Redirecting...</h1>
       </div>
     </v-dialog>
-    <v-container fill-height style="position: fixed; max-width: 800px" class="d-flex align-center justify-center text-center align-center">
+    <v-container
+      fill-height
+      style="position: fixed; max-width: 800px"
+      class="d-flex align-center justify-center text-center align-center"
+    >
       <div style="width: 90%">
-        <h1 class="text-uppercase mb-5" style="color: white">{{headerText(this.isInLoginMode)}}</h1>
+        <h1 class="text-uppercase mb-5" style="color: white">
+          {{ headerText(isInLoginMode) }}
+        </h1>
         <v-form ref="form" v-model="formValid" lazy-validation>
-          <v-text-field filled dark color="white" placeholder="Email" type="text" v-model="email" autocomplete="username"/>
-          <v-text-field filled dark color="white" placeholder="Password" :type="passwordType"
-                        :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
-                        @click:append="showPassword = !showPassword"
-                        @focusout="$refs.form.validate()"
-                        :append-icon="passwordAppendIcon"
-                        v-model="password"
+          <v-text-field
+            v-model="email"
+            filled
+            dark
+            color="white"
+            placeholder="Email"
+            type="text"
+            autocomplete="username"
+          />
+          <v-text-field
+            v-model="password"
+            filled
+            dark
+            color="white"
+            placeholder="Password"
+            :type="passwordType"
+            :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
+            :append-icon="passwordAppendIcon"
+            @click:append="showPassword = !showPassword"
+            @focusout="focusOut"
+            @keydown.enter="submit"
           />
           <v-expand-transition>
-            <v-text-field v-if="!isInLoginMode" filled dark color="white" placeholder="Confirm Password" type="text"
-                          :autocomplete="isInLoginMode ? '' : 'new-password'"
-                          :validate-on-blur="validateOnBlur"
-                          @focusout="confirmPasswordFocusOut"
-                          v-model="confirmPassword"
-                          :rules="[passwordsMatchRule]"
+            <v-text-field
+              v-if="!isInLoginMode"
+              v-model="confirmPassword"
+              filled
+              dark
+              color="white"
+              placeholder="Confirm Password"
+              type="text"
+              :autocomplete="isInLoginMode ? '' : 'new-password'"
+              :validate-on-blur="validateOnBlur"
+              :rules="[passwordsMatchRule]"
+              @focusout="confirmPasswordFocusOut"
             />
           </v-expand-transition>
         </v-form>
@@ -33,27 +62,48 @@
           The email/password you entered did not match our records
         </v-alert>
 
-        <v-alert v-if="validationErrors.length > 0" border="left" color="error" dark>
+        <v-alert
+          v-if="validationErrors.length > 0"
+          border="left"
+          color="error"
+          dark
+        >
           <ul>
-            <li v-for="error in validationErrors" style="text-align: start">
-              {{error}}
+            <li
+              v-for="error in validationErrors"
+              :key="error"
+              style="text-align: start"
+            >
+              {{ error }}
             </li>
           </ul>
         </v-alert>
 
-        <v-alert v-if="!formValid" color="error" border="left" dark>Passwords do not match</v-alert>
+        <v-alert v-if="!formValid" color="error" border="left" dark
+          >Passwords do not match</v-alert
+        >
 
         <!-- TODO: Add validation from Account Controller in second expand transition -->
-        <v-btn class="primary--text" rounded style="width: 100%" @click="submit" :disabled="disableButton && !isLoading" :loading="isLoading">
-<!--          <div v-if="!success">-->
-            {{headerText(this.isInLoginMode)}}
-<!--          </div>-->
-<!--          <v-icon v-else>fas fa-check-circle</v-icon>-->
+        <v-btn
+          class="primary--text"
+          rounded
+          style="width: 100%"
+          :disabled="disableButton && !isLoading"
+          :loading="isLoading"
+          @click="submit"
+          @keydown.enter.native="submit"
+        >
+          <!--          <div v-if="!success">-->
+          {{ headerText(isInLoginMode) }}
+          <!--          </div>-->
+          <!--          <v-icon v-else>fas fa-check-circle</v-icon>-->
         </v-btn>
 
         <div class="d-flex mt-10 text-center justify-center">
-          <h4 style="color: white">{{linkText + '\xa0'}}</h4>
-          <h4 @click="changeState" class="linktext">{{headerText(!this.isInLoginMode)}}</h4>
+          <h4 style="color: white">{{ linkText + '\xa0' }}</h4>
+          <h4 class="linktext" @click="changeState">
+            {{ headerText(!isInLoginMode) }}
+          </h4>
         </div>
       </div>
     </v-container>
@@ -61,25 +111,32 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from 'vue-property-decorator';
-const axios = require('axios');
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import axios from "axios";
+import {UserMutations} from "@/store/context";
+import {UserState} from "@/store/UserState";
 
 @Component({})
 export default class AccountEntry extends Vue {
-  showPassword: boolean = false;
-  isInLoginMode: boolean = false;
-  formValid: boolean = true;
-  errorText: string = 'Passwords do not match';
-  validateOnBlur: boolean = true;
-  loginError: boolean = false;
-  accountCreateError: boolean = false;
+  showPassword = false;
+  isInLoginMode = false;
+  formValid = true;
+  errorText = 'Passwords do not match';
+  validateOnBlur = true;
+  loginError = false;
+  accountCreateError = false;
   validationErrors: Array<string> = [];
-  isLoading: boolean = false;
-  success: boolean = false;
+  isLoading = false;
+  success = false;
 
-  email: string = '';
-  password: string = '';
-  confirmPassword: string = '';
+  email = '';
+  password = '';
+  confirmPassword = '';
+
+  focusOut() {
+    if (!(this.$refs?.form as any)?.validate) return;
+    (this.$refs.form as any).validate();
+  }
 
   get linkText(): string {
     return this.isInLoginMode ? 'New User?' : 'Returning User?';
@@ -100,7 +157,12 @@ export default class AccountEntry extends Vue {
   }
 
   passwordsMatchRule() {
-    if (this.password.length === 0 || this.confirmPassword.length === 0 || this.isInLoginMode) return true;
+    if (
+      this.password.length === 0 ||
+      this.confirmPassword.length === 0 ||
+      this.isInLoginMode
+    )
+      return true;
 
     return this.password === this.confirmPassword;
   }
@@ -108,13 +170,13 @@ export default class AccountEntry extends Vue {
   get passwordType(): string {
     if (!this.isInLoginMode) return 'text';
 
-    return this.showPassword ? 'text' : 'password'
+    return this.showPassword ? 'text' : 'password';
   }
 
   get passwordAppendIcon(): string {
     if (!this.isInLoginMode) return '';
 
-    return this.showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'
+    return this.showPassword ? 'fas fa-eye' : 'fas fa-eye-slash';
   }
 
   headerText(currentState: boolean): string {
@@ -126,18 +188,6 @@ export default class AccountEntry extends Vue {
 
   created() {
     this.isInLoginMode = this.login;
-
-    // Disables mobile scrolling
-    document.body.addEventListener('touchmove', this.preventDefault, {passive: false});
-  }
-
-  mounted() {
-    let element = document.getElementById('vue-app');
-
-    if (!element) return;
-    element.setAttribute('style', `background: ${this.$vuetify.theme.currentTheme.primary} !important;`);
-
-    document.body.setAttribute('style', `background: ${this.$vuetify.theme.currentTheme.primary} !important;`);
   }
 
   preventDefault(e: any) {
@@ -145,7 +195,12 @@ export default class AccountEntry extends Vue {
   }
 
   get disableButton() {
-    return (!this.isInLoginMode && this.confirmPassword.length < 1) || this.password.length < 1 || this.email.length < 1 || !this.formValid;
+    return (
+      (!this.isInLoginMode && this.confirmPassword.length < 1) ||
+      this.password.length < 1 ||
+      this.email.length < 1 ||
+      !this.formValid
+    );
   }
 
   async submit() {
@@ -162,35 +217,54 @@ export default class AccountEntry extends Vue {
     this.validationErrors = [];
 
     if (this.isInLoginMode) {
-      this.success = await this.axiosHandler(
-          '/login',
-          { email: this.email, password: this.password, confirmPassword: '' },
-          _ => this.loginError = true);
+      let res = await this.axiosHandler(
+        '/login',
+        { email: this.email, password: this.password, confirmPassword: '' },
+        () => (this.loginError = true),
+      );
+      this.success = res[0];
+
+      if (res[0]) {
+        this.$store.commit(UserMutations.SET_ACCOUNT, res[1])
+      }
     } else {
-      this.success = await this.axiosHandler(
-          '/create',
-          {email: this.email, password: this.password, confirmPassword: this.confirmPassword},
-          (e) => {
-            let errors: {code: string, description: string}[] = e.response.data.errors;
-            this.validationErrors = errors.map(x => x.description);
-          });
+      let res = await this.axiosHandler(
+        '/create',
+        {
+          email: this.email,
+          password: this.password,
+          confirmPassword: this.confirmPassword,
+        },
+        (e) => {
+          let errors: { code: string; description: string }[] =
+            e.response.data.errors;
+          this.validationErrors = errors.map((x) => x.description);
+        },
+      );
+
+      this.success = res[0];
     }
 
-    if (this.success) window.location.href = '/';
+    if (this.success){
+      this.$router.push({name: 'home'});
+    }
   }
 
-  async axiosHandler(url: string, data: {email: string, password: string, confirmPassword: string}, errorFunc: (error: any) => void): Promise<boolean> {
+  async axiosHandler(
+    url: string,
+    data: { email: string; password: string; confirmPassword: string },
+    errorFunc: (error: any) => void,
+  ): Promise<[boolean, UserState | null]> {
     this.isLoading = true;
     try {
-      await axios.post(url, data);
-    } catch(e) {
+      let res = await axios.post<UserState>(url, data);
+      this.isLoading = false;
+      return [true, res.data];
+    } catch (e) {
       errorFunc(e);
       this.isLoading = false;
-      return false;
+      return [false, null];
     }
-
-    this.isLoading = false;
-    return true;
   }
 }
 </script>
@@ -199,5 +273,8 @@ export default class AccountEntry extends Vue {
 .linktext {
   cursor: pointer;
   color: blue;
+}
+.primary-background {
+  background-color: var(--v-primary-base) !important;
 }
 </style>

@@ -1,55 +1,51 @@
 <template>
   <v-app id="vue-app">
-    <v-navigation-drawer v-if="!hideAppBar" v-model="drawer" class="primary" app clipped overflow>
+    <v-navigation-drawer
+      v-if="!hideAppBar"
+      v-model="drawer"
+      class="primary"
+      app
+      overflow
+    >
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+            <v-img
+              src="https://randomuser.me/api/portraits/women/85.jpg"
+            ></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-tooltip right>
-              <template v-slot:activator="{ on, attrs }">
-                <v-list-item-title v-on="on" class="white--text">cameron0401@gmail.com</v-list-item-title>
-              </template>
-              <span>cameron0401@gmail.com</span>
-            </v-tooltip>
-            <v-list-item-subtitle class="white--text">Logged In</v-list-item-subtitle>
+            <v-list-item-title class="white--text"
+              >Cameron Osborn</v-list-item-title
+            >
+            <!--            <v-list-item-subtitle class="white&#45;&#45;text text-wrap" style="word-break: break-word">cameron0401asdasddsasdadasdsadd@gmail.com</v-list-item-subtitle>-->
           </v-list-item-content>
         </v-list-item>
+
+        <div class="pa-2">
+          <v-btn class="mb-2" block color="secondary"> Account Settings </v-btn>
+          <v-btn block color="error"> Logout </v-btn>
+        </div>
 
         <v-divider></v-divider>
       </template>
 
-      <v-list>
-        <v-list-item v-for="item in Array(15).keys()" :key="item + '1'" link>
-          <v-list-item-icon>
-            <v-icon style="color: white">fa fa-address-book</v-icon>
-          </v-list-item-icon>
+      <!--      <v-list>-->
+      <!--        <v-list-item v-for="item in Array(15).keys()" :key="item + '1'" link>-->
+      <!--          <v-list-item-icon>-->
+      <!--            <v-icon style="color: white">fa fa-address-book</v-icon>-->
+      <!--          </v-list-item-icon>-->
 
-          <v-list-item-content>
-            <v-list-item-title style="color: white">Address</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-
-      <template v-slot:append>
-        <div class="pa-2">
-          <v-btn class="mb-2" block color="secondary">
-            Account Settings
-          </v-btn>
-          <v-btn block color="error">
-            Logout
-          </v-btn>
-        </div>
-      </template>
+      <!--          <v-list-item-content>-->
+      <!--            <v-list-item-title style="color: white">Address</v-list-item-title>-->
+      <!--          </v-list-item-content>-->
+      <!--        </v-list-item>-->
+      <!--      </v-list>-->
     </v-navigation-drawer>
 
     <v-app-bar v-if="!hideAppBar" app color="primary" dark dense clipped-left>
-      <!-- TODO: https://vuetifyjs.com/en/components/navigation-drawers/#right -->
-      <v-list-item-avatar @click.stop="drawer = !drawer">
-        <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
-      </v-list-item-avatar>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" class="white--text" style="text-decoration: none">
           Box Organizer
@@ -72,8 +68,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {Component, Watch} from "vue-property-decorator";
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
 
 @Component({
   components: {},
@@ -102,12 +98,12 @@ export default class App extends Vue {
       () => (this.routeComponent as any)?.pageTitle,
       (n: string | null | undefined) => {
         if (n) {
-          document.title = n + " - " + baseTitle;
+          document.title = n + ' - ' + baseTitle;
         } else {
           document.title = baseTitle;
         }
       },
-      { immediate: true }
+      { immediate: true },
     );
   }
 }

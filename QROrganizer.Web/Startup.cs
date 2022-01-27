@@ -16,7 +16,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
-using QROrganizer.Data.Services;
 
 namespace QROrganizer.Web
 {
@@ -56,8 +55,6 @@ namespace QROrganizer.Web
                 });
 
             services.AddSwaggerGen();
-
-            services.AddScoped<UserService>();
 
             services
                 .AddDefaultIdentity<ApplicationUser>(options =>

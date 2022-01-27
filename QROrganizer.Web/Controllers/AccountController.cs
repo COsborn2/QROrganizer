@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,12 @@ namespace QROrganizer.Web.Controllers
         public string Email { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+    }
+
+    public class AccountInformation
+    {
+        public string Email { get; set; }
+        public string Username { get; set; }
     }
 
     public class AccountController : Controller
@@ -45,7 +50,13 @@ namespace QROrganizer.Web.Controllers
                 return new UnauthorizedResult();
             }
 
-            return new OkResult();
+            var loggedInUser = new AccountInformation
+            {
+                Email = user.Email,
+                Username = "testUsername"
+            };
+
+            return Ok(loggedInUser);
         }
 
         [HttpPost("create")]

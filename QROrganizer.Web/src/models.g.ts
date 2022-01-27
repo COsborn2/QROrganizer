@@ -37,26 +37,3 @@ export class ApplicationUser {
 }
 
 
-export interface UserInfo extends Model<typeof metadata.UserInfo> {
-  userName: string | null
-  roles: string[] | null
-}
-export class UserInfo {
-  
-  /** Mutates the input object and its descendents into a valid UserInfo implementation. */
-  static convert(data?: Partial<UserInfo>): UserInfo {
-    return convertToModel(data || {}, metadata.UserInfo) 
-  }
-  
-  /** Maps the input object and its descendents to a new, valid UserInfo implementation. */
-  static map(data?: Partial<UserInfo>): UserInfo {
-    return mapToModel(data || {}, metadata.UserInfo) 
-  }
-  
-  /** Instantiate a new UserInfo, optionally basing it on the given data. */
-  constructor(data?: Partial<UserInfo> | {[k: string]: any}) {
-      Object.assign(this, UserInfo.map(data || {}));
-  }
-}
-
-

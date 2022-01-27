@@ -3,36 +3,30 @@
     <h1>
       {{ msg }}
     </h1>
-    <v-row>
-    </v-row>
+    <v-row> </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-const axios = require('axios');
-
-import {UserServiceViewModel} from "@/viewmodels.g";
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
-  userService = new UserServiceViewModel();
-
-  async create() {
-    let res = await axios.post('/create', {Email: 'email', Password: 'password'})
-  }
-
-  async login() {
-    let res = await axios.post('/login', {Email: 'email', Password: 'password'})
-  }
-
-  async requestInfo() {
-    let res = await this.userService.userInfo.invoke();
-    console.log(res.data.object?.roles)
-    console.log(res.data.object?.userName)
-  }
+  // async create() {
+  //   let res = await axios.post('/create', {Email: 'email', Password: 'password'})
+  // }
+  //
+  // async login() {
+  //   let res = await axios.post('/login', {Email: 'email', Password: 'password'})
+  // }
+  //
+  // async requestInfo() {
+  //   let res = await this.userService.userInfo.invoke();
+  //   console.log(res.data.object?.roles)
+  //   console.log(res.data.object?.userName)
+  // }
 }
 </script>
 
