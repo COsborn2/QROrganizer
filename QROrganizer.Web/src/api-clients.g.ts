@@ -9,3 +9,15 @@ export class ApplicationUserApiClient extends ModelApiClient<$models.Application
 }
 
 
+export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
+  constructor() { super($metadata.UserService) }
+  public getUserInfo($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.UserInfo>> {
+    const $method = this.$metadata.methods.getUserInfo
+    const $params =  {
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+

@@ -36,6 +36,25 @@ export class ApplicationUserListViewModel extends ListViewModel<$models.Applicat
 }
 
 
+export class UserServiceViewModel extends ServiceViewModel<typeof $metadata.UserService, $apiClients.UserServiceApiClient> {
+  
+  public get getUserInfo() {
+    const getUserInfo = this.$apiClient.$makeCaller(
+      this.$metadata.methods.getUserInfo,
+      (c) => c.getUserInfo(),
+      () => ({}),
+      (c, args) => c.getUserInfo())
+    
+    Object.defineProperty(this, 'getUserInfo', {value: getUserInfo});
+    return getUserInfo
+  }
+  
+  constructor() {
+    super($metadata.UserService, new $apiClients.UserServiceApiClient())
+  }
+}
+
+
 const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
 }
@@ -43,5 +62,6 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
+  UserService: UserServiceViewModel,
 }
 

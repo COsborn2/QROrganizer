@@ -52,6 +52,21 @@ namespace QROrganizer.Data
             {
                 // this exception is expected when using an InMemory database
             }
+
+            var roles = Enum.GetNames(typeof(Roles))
+                .Select(x => x.ToUpperInvariant());
+            var presentRoles = Roles
+                .Where(x => roles.Contains(x.NormalizedName));
+            var rolesMissing = roles
+                .Where(x => !presentRoles.Select(xi => xi.NormalizedName).Contains(x))
+                .Select(x => new IdentityRole
+                {
+                    Name = x,
+                    NormalizedName = x.ToUpperInvariant()
+                });
+
+            Roles.AddRange(rolesMissing);
+            SaveChanges();
         }
     }
 }

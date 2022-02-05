@@ -16,6 +16,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
+using QROrganizer.Data.Services;
+using QROrganizer.Data.Services.Implementation;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
 {
@@ -41,6 +44,8 @@ namespace QROrganizer.Web
             services.AddSingleton(Configuration);
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connString));
+
+            services.Configure<AppConfigSettings>(Configuration.GetSection("AppConfigSettings"));
 
             services.AddCoalesce<AppDbContext>();
 
@@ -68,13 +73,37 @@ namespace QROrganizer.Web
                         RequireUppercase = true,
                         RequireDigit = true
                     };
+
+                    options.User.RequireUniqueEmail = true;
+
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedEmail = true;
                 })
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "auth_cookie";
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.LoginPath = new PathString("/api/contests");
+                options.AccessDeniedPath = new PathString("/api/contests");
+
+                // Not creating a new object since ASP.NET Identity has created
+                // one already and hooked to the OnValidatePrincipal event.
+                // See https://github.com/aspnet/AspNetCore/blob/5a64688d8e192cacffda9440e8725c1ed41a30cf/src/Identity/src/Identity/IdentityServiceCollectionExtensions.cs#L56
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
+
             services.AddAuthentication();
+
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

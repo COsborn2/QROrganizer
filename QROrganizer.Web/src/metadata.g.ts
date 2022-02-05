@@ -13,7 +13,7 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   type: "model",
   controllerRoute: "ApplicationUser",
   get keyProp() { return this.props.id }, 
-  behaviorFlags: 7,
+  behaviorFlags: 0,
   props: {
     id: {
       name: "id",
@@ -113,14 +113,70 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   dataSources: {
   },
 }
+export const UserInfo = domain.types.UserInfo = {
+  name: "UserInfo",
+  displayName: "User Info",
+  type: "object",
+  props: {
+    email: {
+      name: "email",
+      displayName: "Email",
+      type: "string",
+      role: "value",
+    },
+    username: {
+      name: "username",
+      displayName: "Username",
+      type: "string",
+      role: "value",
+    },
+    roles: {
+      name: "roles",
+      displayName: "Roles",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "string",
+      },
+      role: "value",
+    },
+  },
+}
+export const UserService = domain.services.UserService = {
+  name: "UserService",
+  displayName: "User Service",
+  type: "service",
+  controllerRoute: "UserService",
+  methods: {
+    getUserInfo: {
+      name: "getUserInfo",
+      displayName: "Get User Info",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "object",
+        get typeDef() { return (domain.types.UserInfo as ObjectType) },
+        role: "value",
+      },
+    },
+  },
+}
 
 interface AppDomain extends Domain {
   enums: {
   }
   types: {
     ApplicationUser: typeof ApplicationUser
+    UserInfo: typeof UserInfo
   }
   services: {
+    UserService: typeof UserService
   }
 }
 

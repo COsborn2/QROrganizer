@@ -30,44 +30,5 @@ namespace QROrganizer.Web.Api
         {
             GeneratedForClassViewModel = ReflectionRepository.Global.GetClassViewModel<QROrganizer.Data.Models.ApplicationUser>();
         }
-
-        [HttpGet("get/{id}")]
-        [Authorize]
-        public virtual Task<ItemResult<ApplicationUserDtoGen>> Get(
-            string id,
-            DataSourceParameters parameters,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
-            => GetImplementation(id, parameters, dataSource);
-
-        [HttpGet("list")]
-        [Authorize]
-        public virtual Task<ListResult<ApplicationUserDtoGen>> List(
-            ListParameters parameters,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
-            => ListImplementation(parameters, dataSource);
-
-        [HttpGet("count")]
-        [Authorize]
-        public virtual Task<ItemResult<int>> Count(
-            FilterParameters parameters,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
-            => CountImplementation(parameters, dataSource);
-
-        [HttpPost("save")]
-        [Authorize]
-        public virtual Task<ItemResult<ApplicationUserDtoGen>> Save(
-            ApplicationUserDtoGen dto,
-            [FromQuery] DataSourceParameters parameters,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource,
-            IBehaviors<QROrganizer.Data.Models.ApplicationUser> behaviors)
-            => SaveImplementation(dto, parameters, dataSource, behaviors);
-
-        [HttpPost("delete/{id}")]
-        [Authorize]
-        public virtual Task<ItemResult<ApplicationUserDtoGen>> Delete(
-            string id,
-            IBehaviors<QROrganizer.Data.Models.ApplicationUser> behaviors,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
-            => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
     }
 }

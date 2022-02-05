@@ -10,22 +10,19 @@
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
-            <v-img
-              src="https://randomuser.me/api/portraits/women/85.jpg"
-            ></v-img>
+            <v-icon x-large>fas fa-user</v-icon>
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title class="white--text"
-              >Cameron Osborn</v-list-item-title
-            >
-            <!--            <v-list-item-subtitle class="white&#45;&#45;text text-wrap" style="word-break: break-word">cameron0401asdasddsasdadasdsadd@gmail.com</v-list-item-subtitle>-->
+            <v-list-item-title class="white--text">{{ $store.state.user.username }}</v-list-item-title>
+            <v-list-item-subtitle class="white--text">Logged In</v-list-item-subtitle>
           </v-list-item-content>
+
         </v-list-item>
 
         <div class="pa-2">
-          <v-btn class="mb-2" block color="secondary"> Account Settings </v-btn>
-          <v-btn block color="error"> Logout </v-btn>
+          <v-btn class="mb-2" block color="secondary" disabled> Account Settings </v-btn>
+          <v-btn block color="error" @click="logout" :loading="logoutLoading"> Logout </v-btn>
         </div>
 
         <v-divider></v-divider>
@@ -70,13 +67,30 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
+import {AxiosInstance} from "axios";
+import {AxiosClient} from "coalesce-vue/lib/api-client";
+import {RouteNames} from "@/router";
+import {UserActions} from "@/store/context";
 
 @Component({
   components: {},
 })
 export default class App extends Vue {
-  drawer: boolean | null = null;
+  drawer: boolean = false;
   routeComponent: Vue | null = null;
+  client: AxiosInstance = AxiosClient;
+  logoutLoading = false;
+
+  async logout() {
+    try {
+      this.logoutLoading = true;
+      await this.$store.dispatch(UserActions.LOGOUT);
+    } finally {
+      this.logoutLoading = false;
+    }
+
+    this.$router.push({name: RouteNames.Login})
+  }
 
   get hideAppBar() {
     return this.routeMeta?.hideAppBar === true;
@@ -93,6 +107,7 @@ export default class App extends Vue {
   }
 
   created() {
+    this.drawer = false;
     const baseTitle = document.title;
     this.$watch(
       () => (this.routeComponent as any)?.pageTitle,
@@ -112,7 +127,6 @@ export default class App extends Vue {
 <style lang="scss">
 .router-transition-enter-active,
 .router-transition-leave-active {
-  // transition: 0.2s cubic-bezier(0.25, 0.8, 0.5, 1);
   transition: 0.1s ease-out;
 }
 
@@ -123,6 +137,5 @@ export default class App extends Vue {
 .router-transition-enter,
 .router-transition-leave-to {
   opacity: 0;
-  // transform: translateY(5px);
 }
 </style>

@@ -1,24 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QROrganizer.Data.Models;
+using QROrganizer.Data.Services.Implementation;
 
-namespace QROrganizer.Web.Controllers
+namespace QROrganizer.Web.Api
 {
     public class LoginCredentials
     {
         public string Email { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
     }
 
-    public class AccountInformation
+    public class ErrorResponse
     {
-        public string Email { get; set; }
-        public string Username { get; set; }
+        public ICollection<string> Errors { get; set; }
     }
 
+    [Route("api")]
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -37,23 +40,39 @@ namespace QROrganizer.Web.Controllers
         {
             var user = await _userManager.FindByEmailAsync(creds.Email);
 
-            var res = user is not null
-                ? await _signInManager.PasswordSignInAsync(
-                    user,
-                    creds.Password,
-                    false,
-                    false)
-                : null;
+            if (user is null)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Errors = new List<string>{"Account with that email could not be found"}
+                });
+            }
+
+            var res = await _signInManager.PasswordSignInAsync(
+                user,
+                creds.Password,
+                false,
+                false);
 
             if (res is null || !res.Succeeded)
             {
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                {
+                    return BadRequest(new ErrorResponse
+                    {
+                        Errors = new List<string>{"Email is not verified - click link in email"}
+                    });
+                }
+
                 return new UnauthorizedResult();
             }
 
-            var loggedInUser = new AccountInformation
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var loggedInUser = new UserInfo
             {
                 Email = user.Email,
-                Username = "testUsername"
+                Roles = roles
             };
 
             return Ok(loggedInUser);
@@ -62,12 +81,17 @@ namespace QROrganizer.Web.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] LoginCredentials creds)
         {
+            if (creds.Username.Length > 16)
+            {
+                return BadRequest();
+            }
+
             if (creds.Password != creds.ConfirmPassword) return new UnauthorizedResult();
 
             var user = new ApplicationUser
             {
-                UserName = creds.Email,
-                Email = creds.Email
+                Email = creds.Email,
+                UserName = creds.Username
             };
 
             var res = await _userManager.CreateAsync(user, creds.Password);
@@ -78,6 +102,13 @@ namespace QROrganizer.Web.Controllers
             }
 
             return new OkResult();
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
     }
 }
