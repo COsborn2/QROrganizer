@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router, {RouteNames} from './router';
 import store from '@/store/index';
-import {UserServiceViewModel} from "@/viewmodels.g";
+import {UserInfoServiceViewModel} from "@/viewmodels.g";
 
 // Import global CSS and Fonts:
 import 'typeface-roboto';
@@ -51,19 +51,22 @@ import $metadata from '@/metadata.g';
 // viewmodels.g has sideeffects - it populates the global lookup on ViewModel and ListViewModel.
 import '@/viewmodels.g';
 import CoalesceVuetify from 'coalesce-vue-vuetify';
-import {UserMutations} from "@/store/context";
+import {UserMutations} from "@/store/UserContext";
+import {SiteInfoActions} from "@/store/SiteInfoContext";
+
 Vue.use(CoalesceVuetify, {
   metadata: $metadata,
 });
 
 Vue.config.productionTip = false;
 
-let userInfo = new UserServiceViewModel();
+let userInfo = new UserInfoServiceViewModel();
 userInfo.getUserInfo.setConcurrency('cancel');
-router.beforeEach(async (to, from, next) => {
-  await userInfo.getUserInfo.invoke();
+userInfo.getUserInfo().then(() => {
   store.commit(UserMutations.SET_ACCOUNT, userInfo.getUserInfo.result);
+});
 
+router.beforeEach(async (to, from, next) => {
   // only give users 403 if they are logged in && lack permissions - otherwise go to Login
   if (store.getters.isAuthenticated && to.meta?.roles?.length > 0) {
     if (!(store.getters.roles as string[])
@@ -83,9 +86,11 @@ router.beforeEach(async (to, from, next) => {
   next();
 })
 
-new Vue({
-  store,
-  router,
-  vuetify,
-  render: (h) => h(App),
-}).$mount('#app');
+store.dispatch(SiteInfoActions.GET_AND_SET_SITE_INFO).then(() => {
+  new Vue({
+    store,
+    router,
+    vuetify,
+    render: (h) => h(App),
+  }).$mount('#app');
+})

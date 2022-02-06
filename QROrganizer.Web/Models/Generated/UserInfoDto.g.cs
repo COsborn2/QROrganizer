@@ -6,11 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using QROrganizer.Data.Services.Implementation;
 
 namespace QROrganizer.Web.Models
 {
-    public partial class UserInfoDtoGen : GeneratedDto<UserInfo>
+    public partial class UserInfoDtoGen : GeneratedDto<QROrganizer.Data.Services.Implementation.UserInfo>
     {
         public UserInfoDtoGen() { }
 
@@ -37,7 +36,7 @@ namespace QROrganizer.Web.Models
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
         /// </summary>
-        public override void MapFrom(UserInfo obj, IMappingContext context, IncludeTree tree = null)
+        public override void MapFrom(QROrganizer.Data.Services.Implementation.UserInfo obj, IMappingContext context, IncludeTree tree = null)
         {
             if (obj == null) return;
             var includes = context.Includes;
@@ -52,7 +51,7 @@ namespace QROrganizer.Web.Models
         /// <summary>
         /// Map from the current DTO instance to the domain object.
         /// </summary>
-        public override void MapTo(UserInfo entity, IMappingContext context)
+        public override void MapTo(QROrganizer.Data.Services.Implementation.UserInfo entity, IMappingContext context)
         {
             var includes = context.Includes;
 

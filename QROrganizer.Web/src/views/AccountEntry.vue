@@ -9,74 +9,79 @@
         <h1 class="text-uppercase mb-5" style="color: white">
           {{ headerText(isInLoginMode) }}
         </h1>
-        <v-form ref="form" v-model="formValid" lazy-validation>
-          <v-text-field
-            v-model="email"
-            filled
-            dark
-            color="white"
-            placeholder="Email"
-            type="text"
-            autocomplete="username"
-          />
-          <v-expand-transition>
+        <template v-if="$store.getters.isRestrictedEnvironment">
+          <!-- TODO: Add enter access code component here -->
+        </template>
+        <template v-else>
+          <v-form ref="form" v-model="formValid" lazy-validation>
             <v-text-field
-                v-if="!isInLoginMode"
-                v-model="username"
-                maxlength="16"
-                counter="16"
+                v-model="email"
                 filled
                 dark
                 color="white"
-                placeholder="Username"
+                placeholder="Email"
                 type="text"
                 autocomplete="username"
-                :rules="[x => !!x, x => x.length <= 16]"
-                @focusout
             />
-          </v-expand-transition>
-          <v-text-field
-            ref="passwordField"
-            v-model="password"
-            filled
-            dark
-            color="white"
-            placeholder="Password"
-            :type="passwordType"
-            :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
-            :validate-on-blur="validateOnBlur"
-            :append-icon="passwordAppendIcon"
-            :rules="[passwordsMatchRule(false), password.length > 1]"
-            @click:append="showPassword = !showPassword"
-            @focusout="focusOut"
-            @keydown.enter="submit"
-          />
-          <v-expand-transition v-if="!isInLoginMode">
-            <div>
+            <v-expand-transition>
               <v-text-field
-                ref="confirmPasswordField"
-                v-model="confirmPassword"
+                  v-if="!isInLoginMode"
+                  v-model="username"
+                  maxlength="16"
+                  counter="16"
+                  filled
+                  dark
+                  color="white"
+                  placeholder="Username"
+                  type="text"
+                  autocomplete="username"
+                  :rules="[x => !!x, x => x.length <= 16]"
+                  @focusout
+              />
+            </v-expand-transition>
+            <v-text-field
+                ref="passwordField"
+                v-model="password"
                 filled
                 dark
                 color="white"
-                placeholder="Confirm Password"
-                type="text"
-                :autocomplete="isInLoginMode ? '' : 'new-password'"
+                placeholder="Password"
+                :type="passwordType"
+                :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
                 :validate-on-blur="validateOnBlur"
-                :rules="[passwordsMatchRule(true), confirmPassword.length > 1]"
-                @focusout="confirmPasswordFocusOut"
-              />
-              <v-checkbox dark v-model="emailConsentCheckbox" :rules=[this.emailConsentCheckbox]>
-                <template v-slot:label>
-                  <h4 class="white--text">
-                    I understand my email will be used for account verification and recovery as well as subscription
-                    confirmation and billing changes
-                  </h4>
-                </template>
-              </v-checkbox>
-            </div>
-          </v-expand-transition>
-        </v-form>
+                :append-icon="passwordAppendIcon"
+                :rules="[passwordsMatchRule(false), password.length > 1]"
+                @click:append="showPassword = !showPassword"
+                @focusout="focusOut"
+                @keydown.enter="submit"
+            />
+            <v-expand-transition v-if="!isInLoginMode">
+              <div>
+                <v-text-field
+                    ref="confirmPasswordField"
+                    v-model="confirmPassword"
+                    filled
+                    dark
+                    color="white"
+                    placeholder="Confirm Password"
+                    type="text"
+                    :autocomplete="isInLoginMode ? '' : 'new-password'"
+                    :validate-on-blur="validateOnBlur"
+                    :rules="[passwordsMatchRule(true), confirmPassword.length > 1]"
+                    @focusout="confirmPasswordFocusOut"
+                />
+                <v-checkbox dark v-model="emailConsentCheckbox" :rules=[this.emailConsentCheckbox]>
+                  <template v-slot:label>
+                    <h4 class="white--text">
+                      I understand my email will be used for account verification and recovery as well as subscription
+                      confirmation and billing changes
+                    </h4>
+                  </template>
+                </v-checkbox>
+              </div>
+            </v-expand-transition>
+          </v-form>
+        </template>
 
         <v-expand-transition>
           <v-alert
@@ -123,7 +128,7 @@
       <div v-else>
         <v-icon style="font-size: 100px">fas fa-check-circle</v-icon>
         <h2 class="white--text">
-          We went you an email for confirmation. Check your email to continue.
+          We went you a confirmation email. Check your email to continue.
         </h2>
       </div>
     </v-container>
@@ -132,14 +137,15 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import {UserMutations} from "@/store/context";
-import {AxiosClient} from "coalesce-vue/lib/api-client";
+import { AxiosClient } from "coalesce-vue/lib/api-client";
+import { UserMutations } from "@/store/UserContext";
 
 export class LoginCredentials {
   username: string | null = null;
   email: string | null = null;
   password: string | null = null;
   confirmPassword: string | null = null;
+  restrictedAccessCode: string | null = null;
 }
 
 @Component({})
@@ -171,7 +177,6 @@ export default class AccountEntry extends Vue {
   }
 
   confirmPasswordFocusOut() {
-    console.log('validate');
     (this.$refs.form as any).validate();
     this.validateOnBlur = false;
   }
@@ -246,7 +251,6 @@ export default class AccountEntry extends Vue {
   }
 
   async submit() {
-    console.log('submit');
     this.validateOnBlur = false;
     (this.$refs.form as any).validate();
     if (!this.formValid) return;

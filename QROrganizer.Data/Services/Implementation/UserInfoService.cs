@@ -7,7 +7,7 @@ namespace QROrganizer.Data.Services.Implementation
 {
     [Coalesce]
     [Service]
-    public class UserService
+    public class UserInfoService
     {
         [Coalesce]
         [Execute(SecurityPermissionLevels.AllowAll)]

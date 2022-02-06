@@ -70,7 +70,7 @@ import { Component } from 'vue-property-decorator';
 import {AxiosInstance} from "axios";
 import {AxiosClient} from "coalesce-vue/lib/api-client";
 import {RouteNames} from "@/router";
-import {UserActions} from "@/store/context";
+import {UserActions} from "@/store/UserContext";
 
 @Component({
   components: {},

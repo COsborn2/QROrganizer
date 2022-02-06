@@ -6,6 +6,7 @@ import About from './views/About.vue';
 import AccountEntry from '@/views/AccountEntry.vue';
 import Forbidden from "@/views/Forbidden.vue";
 import NotFound from "@/views/NotFound.vue";
+import { CAdminTablePage, CAdminEditorPage } from 'coalesce-vue-vuetify';
 
 Vue.use(Router);
 
@@ -68,17 +69,17 @@ export default new Router({
       path: '*',
       name: RouteNames.NotFound,
       component: NotFound,
-    }
+    },
 
-    // // Coalesce admin routes
-    // {
-    //   path: '/admin/:type',
-    //   name: 'coalesce-admin-list',
-    //   component: CAdminTablePage,
-    //   props: (r) => ({
-    //     type: r.params.type,
-    //   }),
-    // },
+    // Coalesce admin routes
+    {
+      path: '/admin/:type',
+      name: 'coalesce-admin-list',
+      component: CAdminTablePage,
+      props: (r) => ({
+        type: r.params.type,
+      }),
+    },
     // {
     //   path: '/admin/:type/edit/:id?',
     //   name: 'coalesce-admin-item',

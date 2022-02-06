@@ -17,33 +17,30 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using QROrganizer.Data.Services.Implementation;
 
 namespace QROrganizer.Web.Api
 {
-    [Route("api/UserService")]
+    [Route("api/AccessCodeService")]
     [ServiceFilter(typeof(IApiActionFilter))]
-    public partial class UserServiceController : Controller
+    public partial class AccessCodeServiceController : Controller
     {
-        protected UserService Service { get; }
+        protected QROrganizer.Data.Services.Interface.IAccessCodeService Service { get; }
 
-        public UserServiceController(UserService service)
+        public AccessCodeServiceController(QROrganizer.Data.Services.Interface.IAccessCodeService service)
         {
             Service = service;
         }
 
         /// <summary>
-        /// Method: GetUserInfo
+        /// Method: IsAccessCodeValid
         /// </summary>
-        [HttpPost("GetUserInfo")]
+        [HttpPost("IsAccessCodeValid")]
         [AllowAnonymous]
-        public virtual ItemResult<UserInfoDtoGen> GetUserInfo()
+        public virtual ItemResult<bool> IsAccessCodeValid(string code)
         {
-            IncludeTree includeTree = null;
-            var _mappingContext = new MappingContext(User);
-            var _methodResult = Service.GetUserInfo(User);
-            var _result = new ItemResult<UserInfoDtoGen>();
-            _result.Object = Mapper.MapToDto<UserInfo, UserInfoDtoGen>(_methodResult, _mappingContext, includeTree);
+            var _methodResult = Service.IsAccessCodeValid(code);
+            var _result = new ItemResult<bool>();
+            _result.Object = _methodResult;
             return _result;
         }
     }

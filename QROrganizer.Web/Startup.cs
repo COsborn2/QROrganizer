@@ -16,8 +16,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
-using QROrganizer.Data.Services;
 using QROrganizer.Data.Services.Implementation;
+using QROrganizer.Data.Services.Interface;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
@@ -45,6 +45,7 @@ namespace QROrganizer.Web
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connString));
 
+            services.AddOptions();
             services.Configure<AppConfigSettings>(Configuration.GetSection("AppConfigSettings"));
 
             services.AddCoalesce<AppDbContext>();
@@ -103,7 +104,9 @@ namespace QROrganizer.Web
 
             services.AddAuthentication();
 
-            services.AddScoped<UserService>();
+            services.AddScoped<UserInfoService>();
+            services.AddScoped<IAccessCodeService, AccessCodeService>();
+            services.AddScoped<ISiteInfoService, SiteInfoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
