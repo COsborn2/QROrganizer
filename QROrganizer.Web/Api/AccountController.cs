@@ -77,7 +77,8 @@ namespace QROrganizer.Web.Api
             var loggedInUser = new UserInfo
             {
                 Email = user.Email,
-                Roles = roles
+                Roles = roles,
+                Username = user.UserName
             };
 
             return Ok(loggedInUser);
@@ -88,8 +89,8 @@ namespace QROrganizer.Web.Api
         {
             if (_appConfigSettings.RestrictedEnvironment)
             {
-                var error = await _accessCodeService
-                    .ValidateAndUseAccessCode(creds.RestrictedAccessCode);
+                var error = _accessCodeService
+                    .CheckAccessCodeValidAndRetrieve(creds.RestrictedAccessCode, out _);
                 if (error is not null)
                 {
                     return BadRequest(error);
@@ -117,6 +118,11 @@ namespace QROrganizer.Web.Api
             if (!res.Succeeded)
             {
                 return new UnauthorizedObjectResult(res);
+            }
+
+            if (_appConfigSettings.RestrictedEnvironment)
+            {
+                await _accessCodeService.ValidateAndUseAccessCode(creds.RestrictedAccessCode);
             }
 
             return new OkResult();

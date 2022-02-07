@@ -30,7 +30,7 @@ public class AccessCodeService : IAccessCodeService
         return null;
     }
 
-    private ErrorResponse CheckAccessCodeValidAndRetrieve(string code, out RestrictedAccessCode accessCode)
+    public ErrorResponse CheckAccessCodeValidAndRetrieve(string code, out RestrictedAccessCode accessCode)
     {
         accessCode = null;
         if (string.IsNullOrWhiteSpace(code))
@@ -68,6 +68,6 @@ public class AccessCodeService : IAccessCodeService
 
     public bool IsAccessCodeValid(string code)
     {
-        return CheckAccessCodeValidAndRetrieve(code, out _) is not null;
+        return CheckAccessCodeValidAndRetrieve(code, out _) is null;
     }
 }

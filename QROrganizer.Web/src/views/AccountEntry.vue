@@ -6,13 +6,19 @@
       class="d-flex align-center justify-center text-center align-center"
     >
       <div v-if="!success" style="width: 90%">
-        <h1 class="text-uppercase mb-5" style="color: white">
-          {{ headerText(isInLoginMode) }}
-        </h1>
-        <template v-if="$store.getters.isRestrictedEnvironment">
-          <!-- TODO: Add enter access code component here -->
+        <template v-if="requireAccessCode">
+          <h1 class="text-uppercase white--text">
+            Restricted Environment
+          </h1>
+          <h2 class="font-weight-thin white--text mb-5">
+            Enter access code to continue
+          </h2>
+          <access-code-entry v-model="accessCode" v-on:continue="accessCodeEntered = true" />
         </template>
         <template v-else>
+          <h1 class="text-uppercase mb-5" style="color: white">
+            {{ headerText(isInLoginMode) }}
+          </h1>
           <v-form ref="form" v-model="formValid" lazy-validation>
             <v-text-field
                 v-model="email"
@@ -107,6 +113,7 @@
         </v-alert>
 
         <v-btn
+          v-if="!requireAccessCode"
           class="primary--text"
           rounded
           style="width: 100%"
@@ -139,6 +146,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { AxiosClient } from "coalesce-vue/lib/api-client";
 import { UserMutations } from "@/store/UserContext";
+import AccessCodeEntry from "@/components/AccessCodeEntry.vue";
 
 export class LoginCredentials {
   username: string | null = null;
@@ -148,7 +156,11 @@ export class LoginCredentials {
   restrictedAccessCode: string | null = null;
 }
 
-@Component({})
+@Component({
+  components: {
+    AccessCodeEntry
+  }
+})
 export default class AccountEntry extends Vue {
   showPassword = false;
   isInLoginMode = false;
@@ -160,12 +172,18 @@ export default class AccountEntry extends Vue {
   isLoading = false;
   success = false;
   client = AxiosClient;
+  accessCodeEntered = false;
+  accessCode = '';
 
   email = '';
   username = '';
   password = '';
   confirmPassword = '';
   emailConsentCheckbox = false;
+
+  get requireAccessCode() {
+    return this.$store.getters.isRestrictedEnvironment && !this.isInLoginMode && !this.accessCodeEntered;
+  }
 
   focusOut() {
     if (this.confirmPassword.length < 1 || (this.$refs.confirmPasswordField as any).isFocused) return;
@@ -283,6 +301,10 @@ export default class AccountEntry extends Vue {
     } else {
       loginCredentials.username = this.username;
       loginCredentials.confirmPassword = this.confirmPassword;
+
+      if (this.accessCodeEntered) {
+        loginCredentials.restrictedAccessCode = this.accessCode;
+      }
 
       let res = await this.axiosHandler(
         '/create',

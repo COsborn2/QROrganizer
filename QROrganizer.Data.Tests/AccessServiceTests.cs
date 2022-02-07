@@ -18,33 +18,35 @@ public class AccessServiceTests : IClassFixture<DatabaseFixture<AppDbContext>>
     }
 
     [Fact]
-    public async Task ValidateAndUseAccessCode_AccessCodeNotInDb()
+    public async Task CheckAccessCodeValidAndRetrieve_AccessCodeNotInDb()
     {
-        await _dbFixture.PerformDatabaseOperation(async db =>
+        await _dbFixture.PerformDatabaseOperation(db =>
         {
             var service = new AccessCodeService(db);
-            var error = await service.ValidateAndUseAccessCode("fakeAccessCode");
+            var error = service.CheckAccessCodeValidAndRetrieve("fakeAccessCode", out var accessCode);
 
             Assert.NotNull(error);
+            Assert.Null(accessCode);
             Assert.Equal("Access code could not be found", error.Errors.First());
         });
     }
 
     [Fact]
-    public async Task ValidateAndUseAccessCode_AccessCodeIsNull()
+    public async Task CheckAccessCodeValidAndRetrieve_AccessCodeIsNull()
     {
-        await _dbFixture.PerformDatabaseOperation(async db =>
+        await _dbFixture.PerformDatabaseOperation(db =>
         {
             var service = new AccessCodeService(db);
-            var error = await service.ValidateAndUseAccessCode(null);
+            var error = service.CheckAccessCodeValidAndRetrieve(null, out var accessCode);
 
             Assert.NotNull(error);
+            Assert.Null(accessCode);
             Assert.Equal("App is in restricted state - obtain access code", error.Errors.First());
         });
     }
 
     [Fact]
-    public async Task ValidateAndUseAccessCode_AccessCodeHasNoRemainingUses()
+    public async Task CheckAccessCodeValidAndRetrieve_AccessCodeHasNoRemainingUses()
     {
         var code = Guid.NewGuid().ToString("N");
 
@@ -59,12 +61,13 @@ public class AccessServiceTests : IClassFixture<DatabaseFixture<AppDbContext>>
             await db.SaveChangesAsync();
         });
 
-        await _dbFixture.PerformDatabaseOperation(async db =>
+        await _dbFixture.PerformDatabaseOperation(db =>
         {
             var service = new AccessCodeService(db);
-            var error = await service.ValidateAndUseAccessCode(code);
+            var error = service.CheckAccessCodeValidAndRetrieve(code, out var accessCode);
 
             Assert.NotNull(error);
+            Assert.NotNull(accessCode);
             Assert.Equal("Given access code has no uses remaining", error.Errors.First());
         });
     }
@@ -92,8 +95,8 @@ public class AccessServiceTests : IClassFixture<DatabaseFixture<AppDbContext>>
 
             Assert.Null(error);
 
-            var accessCode = db.AccessCodes.First(x => x.AccessCode == code);
-            Assert.Equal(0, accessCode.NumberOfUsesRemaining);
+            var accessCode = db.AccessCodes.FirstOrDefault(x => x.AccessCode == code);
+            Assert.Equal(0, accessCode!.NumberOfUsesRemaining);
         });
     }
 
@@ -120,8 +123,8 @@ public class AccessServiceTests : IClassFixture<DatabaseFixture<AppDbContext>>
 
             Assert.Null(error);
 
-            var accessCode = db.AccessCodes.First(x => x.AccessCode == code);
-            Assert.Equal(0, accessCode.NumberOfUsesRemaining);
+            var accessCode = db.AccessCodes.FirstOrDefault(x => x.AccessCode == code);
+            Assert.Equal(0, accessCode!.NumberOfUsesRemaining);
         });
     }
 }
