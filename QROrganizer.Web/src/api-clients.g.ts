@@ -63,6 +63,15 @@ export class UserInfoServiceApiClient extends ServiceApiClient<typeof $metadata.
     return this.$invoke($method, $params, $config)
   }
   
+  public confirmEmail(userId: string | null, confirmationToken: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.confirmEmail
+    const $params =  {
+      userId,
+      confirmationToken,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 

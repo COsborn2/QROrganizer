@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -124,6 +125,12 @@ namespace QROrganizer.Web.Api
             {
                 await _accessCodeService.ValidateAndUseAccessCode(creds.RestrictedAccessCode);
             }
+
+            // Generate email confirmation token
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var encodedToken = HttpUtility.UrlEncode(token);
+
+            // TODO: Setup SendGrid IEmailService and send dynamic template here
 
             return new OkResult();
         }

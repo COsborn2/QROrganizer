@@ -26,6 +26,7 @@
                 dark
                 color="white"
                 placeholder="Email"
+                label="Email"
                 type="text"
                 autocomplete="username"
             />
@@ -39,6 +40,7 @@
                   dark
                   color="white"
                   placeholder="Username"
+                  label="Username"
                   type="text"
                   autocomplete="username"
                   :rules="[x => !!x, x => x.length <= 16]"
@@ -52,6 +54,7 @@
                 dark
                 color="white"
                 placeholder="Password"
+                label="Password"
                 :type="passwordType"
                 :autocomplete="isInLoginMode ? 'current-password' : 'new-password'"
                 :validate-on-blur="validateOnBlur"
@@ -70,6 +73,7 @@
                     dark
                     color="white"
                     placeholder="Confirm Password"
+                    label="Confirm Password"
                     type="text"
                     :autocomplete="isInLoginMode ? '' : 'new-password'"
                     :validate-on-blur="validateOnBlur"
@@ -93,7 +97,7 @@
           <v-alert
               v-if="validationErrors.length > 0"
               border="left"
-              color="error"
+              type="error"
               dark
           >
             <ul>
@@ -108,7 +112,7 @@
           </v-alert>
         </v-expand-transition>
 
-        <v-alert v-if="showPasswordsDoNotMatchPrompt" color="error" border="left" dark>
+        <v-alert v-if="showPasswordsDoNotMatchPrompt" type="error" border="left" dark>
           Passwords do not match
         </v-alert>
 
@@ -343,11 +347,5 @@ export default class AccountEntry extends Vue {
 .linktext {
   cursor: pointer;
   color: blue;
-}
-.primary-background {
-  background-color: var(--v-primary-base) !important;
-}
-.v-text-field__details {
-  font-size: 30px !important;
 }
 </style>

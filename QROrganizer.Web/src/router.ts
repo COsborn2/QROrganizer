@@ -7,6 +7,7 @@ import AccountEntry from '@/views/AccountEntry.vue';
 import Forbidden from "@/views/Forbidden.vue";
 import NotFound from "@/views/NotFound.vue";
 import { CAdminTablePage, CAdminEditorPage } from 'coalesce-vue-vuetify';
+import EmailConfirmation from "@/views/EmailConfirmation.vue";
 
 Vue.use(Router);
 
@@ -14,6 +15,8 @@ export enum RouteNames {
   Home = "Home",
   Login = "Login",
   SignUp = "Sign Up",
+  EmailConfirmation = "Email Confirmation",
+
   Forbidden = "Forbidden",
   NotFound = "404"
 }
@@ -58,6 +61,16 @@ export default new Router({
         login: false,
       }),
     },
+    {
+      path: '/confirmemail',
+      name: RouteNames.EmailConfirmation,
+      component: EmailConfirmation,
+      meta: {
+        hideAppBar: true,
+        allowAnonymous: true,
+      },
+    },
+
     {
       path: '/forbidden',
       name: RouteNames.Forbidden,

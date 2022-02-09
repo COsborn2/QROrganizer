@@ -16,6 +16,7 @@
     "coalesce-vue": "3.0.0-alpha.20210324.5",
     "coalesce-vue-vuetify": "3.0.0-alpha.20210324.5",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "typeface-roboto": "1.1.13",
     "vue": "2.6.12",
     "vue-class-component": "7.2.6",

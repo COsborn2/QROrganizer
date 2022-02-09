@@ -28,6 +28,7 @@
         <v-divider></v-divider>
       </template>
 
+      <!-- TODO: Add routes here -->
       <!--      <v-list>-->
       <!--        <v-list-item v-for="item in Array(15).keys()" :key="item + '1'" link>-->
       <!--          <v-list-item-icon>-->
@@ -39,6 +40,11 @@
       <!--          </v-list-item-content>-->
       <!--        </v-list-item>-->
       <!--      </v-list>-->
+
+      <v-spacer></v-spacer>
+
+      <span class="site-info-footer text-center font-weight-thin white--text"> Build Date: {{formattedBuildDate}}</span>
+
     </v-navigation-drawer>
 
     <v-app-bar v-if="!hideAppBar" app color="primary" dark dense clipped-left>
@@ -71,6 +77,7 @@ import {AxiosInstance} from "axios";
 import {AxiosClient} from "coalesce-vue/lib/api-client";
 import {RouteNames} from "@/router";
 import {UserActions} from "@/store/UserContext";
+import moment from "moment";
 
 @Component({
   components: {},
@@ -80,6 +87,10 @@ export default class App extends Vue {
   routeComponent: Vue | null = null;
   client: AxiosInstance = AxiosClient;
   logoutLoading = false;
+
+  get formattedBuildDate() {
+    return moment(this.$store.state.siteInfo.buildDate).format('MM/DD/YYYY hh:mm')
+  }
 
   async logout() {
     try {
@@ -125,6 +136,11 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+.site-info-footer {
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+}
 .router-transition-enter-active,
 .router-transition-leave-active {
   transition: 0.1s ease-out;

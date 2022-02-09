@@ -45,5 +45,17 @@ namespace QROrganizer.Web.Api
             _result.Object = Mapper.MapToDto<QROrganizer.Data.Services.Implementation.UserInfo, UserInfoDtoGen>(_methodResult, _mappingContext, includeTree);
             return _result;
         }
+
+        /// <summary>
+        /// Method: ConfirmEmail
+        /// </summary>
+        [HttpPost("ConfirmEmail")]
+        [AllowAnonymous]
+        public virtual async Task<ItemResult> ConfirmEmail(string userId, string confirmationToken)
+        {
+            var _methodResult = await Service.ConfirmEmail(userId, confirmationToken);
+            var _result = new ItemResult(_methodResult);
+            return _result;
+        }
     }
 }

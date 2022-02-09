@@ -7,11 +7,12 @@
           dark
           color="white"
           placeholder="Access Code"
+          label="Access Code"
           type="text"
           :loading="accessCodeService.isAccessCodeValid.isLoading"
           :rules="[() => !isAccessCodeValid]"
       />
-      <v-alert v-if="!isAccessCodeValid && accessCodeService.isAccessCodeValid.result !== null" color="error" border="left" dark>
+      <v-alert v-if="!isAccessCodeValid && accessCodeService.isAccessCodeValid.result !== null" type="error" border="left" dark>
         Access code invalid
       </v-alert>
       <v-btn
@@ -32,7 +33,7 @@
 <script lang="ts">
 import {Component, VModel, Vue, Watch} from 'vue-property-decorator';
 import {AccessCodeServiceViewModel} from "@/viewmodels.g";
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 @Component({})
 export default class AccessCodeEntry extends Vue {
@@ -45,8 +46,14 @@ export default class AccessCodeEntry extends Vue {
   }
 
   mounted() {
+    if (this.$route.query?.accessCode) {
+      this.accessCode = (this.$route.query.accessCode as string);
+    }
+
     this.searchFunc = _.debounce(() => {
-      this.accessCodeService.isAccessCodeValid.invoke(this.accessCode);
+      if (this.accessCode?.length > 0) {
+        this.accessCodeService.isAccessCodeValid.invoke(this.accessCode);
+      }
     }, 100);
   }
 

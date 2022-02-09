@@ -312,6 +312,32 @@ export const UserInfoService = domain.services.UserInfoService = {
         role: "value",
       },
     },
+    confirmEmail: {
+      name: "confirmEmail",
+      displayName: "Confirm Email",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+        confirmationToken: {
+          name: "confirmationToken",
+          displayName: "Confirmation Token",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
   },
 }
 

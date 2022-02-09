@@ -131,6 +131,17 @@ export class UserInfoServiceViewModel extends ServiceViewModel<typeof $metadata.
     return getUserInfo
   }
   
+  public get confirmEmail() {
+    const confirmEmail = this.$apiClient.$makeCaller(
+      this.$metadata.methods.confirmEmail,
+      (c, userId: string | null, confirmationToken: string | null) => c.confirmEmail(userId, confirmationToken),
+      () => ({userId: null as string | null, confirmationToken: null as string | null, }),
+      (c, args) => c.confirmEmail(args.userId, args.confirmationToken))
+    
+    Object.defineProperty(this, 'confirmEmail', {value: confirmEmail});
+    return confirmEmail
+  }
+  
   constructor() {
     super($metadata.UserInfoService, new $apiClients.UserInfoServiceApiClient())
   }
