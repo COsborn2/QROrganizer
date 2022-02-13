@@ -88,6 +88,8 @@
                     </h4>
                   </template>
                 </v-checkbox>
+
+                <vue-hcaptcha sitekey="41749397-9529-40b7-81f2-38faeec88de0" v-on:verify="captchaVerify"></vue-hcaptcha>
               </div>
             </v-expand-transition>
           </v-form>
@@ -151,6 +153,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { AxiosClient } from "coalesce-vue/lib/api-client";
 import { UserMutations } from "@/store/UserContext";
 import AccessCodeEntry from "@/components/AccessCodeEntry.vue";
+import VueHcaptcha from "@hcaptcha/vue-hcaptcha";
+import {AxiosRequestConfig} from "axios";
 
 export class LoginCredentials {
   username: string | null = null;
@@ -162,7 +166,8 @@ export class LoginCredentials {
 
 @Component({
   components: {
-    AccessCodeEntry
+    AccessCodeEntry,
+    VueHcaptcha
   }
 })
 export default class AccountEntry extends Vue {
@@ -184,6 +189,12 @@ export default class AccountEntry extends Vue {
   password = '';
   confirmPassword = '';
   emailConsentCheckbox = false;
+
+  captchaToken: string | null = null;
+
+  captchaVerify(token: string) {
+    this.captchaToken = token;
+  }
 
   get requireAccessCode() {
     return this.$store.getters.isRestrictedEnvironment && !this.isInLoginMode && !this.accessCodeEntered;
@@ -269,7 +280,8 @@ export default class AccountEntry extends Vue {
 
     return this.someMissingLength(this.email, this.username, this.password, this.confirmPassword)
         || this.password !== this.confirmPassword
-        || !this.formValid;
+        || !this.formValid
+        || !this.captchaToken;
   }
 
   async submit() {
@@ -318,6 +330,9 @@ export default class AccountEntry extends Vue {
             e.response.data.errors;
           this.validationErrors = errors.map((x) => x.description);
         },
+          {headers: {
+            'h-captcha-response': this.captchaToken
+          }}
       );
 
       this.success = res[0];
@@ -328,10 +343,11 @@ export default class AccountEntry extends Vue {
     url: string,
     data: LoginCredentials,
     errorFunc: (error: any) => void,
+    config: AxiosRequestConfig | null = null,
   ): Promise<[boolean, LoginCredentials | null]> {
     this.isLoading = true;
     try {
-      let res = await this.client.post<LoginCredentials>(url, data);
+      let res = await this.client.post<LoginCredentials>(url, data, config ? config : {});
       this.isLoading = false;
       return [true, res.data];
     } catch (e) {

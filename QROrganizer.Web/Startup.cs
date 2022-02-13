@@ -12,12 +12,14 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
 using QROrganizer.Data.Services.Implementation;
 using QROrganizer.Data.Services.Interface;
+using QROrganizer.Data.Util;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
@@ -102,11 +104,30 @@ namespace QROrganizer.Web
                 };
             });
 
+            // Build SendGridTemplateIds
+            var sendGridTemplateIds = Configuration.GetSection("SendGridTemplateIds");
+            var properties = typeof(SendGridTemplateIds).GetProperties();
+            sendGridTemplateIds.AsEnumerable().ToList().ForEach(x =>
+            {
+                var index = x.Key.IndexOf(':');
+                if (index < 1) return;
+                var key = x.Key[(index+1)..];
+                properties.Single(xi => xi.Name == key).SetValue(null, x.Value);
+            });
+
+            services.AddHttpClient<IHcaptchaHttpClient, HcaptchaHttpClient>(c =>
+            {
+                c.BaseAddress = new Uri("https://hcaptcha.com", UriKind.Absolute);
+            });
+
             services.AddAuthentication();
 
             services.AddScoped<UserInfoService>();
             services.AddScoped<IAccessCodeService, AccessCodeService>();
             services.AddScoped<ISiteInfoService, SiteInfoService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddSingleton<HttpContextInfo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

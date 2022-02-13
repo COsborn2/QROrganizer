@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -9,6 +8,7 @@ using QROrganizer.Data;
 using QROrganizer.Data.Models;
 using QROrganizer.Data.Services.Implementation;
 using QROrganizer.Data.Services.Interface;
+using QROrganizer.Data.Util;
 
 namespace QROrganizer.Web.Api
 {
@@ -28,17 +28,23 @@ namespace QROrganizer.Web.Api
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppConfigSettings _appConfigSettings;
         private readonly IAccessCodeService _accessCodeService;
+        private readonly IEmailService _emailService;
+        private readonly IHcaptchaHttpClient _hcaptchaHttpClient;
 
         public AccountController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IOptions<AppConfigSettings> appConfigSettings,
-            IAccessCodeService accessCodeService)
+            IAccessCodeService accessCodeService,
+            IEmailService emailService,
+            IHcaptchaHttpClient hcaptchaHttpClient)
         {
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _appConfigSettings = appConfigSettings?.Value ?? throw new ArgumentNullException(nameof(appConfigSettings));
             _accessCodeService = accessCodeService ?? throw new ArgumentNullException(nameof(accessCodeService));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _hcaptchaHttpClient = hcaptchaHttpClient ?? throw new ArgumentNullException(nameof(hcaptchaHttpClient));
         }
 
         [HttpPost("login")]
@@ -88,6 +94,14 @@ namespace QROrganizer.Web.Api
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] LoginCredentials creds)
         {
+            var hCaptchaToken = HttpContext.Request.Headers["h-captcha-response"];
+            var hCaptchaVerifyResponse = await _hcaptchaHttpClient.VerifyCaptcha(hCaptchaToken);
+
+            if (!hCaptchaVerifyResponse.Success)
+            {
+                return BadRequest("Captcha verification failed. Refresh and try again");
+            }
+
             if (_appConfigSettings.RestrictedEnvironment)
             {
                 var error = _accessCodeService
@@ -121,18 +135,22 @@ namespace QROrganizer.Web.Api
                 return new UnauthorizedObjectResult(res);
             }
 
-            if (_appConfigSettings.RestrictedEnvironment)
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var emailSuccess = await _emailService.SendEmailConfirmationEmail(token, user.Id, user.Email);
+
+            if (emailSuccess)
             {
-                await _accessCodeService.ValidateAndUseAccessCode(creds.RestrictedAccessCode);
+                if (_appConfigSettings.RestrictedEnvironment)
+                {
+                    await _accessCodeService.ValidateAndUseAccessCode(creds.RestrictedAccessCode);
+                }
+                return new OkResult();
             }
 
-            // Generate email confirmation token
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var encodedToken = HttpUtility.UrlEncode(token);
-
-            // TODO: Setup SendGrid IEmailService and send dynamic template here
-
-            return new OkResult();
+            // If no email was sent successfully delete user so they can retry later
+            await _userManager.DeleteAsync(user);
+            return BadRequest("An error occurred. Please try again later");
         }
 
         [HttpPost("logout")]

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
+    "@hcaptcha/vue-hcaptcha": "^0.3.2",
     "axios": "^0.21.1",
     "coalesce-vue": "3.0.0-alpha.20210324.5",
     "coalesce-vue-vuetify": "3.0.0-alpha.20210324.5",
