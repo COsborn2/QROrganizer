@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using SendGrid.Helpers.Mail;
@@ -24,13 +23,11 @@ public static class SendGridMessageHelpers
 
         var queryString = QueryString.Create(new List<KeyValuePair<string, StringValues>>
         {
-            new("confirmationToken", HttpUtility.UrlEncode(confirmationToken)),
-            new("userId", HttpUtility.UrlEncode(userId))
+            new("confirmationToken", confirmationToken),
+            new("userId", userId)
         });
 
-        var url = new Uri(new Uri(baseUrl, UriKind.Absolute),
-            new Uri("confirmemail", UriKind.Relative));
-        url = new Uri(url, queryString.Value);
+        var url = new Uri(new Uri(baseUrl, UriKind.Absolute), "confirmemail" + queryString.ToUriComponent());
         message.SetTemplateData(new EmailConfirmationDynamicData
         {
             ConfirmationUrl = url.AbsoluteUri

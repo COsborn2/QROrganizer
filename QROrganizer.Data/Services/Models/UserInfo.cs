@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace QROrganizer.Data.Services.Implementation
+namespace QROrganizer.Data.Services.Models
 {
     public class UserInfo
     {

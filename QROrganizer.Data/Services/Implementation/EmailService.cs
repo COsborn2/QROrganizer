@@ -19,7 +19,7 @@ public class EmailService : IEmailService
         _client = new SendGridClient(appSettings.Value.SendGridApiKey);
     }
 
-    public async Task<bool> SendEmailConfirmationEmail(string confirmationCode, string userId, string toEmail)
+    public async Task<bool> SendConfirmationEmail(string confirmationCode, string userId, string toEmail)
     {
         // TODO: Use response to log failure/success
         var message = SendGridMessageHelpers.BuildEmailConfirmation(

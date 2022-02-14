@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using QROrganizer.Data;
 using QROrganizer.Data.Models;
-using QROrganizer.Data.Services.Implementation;
 using QROrganizer.Data.Services.Interface;
+using QROrganizer.Data.Services.Models;
 using QROrganizer.Data.Util;
 
 namespace QROrganizer.Web.Api
@@ -137,7 +137,7 @@ namespace QROrganizer.Web.Api
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var emailSuccess = await _emailService.SendEmailConfirmationEmail(token, user.Id, user.Email);
+            var emailSuccess = await _emailService.SendConfirmationEmail(token, user.Id, user.Email);
 
             if (emailSuccess)
             {

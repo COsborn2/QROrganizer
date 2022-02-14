@@ -17,6 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using QROrganizer.Data.Services.Models;
 
 namespace QROrganizer.Web.Api
 {
@@ -42,7 +43,7 @@ namespace QROrganizer.Web.Api
             var _mappingContext = new MappingContext(User);
             var _methodResult = Service.GetUserInfo(User);
             var _result = new ItemResult<UserInfoDtoGen>();
-            _result.Object = Mapper.MapToDto<QROrganizer.Data.Services.Implementation.UserInfo, UserInfoDtoGen>(_methodResult, _mappingContext, includeTree);
+            _result.Object = Mapper.MapToDto<UserInfo, UserInfoDtoGen>(_methodResult, _mappingContext, includeTree);
             return _result;
         }
 

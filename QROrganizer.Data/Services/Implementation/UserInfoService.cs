@@ -7,6 +7,7 @@ using IntelliTect.Coalesce.DataAnnotations;
 using IntelliTect.Coalesce.Models;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
+using QROrganizer.Data.Services.Models;
 using QROrganizer.Data.Util;
 
 namespace QROrganizer.Data.Services.Implementation

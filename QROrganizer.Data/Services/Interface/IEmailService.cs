@@ -4,6 +4,6 @@ namespace QROrganizer.Data.Services.Interface
 {
     public interface IEmailService
     {
-        Task<bool> SendEmailConfirmationEmail(string confirmationCode, string userId, string toEmail);
+        Task<bool> SendConfirmationEmail(string confirmationCode, string userId, string toEmail);
     }
 }
