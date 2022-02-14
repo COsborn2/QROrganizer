@@ -37,8 +37,57 @@ export class ApplicationUser {
 }
 
 
+export interface RestrictedAccessCode extends Model<typeof metadata.RestrictedAccessCode> {
+  id: number | null
+  accessCode: string | null
+  numberOfUsesRemaining: number | null
+  isLimitedKey: boolean | null
+}
+export class RestrictedAccessCode {
+  
+  /** Mutates the input object and its descendents into a valid RestrictedAccessCode implementation. */
+  static convert(data?: Partial<RestrictedAccessCode>): RestrictedAccessCode {
+    return convertToModel(data || {}, metadata.RestrictedAccessCode) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid RestrictedAccessCode implementation. */
+  static map(data?: Partial<RestrictedAccessCode>): RestrictedAccessCode {
+    return mapToModel(data || {}, metadata.RestrictedAccessCode) 
+  }
+  
+  /** Instantiate a new RestrictedAccessCode, optionally basing it on the given data. */
+  constructor(data?: Partial<RestrictedAccessCode> | {[k: string]: any}) {
+      Object.assign(this, RestrictedAccessCode.map(data || {}));
+  }
+}
+
+
+export interface SiteInfoDto extends Model<typeof metadata.SiteInfoDto> {
+  buildDate: Date | null
+  restrictedEnvironment: boolean | null
+}
+export class SiteInfoDto {
+  
+  /** Mutates the input object and its descendents into a valid SiteInfoDto implementation. */
+  static convert(data?: Partial<SiteInfoDto>): SiteInfoDto {
+    return convertToModel(data || {}, metadata.SiteInfoDto) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid SiteInfoDto implementation. */
+  static map(data?: Partial<SiteInfoDto>): SiteInfoDto {
+    return mapToModel(data || {}, metadata.SiteInfoDto) 
+  }
+  
+  /** Instantiate a new SiteInfoDto, optionally basing it on the given data. */
+  constructor(data?: Partial<SiteInfoDto> | {[k: string]: any}) {
+      Object.assign(this, SiteInfoDto.map(data || {}));
+  }
+}
+
+
 export interface UserInfo extends Model<typeof metadata.UserInfo> {
-  userName: string | null
+  email: string | null
+  username: string | null
   roles: string[] | null
 }
 export class UserInfo {

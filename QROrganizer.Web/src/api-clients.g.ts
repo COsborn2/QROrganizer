@@ -9,11 +9,65 @@ export class ApplicationUserApiClient extends ModelApiClient<$models.Application
 }
 
 
-export class UserServiceApiClient extends ServiceApiClient<typeof $metadata.UserService> {
-  constructor() { super($metadata.UserService) }
-  public userInfo($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.UserInfo>> {
-    const $method = this.$metadata.methods.userInfo
+export class RestrictedAccessCodeApiClient extends ModelApiClient<$models.RestrictedAccessCode> {
+  constructor() { super($metadata.RestrictedAccessCode) }
+  public createUnlimitedUseAccessCode($config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.createUnlimitedUseAccessCode
     const $params =  {
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+  public createAccessCode(numberOfUses: number | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.createAccessCode
+    const $params =  {
+      numberOfUses,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
+export class AccessCodeServiceApiClient extends ServiceApiClient<typeof $metadata.AccessCodeService> {
+  constructor() { super($metadata.AccessCodeService) }
+  public isAccessCodeValid(code: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<boolean>> {
+    const $method = this.$metadata.methods.isAccessCodeValid
+    const $params =  {
+      code,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
+export class SiteInfoServiceApiClient extends ServiceApiClient<typeof $metadata.SiteInfoService> {
+  constructor() { super($metadata.SiteInfoService) }
+  public getSiteInfo($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.SiteInfoDto>> {
+    const $method = this.$metadata.methods.getSiteInfo
+    const $params =  {
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
+export class UserInfoServiceApiClient extends ServiceApiClient<typeof $metadata.UserInfoService> {
+  constructor() { super($metadata.UserInfoService) }
+  public getUserInfo($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.UserInfo>> {
+    const $method = this.$metadata.methods.getUserInfo
+    const $params =  {
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+  public confirmEmail(userId: string | null, confirmationToken: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.confirmEmail
+    const $params =  {
+      userId,
+      confirmationToken,
     }
     return this.$invoke($method, $params, $config)
   }

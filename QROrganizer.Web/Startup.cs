@@ -12,11 +12,15 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
-using QROrganizer.Data.Services;
+using QROrganizer.Data.Services.Implementation;
+using QROrganizer.Data.Services.Interface;
+using QROrganizer.Data.Util;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
 {
@@ -43,6 +47,9 @@ namespace QROrganizer.Web
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connString));
 
+            services.AddOptions();
+            services.Configure<AppConfigSettings>(Configuration.GetSection("AppConfigSettings"));
+
             services.AddCoalesce<AppDbContext>();
 
             services
@@ -57,16 +64,70 @@ namespace QROrganizer.Web
 
             services.AddSwaggerGen();
 
-            services.AddScoped<UserService>();
-
             services
-                .AddDefaultIdentity<ApplicationUser>()
+                .AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.Password = new PasswordOptions
+                    {
+                        RequiredLength = 6,
+                        RequiredUniqueChars = 1,
+                        RequireNonAlphanumeric = true,
+                        RequireLowercase = true,
+                        RequireUppercase = true,
+                        RequireDigit = true
+                    };
+
+                    options.User.RequireUniqueEmail = true;
+
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedEmail = true;
+                })
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "auth_cookie";
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.LoginPath = new PathString("/api/contests");
+                options.AccessDeniedPath = new PathString("/api/contests");
+
+                // Not creating a new object since ASP.NET Identity has created
+                // one already and hooked to the OnValidatePrincipal event.
+                // See https://github.com/aspnet/AspNetCore/blob/5a64688d8e192cacffda9440e8725c1ed41a30cf/src/Identity/src/Identity/IdentityServiceCollectionExtensions.cs#L56
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
+
+            // Build SendGridTemplateIds
+            var sendGridTemplateIds = Configuration.GetSection("SendGridTemplateIds");
+            var properties = typeof(SendGridTemplateIds).GetProperties();
+            sendGridTemplateIds.AsEnumerable().ToList().ForEach(x =>
+            {
+                var index = x.Key.IndexOf(':');
+                if (index < 1) return;
+                var key = x.Key[(index+1)..];
+                properties.Single(xi => xi.Name == key).SetValue(null, x.Value);
+            });
+
+            services.AddHttpClient<IHcaptchaHttpClient, HcaptchaHttpClient>(c =>
+            {
+                c.BaseAddress = new Uri("https://hcaptcha.com", UriKind.Absolute);
+            });
+
             services.AddAuthentication();
+
+            services.AddScoped<UserInfoService>();
+            services.AddScoped<IAccessCodeService, AccessCodeService>();
+            services.AddScoped<ISiteInfoService, SiteInfoService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddSingleton<HttpContextInfo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

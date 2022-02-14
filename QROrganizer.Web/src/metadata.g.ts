@@ -13,7 +13,7 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   type: "model",
   controllerRoute: "ApplicationUser",
   get keyProp() { return this.props.id }, 
-  behaviorFlags: 7,
+  behaviorFlags: 2,
   props: {
     id: {
       name: "id",
@@ -113,14 +113,116 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   dataSources: {
   },
 }
+export const RestrictedAccessCode = domain.types.RestrictedAccessCode = {
+  name: "RestrictedAccessCode",
+  displayName: "Restricted Access Code",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "RestrictedAccessCode",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 6,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    accessCode: {
+      name: "accessCode",
+      displayName: "Access Code",
+      type: "string",
+      role: "value",
+    },
+    numberOfUsesRemaining: {
+      name: "numberOfUsesRemaining",
+      displayName: "Number Of Uses Remaining",
+      type: "number",
+      role: "value",
+    },
+    isLimitedKey: {
+      name: "isLimitedKey",
+      displayName: "Is Limited Key",
+      type: "boolean",
+      role: "value",
+    },
+  },
+  methods: {
+    createUnlimitedUseAccessCode: {
+      name: "createUnlimitedUseAccessCode",
+      displayName: "Create Unlimited Use Access Code",
+      transportType: "item",
+      httpMethod: "POST",
+      isStatic: true,
+      params: {
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
+    createAccessCode: {
+      name: "createAccessCode",
+      displayName: "Create Access Code",
+      transportType: "item",
+      httpMethod: "POST",
+      isStatic: true,
+      params: {
+        numberOfUses: {
+          name: "numberOfUses",
+          displayName: "Number Of Uses",
+          type: "number",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
+  },
+  dataSources: {
+  },
+}
+export const SiteInfoDto = domain.types.SiteInfoDto = {
+  name: "SiteInfoDto",
+  displayName: "Site Info Dto",
+  type: "object",
+  props: {
+    buildDate: {
+      name: "buildDate",
+      displayName: "Build Date",
+      dateKind: "datetime",
+      type: "date",
+      role: "value",
+    },
+    restrictedEnvironment: {
+      name: "restrictedEnvironment",
+      displayName: "Restricted Environment",
+      type: "boolean",
+      role: "value",
+    },
+  },
+}
 export const UserInfo = domain.types.UserInfo = {
   name: "UserInfo",
   displayName: "User Info",
   type: "object",
   props: {
-    userName: {
-      name: "userName",
-      displayName: "User Name",
+    email: {
+      name: "email",
+      displayName: "Email",
+      type: "string",
+      role: "value",
+    },
+    username: {
+      name: "username",
+      displayName: "Username",
       type: "string",
       role: "value",
     },
@@ -138,15 +240,66 @@ export const UserInfo = domain.types.UserInfo = {
     },
   },
 }
-export const UserService = domain.services.UserService = {
-  name: "UserService",
-  displayName: "User Service",
+export const AccessCodeService = domain.services.AccessCodeService = {
+  name: "AccessCodeService",
+  displayName: "Access Code Service",
   type: "service",
-  controllerRoute: "UserService",
+  controllerRoute: "AccessCodeService",
   methods: {
-    userInfo: {
-      name: "userInfo",
-      displayName: "User Info",
+    isAccessCodeValid: {
+      name: "isAccessCodeValid",
+      displayName: "Is Access Code Valid",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        code: {
+          name: "code",
+          displayName: "Code",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "boolean",
+        role: "value",
+      },
+    },
+  },
+}
+export const SiteInfoService = domain.services.SiteInfoService = {
+  name: "SiteInfoService",
+  displayName: "Site Info Service",
+  type: "service",
+  controllerRoute: "SiteInfoService",
+  methods: {
+    getSiteInfo: {
+      name: "getSiteInfo",
+      displayName: "Get Site Info",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "object",
+        get typeDef() { return (domain.types.SiteInfoDto as ObjectType) },
+        role: "value",
+      },
+    },
+  },
+}
+export const UserInfoService = domain.services.UserInfoService = {
+  name: "UserInfoService",
+  displayName: "User Info Service",
+  type: "service",
+  controllerRoute: "UserInfoService",
+  methods: {
+    getUserInfo: {
+      name: "getUserInfo",
+      displayName: "Get User Info",
       transportType: "item",
       httpMethod: "POST",
       params: {
@@ -159,6 +312,32 @@ export const UserService = domain.services.UserService = {
         role: "value",
       },
     },
+    confirmEmail: {
+      name: "confirmEmail",
+      displayName: "Confirm Email",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        userId: {
+          name: "userId",
+          displayName: "User Id",
+          type: "string",
+          role: "value",
+        },
+        confirmationToken: {
+          name: "confirmationToken",
+          displayName: "Confirmation Token",
+          type: "string",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
   },
 }
 
@@ -167,10 +346,14 @@ interface AppDomain extends Domain {
   }
   types: {
     ApplicationUser: typeof ApplicationUser
+    RestrictedAccessCode: typeof RestrictedAccessCode
+    SiteInfoDto: typeof SiteInfoDto
     UserInfo: typeof UserInfo
   }
   services: {
-    UserService: typeof UserService
+    AccessCodeService: typeof AccessCodeService
+    SiteInfoService: typeof SiteInfoService
+    UserInfoService: typeof UserInfoService
   }
 }
 

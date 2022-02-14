@@ -5,6 +5,8 @@
     <DotnetCliToolTargetFramework>net5.0</DotnetCliToolTargetFramework>
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <WarningsAsErrors>True</WarningsAsErrors>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

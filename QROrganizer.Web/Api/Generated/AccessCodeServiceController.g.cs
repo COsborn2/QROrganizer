@@ -20,29 +20,27 @@ using System.Threading.Tasks;
 
 namespace QROrganizer.Web.Api
 {
-    [Route("api/UserService")]
+    [Route("api/AccessCodeService")]
     [ServiceFilter(typeof(IApiActionFilter))]
-    public partial class UserServiceController : Controller
+    public partial class AccessCodeServiceController : Controller
     {
-        protected QROrganizer.Data.Services.UserService Service { get; }
+        protected QROrganizer.Data.Services.Interface.IAccessCodeService Service { get; }
 
-        public UserServiceController(QROrganizer.Data.Services.UserService service)
+        public AccessCodeServiceController(QROrganizer.Data.Services.Interface.IAccessCodeService service)
         {
             Service = service;
         }
 
         /// <summary>
-        /// Method: UserInfo
+        /// Method: IsAccessCodeValid
         /// </summary>
-        [HttpPost("UserInfo")]
-        [Authorize]
-        public virtual ItemResult<UserInfoDtoGen> UserInfo()
+        [HttpPost("IsAccessCodeValid")]
+        [AllowAnonymous]
+        public virtual ItemResult<bool> IsAccessCodeValid(string code)
         {
-            IncludeTree includeTree = null;
-            var _mappingContext = new MappingContext(User);
-            var _methodResult = Service.UserInfo(User);
-            var _result = new ItemResult<UserInfoDtoGen>();
-            _result.Object = Mapper.MapToDto<QROrganizer.Data.Services.UserInfo, UserInfoDtoGen>(_methodResult, _mappingContext, includeTree);
+            var _methodResult = Service.IsAccessCodeValid(code);
+            var _result = new ItemResult<bool>();
+            _result.Object = _methodResult;
             return _result;
         }
     }

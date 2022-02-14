@@ -36,32 +36,129 @@ export class ApplicationUserListViewModel extends ListViewModel<$models.Applicat
 }
 
 
-export class UserServiceViewModel extends ServiceViewModel<typeof $metadata.UserService, $apiClients.UserServiceApiClient> {
+export interface RestrictedAccessCodeViewModel extends $models.RestrictedAccessCode {
+  id: number | null;
+  accessCode: string | null;
+  numberOfUsesRemaining: number | null;
+  isLimitedKey: boolean | null;
+}
+export class RestrictedAccessCodeViewModel extends ViewModel<$models.RestrictedAccessCode, $apiClients.RestrictedAccessCodeApiClient, number> implements $models.RestrictedAccessCode  {
   
-  public get userInfo() {
-    const userInfo = this.$apiClient.$makeCaller(
-      this.$metadata.methods.userInfo,
-      (c) => c.userInfo(),
+  constructor(initialData?: DeepPartial<$models.RestrictedAccessCode> | null) {
+    super($metadata.RestrictedAccessCode, new $apiClients.RestrictedAccessCodeApiClient(), initialData)
+  }
+}
+defineProps(RestrictedAccessCodeViewModel, $metadata.RestrictedAccessCode)
+
+export class RestrictedAccessCodeListViewModel extends ListViewModel<$models.RestrictedAccessCode, $apiClients.RestrictedAccessCodeApiClient, RestrictedAccessCodeViewModel> {
+  
+  public get createUnlimitedUseAccessCode() {
+    const createUnlimitedUseAccessCode = this.$apiClient.$makeCaller(
+      this.$metadata.methods.createUnlimitedUseAccessCode,
+      (c) => c.createUnlimitedUseAccessCode(),
       () => ({}),
-      (c, args) => c.userInfo())
+      (c, args) => c.createUnlimitedUseAccessCode())
     
-    Object.defineProperty(this, 'userInfo', {value: userInfo});
-    return userInfo
+    Object.defineProperty(this, 'createUnlimitedUseAccessCode', {value: createUnlimitedUseAccessCode});
+    return createUnlimitedUseAccessCode
+  }
+  
+  public get createAccessCode() {
+    const createAccessCode = this.$apiClient.$makeCaller(
+      this.$metadata.methods.createAccessCode,
+      (c, numberOfUses: number | null) => c.createAccessCode(numberOfUses),
+      () => ({numberOfUses: null as number | null, }),
+      (c, args) => c.createAccessCode(args.numberOfUses))
+    
+    Object.defineProperty(this, 'createAccessCode', {value: createAccessCode});
+    return createAccessCode
   }
   
   constructor() {
-    super($metadata.UserService, new $apiClients.UserServiceApiClient())
+    super($metadata.RestrictedAccessCode, new $apiClients.RestrictedAccessCodeApiClient())
+  }
+}
+
+
+export class AccessCodeServiceViewModel extends ServiceViewModel<typeof $metadata.AccessCodeService, $apiClients.AccessCodeServiceApiClient> {
+  
+  public get isAccessCodeValid() {
+    const isAccessCodeValid = this.$apiClient.$makeCaller(
+      this.$metadata.methods.isAccessCodeValid,
+      (c, code: string | null) => c.isAccessCodeValid(code),
+      () => ({code: null as string | null, }),
+      (c, args) => c.isAccessCodeValid(args.code))
+    
+    Object.defineProperty(this, 'isAccessCodeValid', {value: isAccessCodeValid});
+    return isAccessCodeValid
+  }
+  
+  constructor() {
+    super($metadata.AccessCodeService, new $apiClients.AccessCodeServiceApiClient())
+  }
+}
+
+
+export class SiteInfoServiceViewModel extends ServiceViewModel<typeof $metadata.SiteInfoService, $apiClients.SiteInfoServiceApiClient> {
+  
+  public get getSiteInfo() {
+    const getSiteInfo = this.$apiClient.$makeCaller(
+      this.$metadata.methods.getSiteInfo,
+      (c) => c.getSiteInfo(),
+      () => ({}),
+      (c, args) => c.getSiteInfo())
+    
+    Object.defineProperty(this, 'getSiteInfo', {value: getSiteInfo});
+    return getSiteInfo
+  }
+  
+  constructor() {
+    super($metadata.SiteInfoService, new $apiClients.SiteInfoServiceApiClient())
+  }
+}
+
+
+export class UserInfoServiceViewModel extends ServiceViewModel<typeof $metadata.UserInfoService, $apiClients.UserInfoServiceApiClient> {
+  
+  public get getUserInfo() {
+    const getUserInfo = this.$apiClient.$makeCaller(
+      this.$metadata.methods.getUserInfo,
+      (c) => c.getUserInfo(),
+      () => ({}),
+      (c, args) => c.getUserInfo())
+    
+    Object.defineProperty(this, 'getUserInfo', {value: getUserInfo});
+    return getUserInfo
+  }
+  
+  public get confirmEmail() {
+    const confirmEmail = this.$apiClient.$makeCaller(
+      this.$metadata.methods.confirmEmail,
+      (c, userId: string | null, confirmationToken: string | null) => c.confirmEmail(userId, confirmationToken),
+      () => ({userId: null as string | null, confirmationToken: null as string | null, }),
+      (c, args) => c.confirmEmail(args.userId, args.confirmationToken))
+    
+    Object.defineProperty(this, 'confirmEmail', {value: confirmEmail});
+    return confirmEmail
+  }
+  
+  constructor() {
+    super($metadata.UserInfoService, new $apiClients.UserInfoServiceApiClient())
   }
 }
 
 
 const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
+  RestrictedAccessCode: RestrictedAccessCodeViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
+  RestrictedAccessCode: RestrictedAccessCodeListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
-  UserService: UserServiceViewModel,
+  AccessCodeService: AccessCodeServiceViewModel,
+  SiteInfoService: SiteInfoServiceViewModel,
+  UserInfoService: UserInfoServiceViewModel,
 }
 

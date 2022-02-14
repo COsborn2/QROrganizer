@@ -32,7 +32,7 @@ namespace QROrganizer.Web.Api
         }
 
         [HttpGet("get/{id}")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<ApplicationUserDtoGen>> Get(
             string id,
             DataSourceParameters parameters,
@@ -40,14 +40,14 @@ namespace QROrganizer.Web.Api
             => GetImplementation(id, parameters, dataSource);
 
         [HttpGet("list")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ListResult<ApplicationUserDtoGen>> List(
             ListParameters parameters,
             IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
             => ListImplementation(parameters, dataSource);
 
         [HttpGet("count")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<int>> Count(
             FilterParameters parameters,
             IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
@@ -61,13 +61,5 @@ namespace QROrganizer.Web.Api
             IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource,
             IBehaviors<QROrganizer.Data.Models.ApplicationUser> behaviors)
             => SaveImplementation(dto, parameters, dataSource, behaviors);
-
-        [HttpPost("delete/{id}")]
-        [Authorize]
-        public virtual Task<ItemResult<ApplicationUserDtoGen>> Delete(
-            string id,
-            IBehaviors<QROrganizer.Data.Models.ApplicationUser> behaviors,
-            IDataSource<QROrganizer.Data.Models.ApplicationUser> dataSource)
-            => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
     }
 }
