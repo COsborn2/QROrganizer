@@ -28,8 +28,12 @@ const vuetify = new Vuetify({
         primary: '#2fad7b',
         // secondary: "#4d97bc",
         // accent: "#e98f07",
-        error: '#df323b', // This is the default error color with darken-1
+        error: '#df323b', // This is the default error color with darken-1,
+        background: '#FFFFFF'
       },
+      dark: {
+        background: '#121212'
+      }
     },
   },
 });

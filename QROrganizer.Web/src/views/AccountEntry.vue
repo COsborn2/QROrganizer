@@ -155,6 +155,7 @@ import { UserMutations } from "@/store/UserContext";
 import AccessCodeEntry from "@/components/AccessCodeEntry.vue";
 import VueHcaptcha from "@hcaptcha/vue-hcaptcha";
 import {AxiosRequestConfig} from "axios";
+import {RouteNames} from "@/router";
 
 export class LoginCredentials {
   username: string | null = null;
@@ -312,7 +313,7 @@ export default class AccountEntry extends Vue {
 
       if (res[0]) {
         this.$store.commit(UserMutations.SET_ACCOUNT, res[1])
-        this.$router.push({name: 'home'});
+        this.$router.push({name: RouteNames.Home});
       }
     } else {
       loginCredentials.username = this.username;

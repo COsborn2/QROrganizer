@@ -3,7 +3,7 @@
     <v-navigation-drawer
       v-if="!hideAppBar"
       v-model="drawer"
-      class="primary"
+      clipped
       app
       overflow
     >
@@ -14,8 +14,8 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title class="white--text">{{ $store.state.user.username }}</v-list-item-title>
-            <v-list-item-subtitle class="white--text">Logged In</v-list-item-subtitle>
+            <v-list-item-title>{{ $store.state.user.username }}</v-list-item-title>
+            <v-list-item-subtitle> Logged In </v-list-item-subtitle>
           </v-list-item-content>
 
         </v-list-item>
@@ -28,23 +28,24 @@
         <v-divider></v-divider>
       </template>
 
-      <!-- TODO: Add routes here -->
-      <!--      <v-list>-->
-      <!--        <v-list-item v-for="item in Array(15).keys()" :key="item + '1'" link>-->
-      <!--          <v-list-item-icon>-->
-      <!--            <v-icon style="color: white">fa fa-address-book</v-icon>-->
-      <!--          </v-list-item-icon>-->
+      <v-list class="mb-16">
+        <v-list-item link to="/">
+          <v-list-item-icon>
+            <v-icon>fa-solid fa-box</v-icon>
+          </v-list-item-icon>
 
-      <!--          <v-list-item-content>-->
-      <!--            <v-list-item-title style="color: white">Address</v-list-item-title>-->
-      <!--          </v-list-item-content>-->
-      <!--        </v-list-item>-->
-      <!--      </v-list>-->
+          <v-list-item-content>
+            <v-list-item-title>Containers</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
 
       <v-spacer></v-spacer>
 
-      <span class="site-info-footer text-center font-weight-thin white--text"> Build Date: {{formattedBuildDate}}</span>
-
+      <div class="site-info-footer text-center font-weight-thin theme-background-color">
+        <v-divider />
+        <span>Build Date: {{formattedBuildDate}}</span>
+      </div>
     </v-navigation-drawer>
 
     <v-app-bar v-if="!hideAppBar" app color="primary" dark dense clipped-left>

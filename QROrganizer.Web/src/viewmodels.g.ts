@@ -36,6 +36,59 @@ export class ApplicationUserListViewModel extends ListViewModel<$models.Applicat
 }
 
 
+export interface ContainerViewModel extends $models.Container {
+  id: number | null;
+  containerName: string | null;
+  userId: string | null;
+  items: ItemViewModel[] | null;
+}
+export class ContainerViewModel extends ViewModel<$models.Container, $apiClients.ContainerApiClient, number> implements $models.Container  {
+  
+  
+  public addToItems() {
+    return this.$addChild('items') as ItemViewModel
+  }
+  
+  constructor(initialData?: DeepPartial<$models.Container> | null) {
+    super($metadata.Container, new $apiClients.ContainerApiClient(), initialData)
+  }
+}
+defineProps(ContainerViewModel, $metadata.Container)
+
+export class ContainerListViewModel extends ListViewModel<$models.Container, $apiClients.ContainerApiClient, ContainerViewModel> {
+  
+  constructor() {
+    super($metadata.Container, new $apiClients.ContainerApiClient())
+  }
+}
+
+
+export interface ItemViewModel extends $models.Item {
+  id: number | null;
+  barcodeNumber: string | null;
+  name: string | null;
+  quantity: number | null;
+  userId: string | null;
+  user: ApplicationUserViewModel | null;
+  containerId: number | null;
+  container: ContainerViewModel | null;
+}
+export class ItemViewModel extends ViewModel<$models.Item, $apiClients.ItemApiClient, number> implements $models.Item  {
+  
+  constructor(initialData?: DeepPartial<$models.Item> | null) {
+    super($metadata.Item, new $apiClients.ItemApiClient(), initialData)
+  }
+}
+defineProps(ItemViewModel, $metadata.Item)
+
+export class ItemListViewModel extends ListViewModel<$models.Item, $apiClients.ItemApiClient, ItemViewModel> {
+  
+  constructor() {
+    super($metadata.Item, new $apiClients.ItemApiClient())
+  }
+}
+
+
 export interface RestrictedAccessCodeViewModel extends $models.RestrictedAccessCode {
   id: number | null;
   accessCode: string | null;
@@ -150,10 +203,14 @@ export class UserInfoServiceViewModel extends ServiceViewModel<typeof $metadata.
 
 const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
+  Container: ContainerViewModel,
+  Item: ItemViewModel,
   RestrictedAccessCode: RestrictedAccessCodeViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
+  Container: ContainerListViewModel,
+  Item: ItemListViewModel,
   RestrictedAccessCode: RestrictedAccessCodeListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
