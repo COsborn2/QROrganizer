@@ -21,60 +21,46 @@
       confirmation-text="Are you sure you want to delete this container?"
       v-on:deleteClicked="deleteClicked"
     ></delete-confirmation-modal>
-    <v-card-title class="text-h4 font-weight-light">
-      <v-speed-dial
-        v-model="fabContainerActionsButton"
-        direction="bottom"
+    <v-card-title>
+      <span class="text-h4 font-weight-light" style="margin-right: 10%">
+        {{ container.containerName }}
+      </span>
+      <v-spacer></v-spacer>
+      <v-menu
+        bottom
+        left
+        offset-y
         transition="slide-y-transition"
-        absolute
-        top
-        right
       >
-        <template v-slot:activator>
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
-            v-model="fabContainerActionsButton"
             color="blue darken-2"
-            small
-            dark
-            fab
+            absolute
+            top
+            right
+            icon
+            v-bind="attrs"
+            v-on="on"
           >
-            <v-icon v-if="fabContainerActionsButton">
-              fas fa-times
-            </v-icon>
-            <v-icon v-else>
+            <v-icon color="secondary">
               fa-solid fa-cog
             </v-icon>
           </v-btn>
         </template>
-        <v-btn
-          fab
-          dark
-          small
-          color="red"
-          @click="deleteConfirmationModal = true"
-        >
-          <v-icon>fas fa-trash</v-icon>
-        </v-btn>
-        <v-btn
-          fab
-          dark
-          small
-          color="secondary"
-          @click="editContainerModal = true"
-        >
-          <v-icon>fa fa-edit</v-icon>
-        </v-btn>
-      </v-speed-dial>
-      <v-row style="margin-right: 10%">
-        <v-col>
-          {{ container.containerName }}
-        </v-col>
-      </v-row>
+        <v-list>
+          <v-list-item @click="deleteConfirmationModal = true">
+            Delete Container
+          </v-list-item>
+          <v-list-item @click="editContainerModal = true">
+            Edit Container Title
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-card-title>
     <v-card-text>
       <v-dialog transition="dialog-bottom-transition" max-width="600">
         <template v-slot:activator="{ on, attrs }">
-          <!-- TODO: Remove this button and add to v-speed-dial -->
+          <!-- TODO: Remove this button and add to v-speed-dialo -->
           <v-btn
             class="mt-1 mb-1"
             large
@@ -138,7 +124,7 @@
               class="mb-n5 mt-1"
               v-model="itemListVM.$params.search"
           ></v-text-field>
-          <v-simple-table fixed-header height="350px">
+          <v-simple-table fixed-header height="300px">
             <template v-slot:default>
               <thead>
               <tr>
@@ -194,7 +180,6 @@ export default class ContainerCard extends Vue {
   itemListVM = new ItemListViewModel();
   itemVM = new ItemViewModel();
   noItems = false;
-  fabContainerActionsButton = false;
   editContainerModal = false;
   deleteConfirmationModal = false;
 
@@ -232,6 +217,7 @@ export default class ContainerCard extends Vue {
     if (this.itemVM.$save.wasSuccessful === true) {
       dialog.value = false;
       await this.itemListVM.$load();
+      this.noItems = this.itemListVM.$items.length < 1;
     }
   }
 

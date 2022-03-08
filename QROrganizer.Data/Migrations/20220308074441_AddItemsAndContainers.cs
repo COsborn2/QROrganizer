@@ -36,7 +36,7 @@ namespace QROrganizer.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ContainerId = table.Column<int>(type: "int", nullable: false)
+                    ContainerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

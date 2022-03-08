@@ -246,7 +246,7 @@ namespace QROrganizer.Data.Migrations
                     b.Property<string>("BarcodeNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ContainerId")
+                    b.Property<int?>("ContainerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -357,8 +357,7 @@ namespace QROrganizer.Data.Migrations
                     b.HasOne("QROrganizer.Data.Models.Container", "Container")
                         .WithMany("Items")
                         .HasForeignKey("ContainerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("QROrganizer.Data.Models.ApplicationUser", "User")
                         .WithMany()

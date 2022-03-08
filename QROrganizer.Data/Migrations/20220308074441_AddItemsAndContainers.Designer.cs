@@ -10,7 +10,7 @@ using QROrganizer.Data;
 namespace QROrganizer.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220307085436_AddItemsAndContainers")]
+    [Migration("20220308074441_AddItemsAndContainers")]
     partial class AddItemsAndContainers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -248,7 +248,7 @@ namespace QROrganizer.Data.Migrations
                     b.Property<string>("BarcodeNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ContainerId")
+                    b.Property<int?>("ContainerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -359,8 +359,7 @@ namespace QROrganizer.Data.Migrations
                     b.HasOne("QROrganizer.Data.Models.Container", "Container")
                         .WithMany("Items")
                         .HasForeignKey("ContainerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("QROrganizer.Data.Models.ApplicationUser", "User")
                         .WithMany()

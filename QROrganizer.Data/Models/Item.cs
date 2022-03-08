@@ -25,7 +25,7 @@ public class Item
     [ForeignKey(nameof(UserId))]
     public ApplicationUser User { get; set; }
 
-    public int ContainerId { get; set; }
+    public int? ContainerId { get; set; }
 
     [ForeignKey(nameof(ContainerId))]
     public Container Container { get; set; }
