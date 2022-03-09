@@ -1,11 +1,12 @@
 <template>
   <v-dialog
+    @keydown.enter="saveClicked"
     v-model="dialogOn"
     :persistent="isLoading"
     transition="dialog-bottom-transition"
     max-width="600"
   >
-    <template v-slot:default="dialog">
+    <template v-slot:default="dialog" v-if="dialogOn">
       <v-card>
         <v-toolbar color="primary" dark>
           {{ headerText }}

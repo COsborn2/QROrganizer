@@ -7,12 +7,13 @@
       v-on:saveClicked="saveClicked"
     >
       <v-text-field
-          class="mt-5"
-          color="primary"
-          placeholder="Item Name"
-          label="Item Name"
-          type="text"
-          v-model="container.containerName"
+        autofocus
+        class="mt-5"
+        color="primary"
+        placeholder="Container Name"
+        label="Container Name"
+        type="text"
+        v-model="container.containerName"
       ></v-text-field>
     </cancel-save-modal>
     <delete-confirmation-modal
@@ -21,6 +22,29 @@
       confirmation-text="Are you sure you want to delete this container?"
       v-on:deleteClicked="deleteClicked"
     ></delete-confirmation-modal>
+    <cancel-save-modal
+      v-model="addItemModal"
+      header-text="Add Item to Container"
+      :is-loading="itemVM.$save.isLoading"
+      v-on:saveClicked="saveItem"
+    >
+      <v-text-field
+        autofocus
+        class="mt-5"
+        color="primary"
+        placeholder="Item Name"
+        label="Item Name"
+        type="text"
+        v-model="itemVM.name"
+      ></v-text-field>
+      <v-text-field
+        color="primary"
+        placeholder="Quantity"
+        label="Quantity"
+        type="number"
+        v-model="itemVM.quantity"
+      ></v-text-field>
+    </cancel-save-modal>
     <v-card-title>
       <span class="text-h4 font-weight-light" style="margin-right: 10%">
         {{ container.containerName }}
@@ -31,6 +55,7 @@
         left
         offset-y
         transition="slide-y-transition"
+        rounded="b-xl"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -49,63 +74,31 @@
         </template>
         <v-list>
           <v-list-item @click="deleteConfirmationModal = true">
+            <v-list-item-icon>
+              <v-icon>fa fa-trash</v-icon>
+            </v-list-item-icon>
             Delete Container
           </v-list-item>
           <v-list-item @click="editContainerModal = true">
-            Edit Container Title
+            <v-list-item-icon>
+              <v-icon>fa fa-edit</v-icon>
+            </v-list-item-icon>
+            Edit Container
+          </v-list-item>
+          <v-list-item @click="addItem">
+            <v-list-item-icon>
+              <v-icon>fa fa-plus</v-icon>
+            </v-list-item-icon>
+            Add Item
           </v-list-item>
         </v-list>
       </v-menu>
     </v-card-title>
     <v-card-text>
-      <v-dialog transition="dialog-bottom-transition" max-width="600">
-        <template v-slot:activator="{ on, attrs }">
-          <!-- TODO: Remove this button and add to v-speed-dialo -->
-          <v-btn
-            class="mt-1 mb-1"
-            large
-            color="success"
-            style="width: 100%"
-            v-bind="attrs"
-            v-on="on"
-            @click="resetItemBeingAdded"
-          >
-            Add Item
-          </v-btn>
-        </template>
-        <template v-slot:default="dialog">
-          <v-card>
-            <v-toolbar color="primary" dark>
-              Add New Item to Container
-            </v-toolbar>
-            <v-card-text>
-              <v-text-field
-                class="mt-5"
-                color="primary"
-                placeholder="Item Name"
-                label="Item Name"
-                type="text"
-                v-model="itemVM.name"
-              ></v-text-field>
-              <v-text-field
-                color="primary"
-                placeholder="Quantity"
-                label="Quantity"
-                type="number"
-                v-model="itemVM.quantity"
-              ></v-text-field>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn text @click="dialog.value = false"
-              >Close</v-btn>
-              <v-btn color="success" @click="saveItem(dialog)">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
       <c-loader-status :loaders="{ '': [itemListVM.$load] }" #default>
         <template v-if="noItems">
-          <h2 class="text-center">
+          <v-divider />
+          <h2 class="mt-3 text-center">
             No Items
           </h2>
           <v-row class="mb-1">
@@ -182,9 +175,16 @@ export default class ContainerCard extends Vue {
   noItems = false;
   editContainerModal = false;
   deleteConfirmationModal = false;
+  addItemModal = false;
 
   @Prop({ type: Object, required: true })
   container!: ContainerViewModel;
+
+  addItem() {
+    this.itemVM = new ItemViewModel();
+    this.itemVM.quantity = 1;
+    this.addItemModal = true;
+  }
 
   async saveClicked() {
     await this.container.$save()
@@ -209,21 +209,16 @@ export default class ContainerCard extends Vue {
     this.itemListVM.$load();
   }
 
-  async saveItem(dialog: any) {
+  async saveItem() {
     this.itemVM.containerId = this.container.id;
     this.itemVM.userId = this.container.userId;
     await this.itemVM.$save();
 
     if (this.itemVM.$save.wasSuccessful === true) {
-      dialog.value = false;
+      this.addItemModal = false;
       await this.itemListVM.$load();
       this.noItems = this.itemListVM.$items.length < 1;
     }
-  }
-
-  resetItemBeingAdded() {
-    this.itemVM = new ItemViewModel();
-    this.itemVM.quantity = 1;
   }
 
   async mounted() {
