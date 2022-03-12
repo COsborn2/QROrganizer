@@ -250,9 +250,6 @@ export const Item = domain.types.Item = {
       get principalType() { return (domain.types.Container as ModelType) },
       get navigationProp() { return (domain.types.Item as ModelType).props.container as ModelReferenceNavigationProperty },
       hidden: 3,
-      rules: {
-        required: val => val != null || "Container is required.",
-      }
     },
     container: {
       name: "container",

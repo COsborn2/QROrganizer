@@ -2,7 +2,6 @@
   <v-dialog
     @keydown.enter="saveClicked"
     v-model="dialogOn"
-    :persistent="isLoading"
     transition="dialog-bottom-transition"
     max-width="600"
   >

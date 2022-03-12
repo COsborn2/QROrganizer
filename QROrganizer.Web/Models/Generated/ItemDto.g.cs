@@ -101,7 +101,7 @@ namespace QROrganizer.Web.Models
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Quantity))) entity.Quantity = (Quantity ?? entity.Quantity);
             if (ShouldMapTo(nameof(UserId))) entity.UserId = UserId;
-            if (ShouldMapTo(nameof(ContainerId))) entity.ContainerId = (ContainerId ?? entity.ContainerId);
+            if (ShouldMapTo(nameof(ContainerId))) entity.ContainerId = ContainerId;
         }
     }
 }
