@@ -28,11 +28,11 @@
     </v-fab-transition>
     <div class="home mb-16">
       <cancel-save-modal
-          v-model="addContainerModal"
-          header-text="Create New Container"
-          :isLoading="isLoading"
-          v-on:saveClicked="saveNewModal"
-          v-if="containerBeingAdded"
+        v-model="addContainerModal"
+        header-text="Create New Container"
+        :isLoading="isLoading"
+        v-on:saveClicked="saveNewModal"
+        v-if="containerBeingAdded"
       >
         <v-text-field
           autofocus
@@ -48,8 +48,8 @@
       <v-row justify="space-around" no-gutters>
         <v-col class="ma-2" v-for="container in allLoadedContainers" :key="container.id">
           <container-card
-              :container="container"
-              v-on:containerRemoved="containerRemoved"
+            :container="container"
+            v-on:containerRemoved="containerRemoved"
           ></container-card>
         </v-col>
       </v-row>

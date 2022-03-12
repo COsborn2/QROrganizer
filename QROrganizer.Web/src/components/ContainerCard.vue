@@ -112,31 +112,60 @@
         </template>
         <template v-else>
           <v-text-field
-              type="text"
-              label="Search items"
-              class="mb-n5 mt-1"
-              v-model="itemListVM.$params.search"
+            type="text"
+            label="Search items"
+            class="mb-n5 mt-1"
+            v-model="itemListVM.$params.search"
           ></v-text-field>
-          <v-simple-table fixed-header height="300px">
-            <template v-slot:default>
-              <thead>
-              <tr>
-                <th class="text-left">
-                  Item Name
-                </th>
-                <th class="text-left">
-                  Quantity
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr v-for="item in itemListVM.$items">
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-              </tbody>
+          <v-data-table
+            v-model="selectedItems"
+            :headers="headers"
+            :items="itemListVM.$items"
+            :page.sync="itemListVM.$page"
+            :items-per-page="itemListVM.$pageSize"
+            height="300px"
+            :mobile-breakpoint="0"
+            fixed-header
+            disable-sort
+            hide-default-footer
+            show-select
+          >
+            <template v-slot:top>
+              <v-expand-transition>
+                <v-toolbar flat v-if="selectedItems.length > 0">
+                  <v-spacer/>
+                  <v-btn color="error" dark @click="deleteItems" :loading="itemListVM.$items.some(x => x.$delete.isLoading)">
+                    Delete
+                  </v-btn>
+                </v-toolbar>
+              </v-expand-transition>
             </template>
-          </v-simple-table>
+            <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+              <v-edit-dialog
+                large
+                @save="updateItem(item)"
+              >
+                <div>
+                  <template v-if="!item.$save.isLoading && !item.$delete.isLoading">
+                    {{ item[header.value] }}
+                  </template>
+                  <v-progress-circular indeterminate color="primary" v-else></v-progress-circular>
+                </div>
+                <template v-slot:input>
+                  <div class="mt-4 text-h6">
+                    Update {{ header.text }}
+                  </div>
+                  <v-text-field
+                    v-model="item[header.value]"
+                    label="Edit"
+                    single-line
+                    counter
+                    autofocus
+                  ></v-text-field>
+                </template>
+              </v-edit-dialog>
+            </template>
+          </v-data-table>
         </template>
       </c-loader-status>
       <v-divider />
@@ -170,15 +199,31 @@ import CancelSaveModal from "@/components/CancelSaveModal.vue";
   components: {CancelSaveModal, DeleteConfirmationModal}
 })
 export default class ContainerCard extends Vue {
+  headers = [
+    { text: 'Item Name', value: 'name' },
+    { text: 'Quantity', value: 'quantity' }
+  ]
+
   itemListVM = new ItemListViewModel();
   itemVM = new ItemViewModel();
   noItems = false;
   editContainerModal = false;
   deleteConfirmationModal = false;
   addItemModal = false;
+  selectedItems: ItemViewModel[] = [];
 
   @Prop({ type: Object, required: true })
   container!: ContainerViewModel;
+
+  async deleteItems() {
+    let deletePromises = this.selectedItems.map(x => x.$delete());
+    await Promise.all(deletePromises);
+    this.selectedItems = [];
+  }
+
+  async updateItem(item: ItemViewModel) {
+    await item.$save();
+  }
 
   addItem() {
     this.itemVM = new ItemViewModel();
@@ -206,6 +251,7 @@ export default class ContainerCard extends Vue {
   @Watch('itemListVM.$page')
   @Watch('itemListVM.$params.search')
   loadItems() {
+    this.selectedItems = [];
     this.itemListVM.$load();
   }
 
