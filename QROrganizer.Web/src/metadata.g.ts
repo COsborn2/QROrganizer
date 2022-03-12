@@ -289,6 +289,88 @@ export const Item = domain.types.Item = {
     },
   },
 }
+export const Log = domain.types.Log = {
+  name: "Log",
+  displayName: "Log",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "Log",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 0,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    application: {
+      name: "application",
+      displayName: "Application",
+      type: "string",
+      role: "value",
+    },
+    date: {
+      name: "date",
+      displayName: "Date",
+      type: "string",
+      role: "value",
+    },
+    level: {
+      name: "level",
+      displayName: "Level",
+      type: "string",
+      role: "value",
+    },
+    message: {
+      name: "message",
+      displayName: "Message",
+      type: "string",
+      role: "value",
+    },
+    callSite: {
+      name: "callSite",
+      displayName: "Call Site",
+      type: "string",
+      role: "value",
+    },
+    exception: {
+      name: "exception",
+      displayName: "Exception",
+      type: "string",
+      role: "value",
+    },
+    user: {
+      name: "user",
+      displayName: "User",
+      type: "string",
+      role: "value",
+    },
+    url: {
+      name: "url",
+      displayName: "Url",
+      type: "string",
+      role: "value",
+    },
+    urlReferrer: {
+      name: "urlReferrer",
+      displayName: "Url Referrer",
+      type: "string",
+      role: "value",
+    },
+    browser: {
+      name: "browser",
+      displayName: "Browser",
+      type: "string",
+      role: "value",
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
 export const RestrictedAccessCode = domain.types.RestrictedAccessCode = {
   name: "RestrictedAccessCode",
   displayName: "Restricted Access Code",
@@ -524,6 +606,7 @@ interface AppDomain extends Domain {
     ApplicationUser: typeof ApplicationUser
     Container: typeof Container
     Item: typeof Item
+    Log: typeof Log
     RestrictedAccessCode: typeof RestrictedAccessCode
     SiteInfoDto: typeof SiteInfoDto
     UserInfo: typeof UserInfo

@@ -89,6 +89,35 @@ export class ItemListViewModel extends ListViewModel<$models.Item, $apiClients.I
 }
 
 
+export interface LogViewModel extends $models.Log {
+  id: number | null;
+  application: string | null;
+  date: string | null;
+  level: string | null;
+  message: string | null;
+  callSite: string | null;
+  exception: string | null;
+  user: string | null;
+  url: string | null;
+  urlReferrer: string | null;
+  browser: string | null;
+}
+export class LogViewModel extends ViewModel<$models.Log, $apiClients.LogApiClient, number> implements $models.Log  {
+  
+  constructor(initialData?: DeepPartial<$models.Log> | null) {
+    super($metadata.Log, new $apiClients.LogApiClient(), initialData)
+  }
+}
+defineProps(LogViewModel, $metadata.Log)
+
+export class LogListViewModel extends ListViewModel<$models.Log, $apiClients.LogApiClient, LogViewModel> {
+  
+  constructor() {
+    super($metadata.Log, new $apiClients.LogApiClient())
+  }
+}
+
+
 export interface RestrictedAccessCodeViewModel extends $models.RestrictedAccessCode {
   id: number | null;
   accessCode: string | null;
@@ -205,12 +234,14 @@ const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
   Container: ContainerViewModel,
   Item: ItemViewModel,
+  Log: LogViewModel,
   RestrictedAccessCode: RestrictedAccessCodeViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
   Container: ContainerListViewModel,
   Item: ItemListViewModel,
+  Log: LogListViewModel,
   RestrictedAccessCode: RestrictedAccessCodeListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
