@@ -112,6 +112,38 @@ export namespace Item {
 }
 
 
+export interface Log extends Model<typeof metadata.Log> {
+  id: number | null
+  application: string | null
+  date: string | null
+  level: string | null
+  message: string | null
+  callSite: string | null
+  exception: string | null
+  user: string | null
+  url: string | null
+  urlReferrer: string | null
+  browser: string | null
+}
+export class Log {
+  
+  /** Mutates the input object and its descendents into a valid Log implementation. */
+  static convert(data?: Partial<Log>): Log {
+    return convertToModel(data || {}, metadata.Log) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid Log implementation. */
+  static map(data?: Partial<Log>): Log {
+    return mapToModel(data || {}, metadata.Log) 
+  }
+  
+  /** Instantiate a new Log, optionally basing it on the given data. */
+  constructor(data?: Partial<Log> | {[k: string]: any}) {
+      Object.assign(this, Log.map(data || {}));
+  }
+}
+
+
 export interface RestrictedAccessCode extends Model<typeof metadata.RestrictedAccessCode> {
   id: number | null
   accessCode: string | null

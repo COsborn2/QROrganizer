@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Targets;
+using NLog.Web;
+using QROrganizer.Web.Api;
 
 namespace QROrganizer.Web
 {
@@ -33,7 +37,8 @@ namespace QROrganizer.Web
                 {
                     config
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile("appsettings.local.json", optional: false, reloadOnChange: true);
+                        .AddJsonFile("appsettings.local.json", optional: false, reloadOnChange: true)
+                        .AddEnvironmentVariables();
 #if DEBUG
                     if (Environment.OSVersion.Platform == PlatformID.Unix)
                     {
@@ -44,9 +49,13 @@ namespace QROrganizer.Web
                 })
                 .ConfigureLogging(logging =>
                 {
+                    logging.ClearProviders();
+                    logging.AddNLog("nlog.config");
                     logging.AddConsole();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .UseStartup<Startup>()
+                .UseNLog()
                 .Build();
     }
 }

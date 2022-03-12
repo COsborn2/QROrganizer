@@ -23,6 +23,7 @@ public class AppDbContext
     public DbSet<RestrictedAccessCode> AccessCodes { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<Container> Containers { get; set; }
+    public DbSet<Log> Logs { get; set; }
 
     public AppDbContext()
     {
