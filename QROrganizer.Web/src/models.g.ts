@@ -37,6 +37,81 @@ export class ApplicationUser {
 }
 
 
+export interface Container extends Model<typeof metadata.Container> {
+  id: number | null
+  containerName: string | null
+  userId: string | null
+  items: Item[] | null
+}
+export class Container {
+  
+  /** Mutates the input object and its descendents into a valid Container implementation. */
+  static convert(data?: Partial<Container>): Container {
+    return convertToModel(data || {}, metadata.Container) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid Container implementation. */
+  static map(data?: Partial<Container>): Container {
+    return mapToModel(data || {}, metadata.Container) 
+  }
+  
+  /** Instantiate a new Container, optionally basing it on the given data. */
+  constructor(data?: Partial<Container> | {[k: string]: any}) {
+      Object.assign(this, Container.map(data || {}));
+  }
+}
+export namespace Container {
+  export namespace DataSources {
+    
+    export class DefaultDataSource implements DataSource<typeof metadata.Container.dataSources.defaultDataSource> {
+      readonly $metadata = metadata.Container.dataSources.defaultDataSource
+    }
+  }
+}
+
+
+export interface Item extends Model<typeof metadata.Item> {
+  id: number | null
+  barcodeNumber: string | null
+  name: string | null
+  quantity: number | null
+  userId: string | null
+  user: ApplicationUser | null
+  containerId: number | null
+  container: Container | null
+}
+export class Item {
+  
+  /** Mutates the input object and its descendents into a valid Item implementation. */
+  static convert(data?: Partial<Item>): Item {
+    return convertToModel(data || {}, metadata.Item) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid Item implementation. */
+  static map(data?: Partial<Item>): Item {
+    return mapToModel(data || {}, metadata.Item) 
+  }
+  
+  /** Instantiate a new Item, optionally basing it on the given data. */
+  constructor(data?: Partial<Item> | {[k: string]: any}) {
+      Object.assign(this, Item.map(data || {}));
+  }
+}
+export namespace Item {
+  export namespace DataSources {
+    
+    export class DefaultDataSource implements DataSource<typeof metadata.Item.dataSources.defaultDataSource> {
+      readonly $metadata = metadata.Item.dataSources.defaultDataSource
+    }
+    
+    export class ItemsInContainer implements DataSource<typeof metadata.Item.dataSources.itemsInContainer> {
+      readonly $metadata = metadata.Item.dataSources.itemsInContainer
+      containerId: number | null = null
+    }
+  }
+}
+
+
 export interface RestrictedAccessCode extends Model<typeof metadata.RestrictedAccessCode> {
   id: number | null
   accessCode: string | null

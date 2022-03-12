@@ -6,7 +6,7 @@ import About from './views/About.vue';
 import AccountEntry from '@/views/AccountEntry.vue';
 import Forbidden from "@/views/Forbidden.vue";
 import NotFound from "@/views/NotFound.vue";
-import { CAdminTablePage, CAdminEditorPage } from 'coalesce-vue-vuetify';
+import { CAdminTablePage} from 'coalesce-vue-vuetify';
 import EmailConfirmation from "@/views/EmailConfirmation.vue";
 
 Vue.use(Router);
@@ -89,6 +89,9 @@ export default new Router({
       path: '/admin/:type',
       name: 'coalesce-admin-list',
       component: CAdminTablePage,
+      meta: {
+        roles: ['Admin']
+      },
       props: (r) => ({
         type: r.params.type,
       }),

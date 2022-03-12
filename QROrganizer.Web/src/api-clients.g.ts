@@ -9,6 +9,16 @@ export class ApplicationUserApiClient extends ModelApiClient<$models.Application
 }
 
 
+export class ContainerApiClient extends ModelApiClient<$models.Container> {
+  constructor() { super($metadata.Container) }
+}
+
+
+export class ItemApiClient extends ModelApiClient<$models.Item> {
+  constructor() { super($metadata.Item) }
+}
+
+
 export class RestrictedAccessCodeApiClient extends ModelApiClient<$models.RestrictedAccessCode> {
   constructor() { super($metadata.RestrictedAccessCode) }
   public createUnlimitedUseAccessCode($config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
