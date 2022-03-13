@@ -99,6 +99,7 @@ namespace QROrganizer.Web
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.LoginPath = new PathString("/api/contests");
                 options.AccessDeniedPath = new PathString("/api/contests");
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
                 // Not creating a new object since ASP.NET Identity has created
                 // one already and hooked to the OnValidatePrincipal event.
