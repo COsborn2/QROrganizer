@@ -1,6 +1,8 @@
 import { Module } from 'vuex';
 import {UserInfo} from "@/models.g";
 import {AxiosClient} from "coalesce-vue/lib/api-client";
+import Vue from "vue";
+import {ApplicationInsights} from "@microsoft/applicationinsights-web";
 
 export enum UserMutations {
   SET_ACCOUNT = 'SET_ACCOUNT',
@@ -24,6 +26,12 @@ export const user: Module<UserInfo, any> = {
         }
         if ((payload.username?.length ?? 0) > 0) {
           state.username = payload.username;
+          if (payload.username) {
+            (Vue.prototype.$appInsights as ApplicationInsights).setAuthenticatedUserContext(
+              payload.username,
+              undefined,
+              true);
+          }
         }
       }
     },

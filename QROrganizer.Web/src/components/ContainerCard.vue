@@ -269,6 +269,7 @@ export default class ContainerCard extends Vue {
 
   async mounted() {
     this.container.$params.includes = 'none';
+    this.itemListVM.$params.includes = 'none';
 
     let dataSource = new ItemsInContainer();
     dataSource.containerId = this.container.id;

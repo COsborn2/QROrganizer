@@ -26,10 +26,10 @@ jobs:
         run: dotnet restore --configfile NuGet.Config
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore
-      
-      - name: Dotnet Test
-        run: dotnet test --no-build
+        run: dotnet build -c Release --no-restore
+
+      - name: Dotnet Test Data
+        run: dotnet test -c Release --no-build
 
       - uses: actions/setup-node@v2
         with:
@@ -39,6 +39,11 @@ jobs:
 
       - name: NPM Ci
         run: npm ci
+        working-directory: 'QROrganizer.Web'
+
+      - name: Set ApplicationInsightsKey
+        if: github.event_name != 'pull_request'
+        run: npm run setVueEnvironment -- ${{ secrets.APPLICATIONINSIGHTS_INSTRUMENTATION_KEY }}
         working-directory: 'QROrganizer.Web'
 
       - name: Build Vue

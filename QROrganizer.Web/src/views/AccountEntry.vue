@@ -89,7 +89,7 @@
                   </template>
                 </v-checkbox>
 
-                <vue-hcaptcha sitekey="41749397-9529-40b7-81f2-38faeec88de0" v-on:verify="captchaVerify"></vue-hcaptcha>
+                <vue-hcaptcha ref="captcha" sitekey="41749397-9529-40b7-81f2-38faeec88de0" v-on:verify="captchaVerify"></vue-hcaptcha>
               </div>
             </v-expand-transition>
           </v-form>
@@ -329,13 +329,19 @@ export default class AccountEntry extends Vue {
         (e) => {
           let errors: { code: string; description: string }[] =
             e.response.data.errors;
-          this.validationErrors = errors.map((x) => x.description);
+          if (errors?.length > 1) {
+            this.validationErrors = errors.map((x) => x.description);
+          } else if (e.response.data){
+            this.validationErrors = [e.response.data];
+          } else {
+            this.validationErrors = ['An error occurred'];
+          }
+          (this.$refs.captcha as any).reset();
         },
           {headers: {
             'h-captcha-response': this.captchaToken
           }}
       );
-
       this.success = res[0];
     }
   }
