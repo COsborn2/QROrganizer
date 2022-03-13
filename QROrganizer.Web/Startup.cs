@@ -70,7 +70,7 @@ namespace QROrganizer.Web
             services.AddSwaggerGen();
 
             services
-                .AddDefaultIdentity<ApplicationUser>(options =>
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
                     options.Password = new PasswordOptions
                     {
@@ -87,6 +87,7 @@ namespace QROrganizer.Web
                     options.SignIn.RequireConfirmedAccount = true;
                     options.SignIn.RequireConfirmedEmail = true;
                 })
+                .AddDefaultTokenProviders()
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<AppDbContext>()
