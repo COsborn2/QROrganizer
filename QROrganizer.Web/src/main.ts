@@ -3,6 +3,16 @@ import App from './App.vue';
 import router, {RouteNames} from './router';
 import store from '@/store/index';
 import {UserInfoServiceViewModel} from "@/viewmodels.g";
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import {environment} from "@/env";
+
+const appInsights = new ApplicationInsights({
+  config: {
+    instrumentationKey: environment.applicationInsightsKey,
+  }
+})
+appInsights.loadAppInsights();
+Vue.prototype.$appInsights = appInsights;
 
 // Import global CSS and Fonts:
 import 'typeface-roboto';
@@ -75,20 +85,28 @@ router.beforeEach(async (to, from, next) => {
   if (store.getters.isAuthenticated && to.meta?.roles?.length > 0) {
     if (!(store.getters.roles as string[])
       .some(x => (to.meta?.roles?.map((x: string) => x.toLowerCase()) ?? []).includes(x))) {
-      next({ name: RouteNames.Forbidden })
+      appInsights.startTrackPage(to?.name ?? '');
+      next({ name: RouteNames.Forbidden });
       return;
     }
   }
 
   if (to.matched.some(record => !record.meta.allowAnonymous)) {
     if (!store.getters.isAuthenticated) {
-      next({ name: RouteNames.Login })
+      appInsights.startTrackPage(to?.name ?? '');
+      next({ name: RouteNames.Login });
       return;
     }
   }
 
+  appInsights.startTrackPage(to?.name ?? '');
   next();
 })
+
+router.afterEach((route) => {
+  appInsights.stopTrackPage(route?.name ?? '');
+  appInsights.flush();
+});
 
 store.dispatch(SiteInfoActions.GET_AND_SET_SITE_INFO).then(() => {
   new Vue({

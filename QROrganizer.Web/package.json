@@ -8,11 +8,13 @@
     "lint": "vue-cli-service lint",
     "lintCheck": "vue-cli-service lint --no-fix --max-errors=0 --max-warnings=0",
     "coalesce": "dotnet coalesce",
-    "test": "vue-cli-service test"
+    "test": "vue-cli-service test",
+    "setVueEnvironment": "node ./src/replace.build.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@hcaptcha/vue-hcaptcha": "^0.3.2",
+    "@microsoft/applicationinsights-web": "^2.7.4",
     "axios": "^0.21.1",
     "coalesce-vue": "3.0.0-alpha.20210324.5",
     "coalesce-vue-vuetify": "3.0.0-alpha.20210324.5",
@@ -47,6 +49,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
+    "replace-in-file": "^6.3.2",
     "sass": "1.32.8",
     "sass-loader": "10.1.1",
     "ts-jest": "26.5.4",

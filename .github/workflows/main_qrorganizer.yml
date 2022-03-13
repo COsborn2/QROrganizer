@@ -41,6 +41,11 @@ jobs:
         run: npm ci
         working-directory: 'QROrganizer.Web'
 
+      - name: Set ApplicationInsightsKey
+        if: github.event_name != 'pull_request'
+        run: npm run setVueEnvironment -- ${{ secrets.APPLICATIONINSIGHTS_INSTRUMENTATION_KEY }}
+        working-directory: 'QROrganizer.Web'
+
       - name: Build Vue
         run: npm run build
         working-directory: 'QROrganizer.Web'
