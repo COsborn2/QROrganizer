@@ -37,7 +37,7 @@ namespace QROrganizer.Web
                 {
                     config
                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile("appsettings.local.json", optional: false, reloadOnChange: true)
+                        .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
                         .AddEnvironmentVariables();
 #if DEBUG
                     if (Environment.OSVersion.Platform == PlatformID.Unix)
