@@ -43,7 +43,7 @@ jobs:
         working-directory: 'QROrganizer.Web'
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-restore
+        run: dotnet publish ./QROrganizer.Web/QROrganizer.Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-restore
 
       - name: Upload artifact
         if: github.event_name != 'pull_request'
