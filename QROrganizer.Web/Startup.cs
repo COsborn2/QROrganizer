@@ -15,11 +15,13 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
 using QROrganizer.Data.Services.Implementation;
 using QROrganizer.Data.Services.Interface;
 using QROrganizer.Data.Util;
+using QROrganizer.Web.Util;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
@@ -39,6 +41,9 @@ namespace QROrganizer.Web
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsights:InstrumentationKey"]);
+            services.AddSingleton<ITelemetryInitializer, TelemetryEnrichment>();
+
             const string connectionName = "DefaultConnection";
             string connString = Configuration.GetConnectionString(connectionName);
 

@@ -79,6 +79,7 @@ import {AxiosClient} from "coalesce-vue/lib/api-client";
 import {RouteNames} from "@/router";
 import {UserActions} from "@/store/UserContext";
 import moment from "moment";
+import {ApplicationInsights} from "@microsoft/applicationinsights-web";
 
 @Component({
   components: {},
@@ -101,6 +102,7 @@ export default class App extends Vue {
       this.logoutLoading = false;
     }
 
+    (Vue.prototype.$appInsights as ApplicationInsights).clearAuthenticatedUserContext();
     this.$router.push({name: RouteNames.Login})
   }
 
