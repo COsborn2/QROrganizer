@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog;
-using NLog.Targets;
 using NLog.Web;
-using QROrganizer.Web.Api;
 
 namespace QROrganizer.Web
 {
@@ -52,7 +49,7 @@ namespace QROrganizer.Web
                     logging.ClearProviders();
                     logging.AddNLog("nlog.config");
                     logging.AddConsole();
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    logging.SetMinimumLevel(LogLevel.Trace);
                 })
                 .UseStartup<Startup>()
                 .UseNLog()

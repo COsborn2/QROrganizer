@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QROrganizer.Data;
 using QROrganizer.Data.Models;
@@ -30,6 +31,7 @@ namespace QROrganizer.Web.Api
         private readonly IAccessCodeService _accessCodeService;
         private readonly IEmailService _emailService;
         private readonly IHcaptchaHttpClient _hcaptchaHttpClient;
+        private readonly ILogger<AccountController> _logger; // TODO: Use this
 
         public AccountController(
             SignInManager<ApplicationUser> signInManager,
@@ -37,7 +39,8 @@ namespace QROrganizer.Web.Api
             IOptions<AppConfigSettings> appConfigSettings,
             IAccessCodeService accessCodeService,
             IEmailService emailService,
-            IHcaptchaHttpClient hcaptchaHttpClient)
+            IHcaptchaHttpClient hcaptchaHttpClient,
+            ILogger<AccountController> logger)
         {
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -45,6 +48,7 @@ namespace QROrganizer.Web.Api
             _accessCodeService = accessCodeService ?? throw new ArgumentNullException(nameof(accessCodeService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _hcaptchaHttpClient = hcaptchaHttpClient ?? throw new ArgumentNullException(nameof(hcaptchaHttpClient));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("login")]

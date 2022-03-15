@@ -127,6 +127,12 @@ namespace QROrganizer.Web
                 c.BaseAddress = new Uri("https://hcaptcha.com", UriKind.Absolute);
             });
 
+            services.AddHttpClient<IBarcodeSpiderHttpClient, BarcodeSpiderHttpClient>(c =>
+            {
+                c.BaseAddress = new Uri("https://api.barcodespider.com/v1/", UriKind.Absolute);
+            });
+            services.AddRateLimitingService<IBarcodeSpiderHttpClient>(TimeSpan.FromSeconds(10));
+
             services.AddAuthentication();
 
             services.AddScoped<UserInfoService>();
