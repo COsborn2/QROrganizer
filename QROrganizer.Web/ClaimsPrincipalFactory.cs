@@ -15,6 +15,7 @@ namespace QROrganizer.Web
             IOptions<IdentityOptions> options)
             : base(userManager, roleManager, options)
         {
+            // TODO: Override and set Claims here for SubscriptionLevel and Features
         }
     }
 }

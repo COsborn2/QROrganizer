@@ -89,6 +89,44 @@ export class ItemListViewModel extends ListViewModel<$models.Item, $apiClients.I
 }
 
 
+export interface ItemBarcodeInformationViewModel extends $models.ItemBarcodeInformation {
+  id: number | null;
+  title: string | null;
+  upcCode: string | null;
+  eanCode: string | null;
+  parentCategory: string | null;
+  category: string | null;
+  brand: string | null;
+  model: string | null;
+  mpnCode: string | null;
+  manufacturer: string | null;
+  publisher: string | null;
+  asinCode: string | null;
+  color: string | null;
+  size: string | null;
+  weight: string | null;
+  imageLink: string | null;
+  isAdult: string | null;
+  description: string | null;
+  lowestPrice: string | null;
+  highestPrice: string | null;
+}
+export class ItemBarcodeInformationViewModel extends ViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, number> implements $models.ItemBarcodeInformation  {
+  
+  constructor(initialData?: DeepPartial<$models.ItemBarcodeInformation> | null) {
+    super($metadata.ItemBarcodeInformation, new $apiClients.ItemBarcodeInformationApiClient(), initialData)
+  }
+}
+defineProps(ItemBarcodeInformationViewModel, $metadata.ItemBarcodeInformation)
+
+export class ItemBarcodeInformationListViewModel extends ListViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, ItemBarcodeInformationViewModel> {
+  
+  constructor() {
+    super($metadata.ItemBarcodeInformation, new $apiClients.ItemBarcodeInformationApiClient())
+  }
+}
+
+
 export interface LogViewModel extends $models.Log {
   id: number | null;
   application: string | null;
@@ -158,6 +196,27 @@ export class RestrictedAccessCodeListViewModel extends ListViewModel<$models.Res
   
   constructor() {
     super($metadata.RestrictedAccessCode, new $apiClients.RestrictedAccessCodeApiClient())
+  }
+}
+
+
+export interface SubscriptionLevelViewModel extends $models.SubscriptionLevel {
+  id: number | null;
+  subscriptionName: string | null;
+  subscriptionFeature: $models.SubscriptionFeature | null;
+}
+export class SubscriptionLevelViewModel extends ViewModel<$models.SubscriptionLevel, $apiClients.SubscriptionLevelApiClient, number> implements $models.SubscriptionLevel  {
+  
+  constructor(initialData?: DeepPartial<$models.SubscriptionLevel> | null) {
+    super($metadata.SubscriptionLevel, new $apiClients.SubscriptionLevelApiClient(), initialData)
+  }
+}
+defineProps(SubscriptionLevelViewModel, $metadata.SubscriptionLevel)
+
+export class SubscriptionLevelListViewModel extends ListViewModel<$models.SubscriptionLevel, $apiClients.SubscriptionLevelApiClient, SubscriptionLevelViewModel> {
+  
+  constructor() {
+    super($metadata.SubscriptionLevel, new $apiClients.SubscriptionLevelApiClient())
   }
 }
 
@@ -234,15 +293,19 @@ const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
   Container: ContainerViewModel,
   Item: ItemViewModel,
+  ItemBarcodeInformation: ItemBarcodeInformationViewModel,
   Log: LogViewModel,
   RestrictedAccessCode: RestrictedAccessCodeViewModel,
+  SubscriptionLevel: SubscriptionLevelViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
   Container: ContainerListViewModel,
   Item: ItemListViewModel,
+  ItemBarcodeInformation: ItemBarcodeInformationListViewModel,
   Log: LogListViewModel,
   RestrictedAccessCode: RestrictedAccessCodeListViewModel,
+  SubscriptionLevel: SubscriptionLevelListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   AccessCodeService: AccessCodeServiceViewModel,

@@ -19,6 +19,11 @@ export class ItemApiClient extends ModelApiClient<$models.Item> {
 }
 
 
+export class ItemBarcodeInformationApiClient extends ModelApiClient<$models.ItemBarcodeInformation> {
+  constructor() { super($metadata.ItemBarcodeInformation) }
+}
+
+
 export class LogApiClient extends ModelApiClient<$models.Log> {
   constructor() { super($metadata.Log) }
 }
@@ -41,6 +46,11 @@ export class RestrictedAccessCodeApiClient extends ModelApiClient<$models.Restri
     return this.$invoke($method, $params, $config)
   }
   
+}
+
+
+export class SubscriptionLevelApiClient extends ModelApiClient<$models.SubscriptionLevel> {
+  constructor() { super($metadata.SubscriptionLevel) }
 }
 
 

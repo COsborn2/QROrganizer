@@ -8,4 +8,6 @@ namespace QROrganizer.Data.Models;
 [Edit(Roles = Roles.Admin)]
 [Read(Roles = Roles.Admin)]
 public class ApplicationUser : IdentityUser
-{ }
+{
+    // TODO: Add subscription levels here
+}

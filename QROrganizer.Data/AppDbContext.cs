@@ -24,6 +24,8 @@ public class AppDbContext
     public DbSet<Item> Items { get; set; }
     public DbSet<Container> Containers { get; set; }
     public DbSet<Log> Logs { get; set; }
+    public DbSet<ItemBarcodeInformation> ItemBarcodeInformation { get; set; }
+    public DbSet<SubscriptionLevel> SubscriptionLevels { get; set; }
 
     public AppDbContext()
     {

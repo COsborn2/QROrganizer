@@ -6,6 +6,14 @@ import {
 
 
 const domain: Domain = { enums: {}, types: {}, services: {} }
+export const SubscriptionFeature = domain.enums.SubscriptionFeature = {
+  name: "SubscriptionFeature",
+  displayName: "Subscription Feature",
+  type: "enum",
+  ...getEnumMeta<"BARCODE_LOOKUP">([
+    { value: 0, strValue: 'BARCODE_LOOKUP', displayName: 'B A R C O D E_ L O O K U P' },
+  ]),
+}
 export const ApplicationUser = domain.types.ApplicationUser = {
   name: "ApplicationUser",
   displayName: "Application User",
@@ -289,6 +297,142 @@ export const Item = domain.types.Item = {
     },
   },
 }
+export const ItemBarcodeInformation = domain.types.ItemBarcodeInformation = {
+  name: "ItemBarcodeInformation",
+  displayName: "Item Barcode Information",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "ItemBarcodeInformation",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    title: {
+      name: "title",
+      displayName: "Title",
+      type: "string",
+      role: "value",
+    },
+    upcCode: {
+      name: "upcCode",
+      displayName: "Upc Code",
+      type: "string",
+      role: "value",
+    },
+    eanCode: {
+      name: "eanCode",
+      displayName: "Ean Code",
+      type: "string",
+      role: "value",
+    },
+    parentCategory: {
+      name: "parentCategory",
+      displayName: "Parent Category",
+      type: "string",
+      role: "value",
+    },
+    category: {
+      name: "category",
+      displayName: "Category",
+      type: "string",
+      role: "value",
+    },
+    brand: {
+      name: "brand",
+      displayName: "Brand",
+      type: "string",
+      role: "value",
+    },
+    model: {
+      name: "model",
+      displayName: "Model",
+      type: "string",
+      role: "value",
+    },
+    mpnCode: {
+      name: "mpnCode",
+      displayName: "Mpn Code",
+      type: "string",
+      role: "value",
+    },
+    manufacturer: {
+      name: "manufacturer",
+      displayName: "Manufacturer",
+      type: "string",
+      role: "value",
+    },
+    publisher: {
+      name: "publisher",
+      displayName: "Publisher",
+      type: "string",
+      role: "value",
+    },
+    asinCode: {
+      name: "asinCode",
+      displayName: "Asin Code",
+      type: "string",
+      role: "value",
+    },
+    color: {
+      name: "color",
+      displayName: "Color",
+      type: "string",
+      role: "value",
+    },
+    size: {
+      name: "size",
+      displayName: "Size",
+      type: "string",
+      role: "value",
+    },
+    weight: {
+      name: "weight",
+      displayName: "Weight",
+      type: "string",
+      role: "value",
+    },
+    imageLink: {
+      name: "imageLink",
+      displayName: "Image Link",
+      type: "string",
+      role: "value",
+    },
+    isAdult: {
+      name: "isAdult",
+      displayName: "Is Adult",
+      type: "string",
+      role: "value",
+    },
+    description: {
+      name: "description",
+      displayName: "Description",
+      type: "string",
+      role: "value",
+    },
+    lowestPrice: {
+      name: "lowestPrice",
+      displayName: "Lowest Price",
+      type: "string",
+      role: "value",
+    },
+    highestPrice: {
+      name: "highestPrice",
+      displayName: "Highest Price",
+      type: "string",
+      role: "value",
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
 export const Log = domain.types.Log = {
   name: "Log",
   displayName: "Log",
@@ -447,6 +591,41 @@ export const RestrictedAccessCode = domain.types.RestrictedAccessCode = {
   dataSources: {
   },
 }
+export const SubscriptionLevel = domain.types.SubscriptionLevel = {
+  name: "SubscriptionLevel",
+  displayName: "Subscription Level",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "SubscriptionLevel",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    subscriptionName: {
+      name: "subscriptionName",
+      displayName: "Subscription Name",
+      type: "string",
+      role: "value",
+    },
+    subscriptionFeature: {
+      name: "subscriptionFeature",
+      displayName: "Subscription Feature",
+      type: "enum",
+      get typeDef() { return domain.enums.SubscriptionFeature },
+      role: "value",
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
 export const SiteInfoDto = domain.types.SiteInfoDto = {
   name: "SiteInfoDto",
   displayName: "Site Info Dto",
@@ -601,14 +780,17 @@ export const UserInfoService = domain.services.UserInfoService = {
 
 interface AppDomain extends Domain {
   enums: {
+    SubscriptionFeature: typeof SubscriptionFeature
   }
   types: {
     ApplicationUser: typeof ApplicationUser
     Container: typeof Container
     Item: typeof Item
+    ItemBarcodeInformation: typeof ItemBarcodeInformation
     Log: typeof Log
     RestrictedAccessCode: typeof RestrictedAccessCode
     SiteInfoDto: typeof SiteInfoDto
+    SubscriptionLevel: typeof SubscriptionLevel
     UserInfo: typeof UserInfo
   }
   services: {

@@ -8,20 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
+using QROrganizer.Data.Policies;
 using QROrganizer.Data.Services.Implementation;
 using QROrganizer.Data.Services.Interface;
 using QROrganizer.Data.Util;
 using QROrganizer.Web.Util;
+using CacheControlHeaderValue = Microsoft.Net.Http.Headers.CacheControlHeaderValue;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace QROrganizer.Web
@@ -111,6 +113,18 @@ namespace QROrganizer.Web
                 };
             });
 
+            // Add policy for each
+            services.AddAuthorization(options =>
+            {
+                var features = Enum.GetValues<SubscriptionFeature>();
+                foreach (var feature in features)
+                {
+                    options.AddPolicy(
+                        feature.ToString(),
+                        policy => policy.Requirements.Add(new SubscriptionFeatureRequirement(feature)));
+                }
+            });
+
             // Build SendGridTemplateIds
             var sendGridTemplateIds = Configuration.GetSection("SendGridTemplateIds");
             var properties = typeof(SendGridTemplateIds).GetProperties();
@@ -130,8 +144,9 @@ namespace QROrganizer.Web
             services.AddHttpClient<IBarcodeSpiderHttpClient, BarcodeSpiderHttpClient>(c =>
             {
                 c.BaseAddress = new Uri("https://api.barcodespider.com/v1/", UriKind.Absolute);
+                c.DefaultRequestHeaders.Add("token", Configuration["AppConfigSettings:BarcodeSpiderApiKey"]);
             });
-            services.AddRateLimitingService<IBarcodeSpiderHttpClient>(TimeSpan.FromSeconds(10));
+            services.AddRateLimitingService<IBarcodeSpiderHttpClient>(TimeSpan.FromSeconds(2));
 
             services.AddAuthentication();
 

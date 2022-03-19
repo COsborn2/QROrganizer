@@ -28,7 +28,9 @@ public class RateLimitingService<T> : IRateLimitingService<T>, IDisposable
         _semaphore = new SemaphoreSlim(1);
     }
 
-    public Task<HttpResponseMessage> EnqueueHttpRequest(HttpClient httpClient, HttpRequestMessage httpRequestMessage)
+    public Task<HttpResponseMessage> EnqueueHttpRequest(
+        HttpClient httpClient,
+        HttpRequestMessage httpRequestMessage)
     {
         var taskResult = new TaskCompletionSource<HttpResponseMessage>();
         var task = taskResult.Task;

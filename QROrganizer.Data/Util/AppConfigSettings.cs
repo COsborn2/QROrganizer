@@ -5,5 +5,6 @@ namespace QROrganizer.Data.Util
         public string SendGridApiKey { get; set; }
         public bool RestrictedEnvironment { get; set; }
         public string HCaptchaSecret { get; set; }
+        public string BarcodeSpiderApiKey { get; set; }
     }
 }

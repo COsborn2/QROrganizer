@@ -1,6 +1,11 @@
 import * as metadata from './metadata.g'
 import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/model'
 
+export enum SubscriptionFeature {
+  BARCODE_LOOKUP = 0,
+}
+
+
 export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> {
   id: string | null
   userName: string | null
@@ -112,6 +117,47 @@ export namespace Item {
 }
 
 
+export interface ItemBarcodeInformation extends Model<typeof metadata.ItemBarcodeInformation> {
+  id: number | null
+  title: string | null
+  upcCode: string | null
+  eanCode: string | null
+  parentCategory: string | null
+  category: string | null
+  brand: string | null
+  model: string | null
+  mpnCode: string | null
+  manufacturer: string | null
+  publisher: string | null
+  asinCode: string | null
+  color: string | null
+  size: string | null
+  weight: string | null
+  imageLink: string | null
+  isAdult: string | null
+  description: string | null
+  lowestPrice: string | null
+  highestPrice: string | null
+}
+export class ItemBarcodeInformation {
+  
+  /** Mutates the input object and its descendents into a valid ItemBarcodeInformation implementation. */
+  static convert(data?: Partial<ItemBarcodeInformation>): ItemBarcodeInformation {
+    return convertToModel(data || {}, metadata.ItemBarcodeInformation) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid ItemBarcodeInformation implementation. */
+  static map(data?: Partial<ItemBarcodeInformation>): ItemBarcodeInformation {
+    return mapToModel(data || {}, metadata.ItemBarcodeInformation) 
+  }
+  
+  /** Instantiate a new ItemBarcodeInformation, optionally basing it on the given data. */
+  constructor(data?: Partial<ItemBarcodeInformation> | {[k: string]: any}) {
+      Object.assign(this, ItemBarcodeInformation.map(data || {}));
+  }
+}
+
+
 export interface Log extends Model<typeof metadata.Log> {
   id: number | null
   application: string | null
@@ -165,6 +211,30 @@ export class RestrictedAccessCode {
   /** Instantiate a new RestrictedAccessCode, optionally basing it on the given data. */
   constructor(data?: Partial<RestrictedAccessCode> | {[k: string]: any}) {
       Object.assign(this, RestrictedAccessCode.map(data || {}));
+  }
+}
+
+
+export interface SubscriptionLevel extends Model<typeof metadata.SubscriptionLevel> {
+  id: number | null
+  subscriptionName: string | null
+  subscriptionFeature: SubscriptionFeature | null
+}
+export class SubscriptionLevel {
+  
+  /** Mutates the input object and its descendents into a valid SubscriptionLevel implementation. */
+  static convert(data?: Partial<SubscriptionLevel>): SubscriptionLevel {
+    return convertToModel(data || {}, metadata.SubscriptionLevel) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid SubscriptionLevel implementation. */
+  static map(data?: Partial<SubscriptionLevel>): SubscriptionLevel {
+    return mapToModel(data || {}, metadata.SubscriptionLevel) 
+  }
+  
+  /** Instantiate a new SubscriptionLevel, optionally basing it on the given data. */
+  constructor(data?: Partial<SubscriptionLevel> | {[k: string]: any}) {
+      Object.assign(this, SubscriptionLevel.map(data || {}));
   }
 }
 
