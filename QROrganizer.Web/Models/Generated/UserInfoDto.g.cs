@@ -15,7 +15,9 @@ namespace QROrganizer.Web.Models
 
         private string _Email;
         private string _Username;
+        private string _SubscriptionName;
         private System.Collections.Generic.ICollection<string> _Roles;
+        private System.Collections.Generic.ICollection<string> _Features;
 
         public string Email
         {
@@ -27,10 +29,20 @@ namespace QROrganizer.Web.Models
             get => _Username;
             set { _Username = value; Changed(nameof(Username)); }
         }
+        public string SubscriptionName
+        {
+            get => _SubscriptionName;
+            set { _SubscriptionName = value; Changed(nameof(SubscriptionName)); }
+        }
         public System.Collections.Generic.ICollection<string> Roles
         {
             get => _Roles;
             set { _Roles = value; Changed(nameof(Roles)); }
+        }
+        public System.Collections.Generic.ICollection<string> Features
+        {
+            get => _Features;
+            set { _Features = value; Changed(nameof(Features)); }
         }
 
         /// <summary>
@@ -45,7 +57,9 @@ namespace QROrganizer.Web.Models
 
             this.Email = obj.Email;
             this.Username = obj.Username;
+            this.SubscriptionName = obj.SubscriptionName;
             this.Roles = obj.Roles;
+            this.Features = obj.Features;
         }
 
         /// <summary>
@@ -59,7 +73,9 @@ namespace QROrganizer.Web.Models
 
             if (ShouldMapTo(nameof(Email))) entity.Email = Email;
             if (ShouldMapTo(nameof(Username))) entity.Username = Username;
+            if (ShouldMapTo(nameof(SubscriptionName))) entity.SubscriptionName = SubscriptionName;
             if (ShouldMapTo(nameof(Roles))) entity.Roles = Roles;
+            if (ShouldMapTo(nameof(Features))) entity.Features = Features;
         }
     }
 }

@@ -31,7 +31,9 @@ namespace QROrganizer.Data.Services.Implementation
             {
                 Email = claimsPrincipal.Email(),
                 Username = claimsPrincipal.Username(),
-                Roles = claimsPrincipal.Roles()
+                Roles = claimsPrincipal.Roles(),
+                Features = claimsPrincipal.Features(),
+                SubscriptionName = claimsPrincipal.SubscriptionLevel()
             };
         }
 

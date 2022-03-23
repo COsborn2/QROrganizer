@@ -4,6 +4,8 @@ import * as $apiClients from './api-clients.g'
 import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } from 'coalesce-vue/lib/viewmodel'
 
 export interface ApplicationUserViewModel extends $models.ApplicationUser {
+  subscriptionLevelId: number | null;
+  subscriptionLevel: SubscriptionLevelViewModel | null;
   id: string | null;
   userName: string | null;
   normalizedUserName: string | null;

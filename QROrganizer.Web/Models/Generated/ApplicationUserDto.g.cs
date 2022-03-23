@@ -13,6 +13,8 @@ namespace QROrganizer.Web.Models
     {
         public ApplicationUserDtoGen() { }
 
+        private int? _SubscriptionLevelId;
+        private QROrganizer.Web.Models.SubscriptionLevelDtoGen _SubscriptionLevel;
         private string _Id;
         private string _UserName;
         private string _NormalizedUserName;
@@ -29,6 +31,16 @@ namespace QROrganizer.Web.Models
         private bool? _LockoutEnabled;
         private int? _AccessFailedCount;
 
+        public int? SubscriptionLevelId
+        {
+            get => _SubscriptionLevelId;
+            set { _SubscriptionLevelId = value; Changed(nameof(SubscriptionLevelId)); }
+        }
+        public QROrganizer.Web.Models.SubscriptionLevelDtoGen SubscriptionLevel
+        {
+            get => _SubscriptionLevel;
+            set { _SubscriptionLevel = value; Changed(nameof(SubscriptionLevel)); }
+        }
         public string Id
         {
             get => _Id;
@@ -115,6 +127,7 @@ namespace QROrganizer.Web.Models
 
             // Fill the properties of the object.
 
+            this.SubscriptionLevelId = obj.SubscriptionLevelId;
             this.Id = obj.Id;
             this.UserName = obj.UserName;
             this.NormalizedUserName = obj.NormalizedUserName;
@@ -130,6 +143,9 @@ namespace QROrganizer.Web.Models
             this.LockoutEnd = obj.LockoutEnd;
             this.LockoutEnabled = obj.LockoutEnabled;
             this.AccessFailedCount = obj.AccessFailedCount;
+            if (tree == null || tree[nameof(this.SubscriptionLevel)] != null)
+                this.SubscriptionLevel = obj.SubscriptionLevel.MapToDto<QROrganizer.Data.Models.SubscriptionLevel, SubscriptionLevelDtoGen>(context, tree?[nameof(this.SubscriptionLevel)]);
+
         }
 
         /// <summary>
@@ -141,6 +157,7 @@ namespace QROrganizer.Web.Models
 
             if (OnUpdate(entity, context)) return;
 
+            if (ShouldMapTo(nameof(SubscriptionLevelId))) entity.SubscriptionLevelId = SubscriptionLevelId;
             if (ShouldMapTo(nameof(Id))) entity.Id = Id;
             if (ShouldMapTo(nameof(UserName))) entity.UserName = UserName;
             if (ShouldMapTo(nameof(NormalizedUserName))) entity.NormalizedUserName = NormalizedUserName;

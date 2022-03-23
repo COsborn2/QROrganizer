@@ -11,7 +11,7 @@ export const SubscriptionFeature = domain.enums.SubscriptionFeature = {
   displayName: "Subscription Feature",
   type: "enum",
   ...getEnumMeta<"BARCODE_LOOKUP">([
-    { value: 0, strValue: 'BARCODE_LOOKUP', displayName: 'B A R C O D E_ L O O K U P' },
+    { value: 1, strValue: 'BARCODE_LOOKUP', displayName: 'B A R C O D E_ L O O K U P' },
   ]),
 }
 export const ApplicationUser = domain.types.ApplicationUser = {
@@ -23,6 +23,26 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   get keyProp() { return this.props.id }, 
   behaviorFlags: 2,
   props: {
+    subscriptionLevelId: {
+      name: "subscriptionLevelId",
+      displayName: "Subscription Level Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.SubscriptionLevel as ModelType).props.id as PrimaryKeyProperty },
+      get principalType() { return (domain.types.SubscriptionLevel as ModelType) },
+      get navigationProp() { return (domain.types.ApplicationUser as ModelType).props.subscriptionLevel as ModelReferenceNavigationProperty },
+      hidden: 3,
+    },
+    subscriptionLevel: {
+      name: "subscriptionLevel",
+      displayName: "Subscription Level",
+      type: "model",
+      get typeDef() { return (domain.types.SubscriptionLevel as ModelType) },
+      role: "referenceNavigation",
+      get foreignKey() { return (domain.types.ApplicationUser as ModelType).props.subscriptionLevelId as ForeignKeyProperty },
+      get principalKey() { return (domain.types.SubscriptionLevel as ModelType).props.id as PrimaryKeyProperty },
+      dontSerialize: true,
+    },
     id: {
       name: "id",
       displayName: "Id",
@@ -663,9 +683,27 @@ export const UserInfo = domain.types.UserInfo = {
       type: "string",
       role: "value",
     },
+    subscriptionName: {
+      name: "subscriptionName",
+      displayName: "Subscription Name",
+      type: "string",
+      role: "value",
+    },
     roles: {
       name: "roles",
       displayName: "Roles",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "string",
+      },
+      role: "value",
+    },
+    features: {
+      name: "features",
+      displayName: "Features",
       type: "collection",
       itemType: {
         name: "$collectionItem",

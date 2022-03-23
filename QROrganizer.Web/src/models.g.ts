@@ -2,11 +2,13 @@ import * as metadata from './metadata.g'
 import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/model'
 
 export enum SubscriptionFeature {
-  BARCODE_LOOKUP = 0,
+  BARCODE_LOOKUP = 1,
 }
 
 
 export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> {
+  subscriptionLevelId: number | null
+  subscriptionLevel: SubscriptionLevel | null
   id: string | null
   userName: string | null
   normalizedUserName: string | null
@@ -265,7 +267,9 @@ export class SiteInfoDto {
 export interface UserInfo extends Model<typeof metadata.UserInfo> {
   email: string | null
   username: string | null
+  subscriptionName: string | null
   roles: string[] | null
+  features: string[] | null
 }
 export class UserInfo {
   
