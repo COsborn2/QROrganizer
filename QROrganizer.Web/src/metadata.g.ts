@@ -15,6 +15,26 @@ export const ApplicationUser = domain.types.ApplicationUser = {
   get keyProp() { return this.props.id }, 
   behaviorFlags: 2,
   props: {
+    subscriptionLevelId: {
+      name: "subscriptionLevelId",
+      displayName: "Subscription Level Id",
+      type: "number",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.SubscriptionLevel as ModelType).props.id as PrimaryKeyProperty },
+      get principalType() { return (domain.types.SubscriptionLevel as ModelType) },
+      get navigationProp() { return (domain.types.ApplicationUser as ModelType).props.subscriptionLevel as ModelReferenceNavigationProperty },
+      hidden: 3,
+    },
+    subscriptionLevel: {
+      name: "subscriptionLevel",
+      displayName: "Subscription Level",
+      type: "model",
+      get typeDef() { return (domain.types.SubscriptionLevel as ModelType) },
+      role: "referenceNavigation",
+      get foreignKey() { return (domain.types.ApplicationUser as ModelType).props.subscriptionLevelId as ForeignKeyProperty },
+      get principalKey() { return (domain.types.SubscriptionLevel as ModelType).props.id as PrimaryKeyProperty },
+      dontSerialize: true,
+    },
     id: {
       name: "id",
       displayName: "Id",
@@ -194,11 +214,26 @@ export const Item = domain.types.Item = {
       role: "primaryKey",
       hidden: 3,
     },
-    barcodeNumber: {
-      name: "barcodeNumber",
-      displayName: "Barcode Number",
+    upcCode: {
+      name: "upcCode",
+      displayName: "Upc Code",
       type: "string",
-      role: "value",
+      role: "foreignKey",
+      get principalKey() { return (domain.types.ItemBarcodeInformation as ModelType).props.id as PrimaryKeyProperty },
+      get principalType() { return (domain.types.ItemBarcodeInformation as ModelType) },
+      get navigationProp() { return (domain.types.Item as ModelType).props.itemBarcodeInformation as ModelReferenceNavigationProperty },
+      hidden: 3,
+    },
+    itemBarcodeInformation: {
+      name: "itemBarcodeInformation",
+      displayName: "Item Barcode Information",
+      type: "model",
+      get typeDef() { return (domain.types.ItemBarcodeInformation as ModelType) },
+      role: "referenceNavigation",
+      get foreignKey() { return (domain.types.Item as ModelType).props.upcCode as ForeignKeyProperty },
+      get principalKey() { return (domain.types.ItemBarcodeInformation as ModelType).props.id as PrimaryKeyProperty },
+      get inverseNavigation() { return (domain.types.ItemBarcodeInformation as ModelType).props.items as ModelCollectionNavigationProperty },
+      dontSerialize: true,
     },
     name: {
       name: "name",
@@ -287,6 +322,158 @@ export const Item = domain.types.Item = {
         },
       },
     },
+  },
+}
+export const ItemBarcodeInformation = domain.types.ItemBarcodeInformation = {
+  name: "ItemBarcodeInformation",
+  displayName: "Item Barcode Information",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "ItemBarcodeInformation",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    title: {
+      name: "title",
+      displayName: "Title",
+      type: "string",
+      role: "value",
+    },
+    upcCode: {
+      name: "upcCode",
+      displayName: "Upc Code",
+      type: "string",
+      role: "value",
+    },
+    items: {
+      name: "items",
+      displayName: "Items",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.Item as ModelType) },
+      },
+      role: "collectionNavigation",
+      get foreignKey() { return (domain.types.Item as ModelType).props.upcCode as ForeignKeyProperty },
+      get inverseNavigation() { return (domain.types.Item as ModelType).props.itemBarcodeInformation as ModelReferenceNavigationProperty },
+      dontSerialize: true,
+    },
+    eanCode: {
+      name: "eanCode",
+      displayName: "Ean Code",
+      type: "string",
+      role: "value",
+    },
+    parentCategory: {
+      name: "parentCategory",
+      displayName: "Parent Category",
+      type: "string",
+      role: "value",
+    },
+    category: {
+      name: "category",
+      displayName: "Category",
+      type: "string",
+      role: "value",
+    },
+    brand: {
+      name: "brand",
+      displayName: "Brand",
+      type: "string",
+      role: "value",
+    },
+    model: {
+      name: "model",
+      displayName: "Model",
+      type: "string",
+      role: "value",
+    },
+    mpnCode: {
+      name: "mpnCode",
+      displayName: "Mpn Code",
+      type: "string",
+      role: "value",
+    },
+    manufacturer: {
+      name: "manufacturer",
+      displayName: "Manufacturer",
+      type: "string",
+      role: "value",
+    },
+    publisher: {
+      name: "publisher",
+      displayName: "Publisher",
+      type: "string",
+      role: "value",
+    },
+    asinCode: {
+      name: "asinCode",
+      displayName: "Asin Code",
+      type: "string",
+      role: "value",
+    },
+    color: {
+      name: "color",
+      displayName: "Color",
+      type: "string",
+      role: "value",
+    },
+    size: {
+      name: "size",
+      displayName: "Size",
+      type: "string",
+      role: "value",
+    },
+    weight: {
+      name: "weight",
+      displayName: "Weight",
+      type: "string",
+      role: "value",
+    },
+    imageLink: {
+      name: "imageLink",
+      displayName: "Image Link",
+      type: "string",
+      role: "value",
+    },
+    isAdult: {
+      name: "isAdult",
+      displayName: "Is Adult",
+      type: "string",
+      role: "value",
+    },
+    description: {
+      name: "description",
+      displayName: "Description",
+      type: "string",
+      role: "value",
+    },
+    lowestPrice: {
+      name: "lowestPrice",
+      displayName: "Lowest Price",
+      type: "string",
+      role: "value",
+    },
+    highestPrice: {
+      name: "highestPrice",
+      displayName: "Highest Price",
+      type: "string",
+      role: "value",
+    },
+  },
+  methods: {
+  },
+  dataSources: {
   },
 }
 export const Log = domain.types.Log = {
@@ -447,6 +634,102 @@ export const RestrictedAccessCode = domain.types.RestrictedAccessCode = {
   dataSources: {
   },
 }
+export const SubscriptionFeature = domain.types.SubscriptionFeature = {
+  name: "SubscriptionFeature",
+  displayName: "Subscription Feature",
+  get displayProp() { return this.props.name }, 
+  type: "model",
+  controllerRoute: "SubscriptionFeature",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    name: {
+      name: "name",
+      displayName: "Name",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Name is required.",
+      }
+    },
+    isEnabled: {
+      name: "isEnabled",
+      displayName: "Is Enabled",
+      type: "boolean",
+      role: "value",
+    },
+    subscriptionLevels: {
+      name: "subscriptionLevels",
+      displayName: "Subscription Levels",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.SubscriptionLevel as ModelType) },
+      },
+      role: "value",
+      dontSerialize: true,
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
+export const SubscriptionLevel = domain.types.SubscriptionLevel = {
+  name: "SubscriptionLevel",
+  displayName: "Subscription Level",
+  get displayProp() { return this.props.id }, 
+  type: "model",
+  controllerRoute: "SubscriptionLevel",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    subscriptionName: {
+      name: "subscriptionName",
+      displayName: "Subscription Name",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Subscription Name is required.",
+      }
+    },
+    features: {
+      name: "features",
+      displayName: "Features",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.SubscriptionFeature as ModelType) },
+      },
+      role: "value",
+      dontSerialize: true,
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
 export const SiteInfoDto = domain.types.SiteInfoDto = {
   name: "SiteInfoDto",
   displayName: "Site Info Dto",
@@ -484,9 +767,39 @@ export const UserInfo = domain.types.UserInfo = {
       type: "string",
       role: "value",
     },
+    subscriptionName: {
+      name: "subscriptionName",
+      displayName: "Subscription Name",
+      type: "string",
+      role: "value",
+    },
     roles: {
       name: "roles",
       displayName: "Roles",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "string",
+      },
+      role: "value",
+    },
+    activeFeatures: {
+      name: "activeFeatures",
+      displayName: "Active Features",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "string",
+      },
+      role: "value",
+    },
+    inactiveFeatures: {
+      name: "inactiveFeatures",
+      displayName: "Inactive Features",
       type: "collection",
       itemType: {
         name: "$collectionItem",
@@ -521,6 +834,41 @@ export const AccessCodeService = domain.services.AccessCodeService = {
         name: "$return",
         displayName: "Result",
         type: "boolean",
+        role: "value",
+      },
+    },
+  },
+}
+export const ItemScanningService = domain.services.ItemScanningService = {
+  name: "ItemScanningService",
+  displayName: "Item Scanning Service",
+  type: "service",
+  controllerRoute: "ItemScanningService",
+  methods: {
+    createItemForUpcCodeAndStartSearch: {
+      name: "createItemForUpcCodeAndStartSearch",
+      displayName: "Create Item For Upc Code And Start Search",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        upcCode: {
+          name: "upcCode",
+          displayName: "Upc Code",
+          type: "string",
+          role: "value",
+        },
+        containerId: {
+          name: "containerId",
+          displayName: "Container Id",
+          type: "number",
+          role: "value",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "model",
+        get typeDef() { return (domain.types.Item as ModelType) },
         role: "value",
       },
     },
@@ -606,13 +954,17 @@ interface AppDomain extends Domain {
     ApplicationUser: typeof ApplicationUser
     Container: typeof Container
     Item: typeof Item
+    ItemBarcodeInformation: typeof ItemBarcodeInformation
     Log: typeof Log
     RestrictedAccessCode: typeof RestrictedAccessCode
     SiteInfoDto: typeof SiteInfoDto
+    SubscriptionFeature: typeof SubscriptionFeature
+    SubscriptionLevel: typeof SubscriptionLevel
     UserInfo: typeof UserInfo
   }
   services: {
     AccessCodeService: typeof AccessCodeService
+    ItemScanningService: typeof ItemScanningService
     SiteInfoService: typeof SiteInfoService
     UserInfoService: typeof UserInfoService
   }

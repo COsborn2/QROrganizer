@@ -1,21 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using QROrganizer.Data.Policies;
 
-namespace QROrganizer.Data.Util
+namespace QROrganizer.Data.Util;
+
+public static class ClaimsPrincipalExtensions
 {
-    public static class ClaimsPrincipalExtensions
-    {
-        public static string Email(this ClaimsPrincipal claimsPrincipal)
-            => claimsPrincipal.FindFirstValue(ClaimTypes.Email);
+    private static ICollection<string> GetClaimsOfType(this ClaimsPrincipal claimsPrincipal, string claimType)
+        => claimsPrincipal.Claims.Where(x => x.Type == claimType)
+            .Select(x => x.Value)
+            .ToList();
 
-        public static string Username(this ClaimsPrincipal claimsPrincipal)
-            => claimsPrincipal.FindFirstValue(ClaimTypes.Name);
+    public static string Email(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.FindFirstValue(ClaimTypes.Email);
 
-        public static ICollection<string> Roles(this ClaimsPrincipal claimsPrincipal)
-            => claimsPrincipal.Claims
-                .Where(x => x.Type == ClaimTypes.Role)
-                .Select(x => x.Value)
-                .ToList();
-    }
+    public static string Username(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.FindFirstValue(ClaimTypes.Name);
+
+    public static ICollection<string> Roles(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.GetClaimsOfType(ClaimTypes.Role);
+
+    public static ICollection<string> ActiveFeatures(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.GetClaimsOfType(AppClaimsTypes.ActiveFeature);
+
+    public static ICollection<string> InactiveFeatures(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.GetClaimsOfType(AppClaimsTypes.InactiveFeature);
+
+    public static string SubscriptionLevel(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.FindFirstValue(AppClaimsTypes.SubscriptionLevelName);
 }

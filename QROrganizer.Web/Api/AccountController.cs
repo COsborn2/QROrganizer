@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QROrganizer.Data;
 using QROrganizer.Data.Models;
@@ -79,14 +81,9 @@ namespace QROrganizer.Web.Api
                 return new UnauthorizedResult();
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
 
-            var loggedInUser = new UserInfo
-            {
-                Email = user.Email,
-                Roles = roles,
-                Username = user.UserName
-            };
+            var loggedInUser = new UserInfo(claimsPrincipal);
 
             return Ok(loggedInUser);
         }

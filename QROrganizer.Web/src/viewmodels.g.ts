@@ -4,6 +4,8 @@ import * as $apiClients from './api-clients.g'
 import { ViewModel, ListViewModel, ServiceViewModel, DeepPartial, defineProps } from 'coalesce-vue/lib/viewmodel'
 
 export interface ApplicationUserViewModel extends $models.ApplicationUser {
+  subscriptionLevelId: number | null;
+  subscriptionLevel: SubscriptionLevelViewModel | null;
   id: string | null;
   userName: string | null;
   normalizedUserName: string | null;
@@ -65,7 +67,8 @@ export class ContainerListViewModel extends ListViewModel<$models.Container, $ap
 
 export interface ItemViewModel extends $models.Item {
   id: number | null;
-  barcodeNumber: string | null;
+  upcCode: string | null;
+  itemBarcodeInformation: ItemBarcodeInformationViewModel | null;
   name: string | null;
   quantity: number | null;
   userId: string | null;
@@ -85,6 +88,50 @@ export class ItemListViewModel extends ListViewModel<$models.Item, $apiClients.I
   
   constructor() {
     super($metadata.Item, new $apiClients.ItemApiClient())
+  }
+}
+
+
+export interface ItemBarcodeInformationViewModel extends $models.ItemBarcodeInformation {
+  id: number | null;
+  title: string | null;
+  upcCode: string | null;
+  items: ItemViewModel[] | null;
+  eanCode: string | null;
+  parentCategory: string | null;
+  category: string | null;
+  brand: string | null;
+  model: string | null;
+  mpnCode: string | null;
+  manufacturer: string | null;
+  publisher: string | null;
+  asinCode: string | null;
+  color: string | null;
+  size: string | null;
+  weight: string | null;
+  imageLink: string | null;
+  isAdult: string | null;
+  description: string | null;
+  lowestPrice: string | null;
+  highestPrice: string | null;
+}
+export class ItemBarcodeInformationViewModel extends ViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, number> implements $models.ItemBarcodeInformation  {
+  
+  
+  public addToItems() {
+    return this.$addChild('items') as ItemViewModel
+  }
+  
+  constructor(initialData?: DeepPartial<$models.ItemBarcodeInformation> | null) {
+    super($metadata.ItemBarcodeInformation, new $apiClients.ItemBarcodeInformationApiClient(), initialData)
+  }
+}
+defineProps(ItemBarcodeInformationViewModel, $metadata.ItemBarcodeInformation)
+
+export class ItemBarcodeInformationListViewModel extends ListViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, ItemBarcodeInformationViewModel> {
+  
+  constructor() {
+    super($metadata.ItemBarcodeInformation, new $apiClients.ItemBarcodeInformationApiClient())
   }
 }
 
@@ -162,6 +209,49 @@ export class RestrictedAccessCodeListViewModel extends ListViewModel<$models.Res
 }
 
 
+export interface SubscriptionFeatureViewModel extends $models.SubscriptionFeature {
+  id: number | null;
+  name: string | null;
+  isEnabled: boolean | null;
+  subscriptionLevels: SubscriptionLevelViewModel[] | null;
+}
+export class SubscriptionFeatureViewModel extends ViewModel<$models.SubscriptionFeature, $apiClients.SubscriptionFeatureApiClient, number> implements $models.SubscriptionFeature  {
+  
+  constructor(initialData?: DeepPartial<$models.SubscriptionFeature> | null) {
+    super($metadata.SubscriptionFeature, new $apiClients.SubscriptionFeatureApiClient(), initialData)
+  }
+}
+defineProps(SubscriptionFeatureViewModel, $metadata.SubscriptionFeature)
+
+export class SubscriptionFeatureListViewModel extends ListViewModel<$models.SubscriptionFeature, $apiClients.SubscriptionFeatureApiClient, SubscriptionFeatureViewModel> {
+  
+  constructor() {
+    super($metadata.SubscriptionFeature, new $apiClients.SubscriptionFeatureApiClient())
+  }
+}
+
+
+export interface SubscriptionLevelViewModel extends $models.SubscriptionLevel {
+  id: number | null;
+  subscriptionName: string | null;
+  features: SubscriptionFeatureViewModel[] | null;
+}
+export class SubscriptionLevelViewModel extends ViewModel<$models.SubscriptionLevel, $apiClients.SubscriptionLevelApiClient, number> implements $models.SubscriptionLevel  {
+  
+  constructor(initialData?: DeepPartial<$models.SubscriptionLevel> | null) {
+    super($metadata.SubscriptionLevel, new $apiClients.SubscriptionLevelApiClient(), initialData)
+  }
+}
+defineProps(SubscriptionLevelViewModel, $metadata.SubscriptionLevel)
+
+export class SubscriptionLevelListViewModel extends ListViewModel<$models.SubscriptionLevel, $apiClients.SubscriptionLevelApiClient, SubscriptionLevelViewModel> {
+  
+  constructor() {
+    super($metadata.SubscriptionLevel, new $apiClients.SubscriptionLevelApiClient())
+  }
+}
+
+
 export class AccessCodeServiceViewModel extends ServiceViewModel<typeof $metadata.AccessCodeService, $apiClients.AccessCodeServiceApiClient> {
   
   public get isAccessCodeValid() {
@@ -177,6 +267,25 @@ export class AccessCodeServiceViewModel extends ServiceViewModel<typeof $metadat
   
   constructor() {
     super($metadata.AccessCodeService, new $apiClients.AccessCodeServiceApiClient())
+  }
+}
+
+
+export class ItemScanningServiceViewModel extends ServiceViewModel<typeof $metadata.ItemScanningService, $apiClients.ItemScanningServiceApiClient> {
+  
+  public get createItemForUpcCodeAndStartSearch() {
+    const createItemForUpcCodeAndStartSearch = this.$apiClient.$makeCaller(
+      this.$metadata.methods.createItemForUpcCodeAndStartSearch,
+      (c, upcCode: string | null, containerId: number | null) => c.createItemForUpcCodeAndStartSearch(upcCode, containerId),
+      () => ({upcCode: null as string | null, containerId: null as number | null, }),
+      (c, args) => c.createItemForUpcCodeAndStartSearch(args.upcCode, args.containerId))
+    
+    Object.defineProperty(this, 'createItemForUpcCodeAndStartSearch', {value: createItemForUpcCodeAndStartSearch});
+    return createItemForUpcCodeAndStartSearch
+  }
+  
+  constructor() {
+    super($metadata.ItemScanningService, new $apiClients.ItemScanningServiceApiClient())
   }
 }
 
@@ -234,18 +343,25 @@ const viewModelTypeLookup = ViewModel.typeLookup = {
   ApplicationUser: ApplicationUserViewModel,
   Container: ContainerViewModel,
   Item: ItemViewModel,
+  ItemBarcodeInformation: ItemBarcodeInformationViewModel,
   Log: LogViewModel,
   RestrictedAccessCode: RestrictedAccessCodeViewModel,
+  SubscriptionFeature: SubscriptionFeatureViewModel,
+  SubscriptionLevel: SubscriptionLevelViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ApplicationUser: ApplicationUserListViewModel,
   Container: ContainerListViewModel,
   Item: ItemListViewModel,
+  ItemBarcodeInformation: ItemBarcodeInformationListViewModel,
   Log: LogListViewModel,
   RestrictedAccessCode: RestrictedAccessCodeListViewModel,
+  SubscriptionFeature: SubscriptionFeatureListViewModel,
+  SubscriptionLevel: SubscriptionLevelListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   AccessCodeService: AccessCodeServiceViewModel,
+  ItemScanningService: ItemScanningServiceViewModel,
   SiteInfoService: SiteInfoServiceViewModel,
   UserInfoService: UserInfoServiceViewModel,
 }

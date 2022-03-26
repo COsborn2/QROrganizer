@@ -15,7 +15,10 @@ namespace QROrganizer.Web.Models
 
         private string _Email;
         private string _Username;
+        private string _SubscriptionName;
         private System.Collections.Generic.ICollection<string> _Roles;
+        private System.Collections.Generic.ICollection<string> _ActiveFeatures;
+        private System.Collections.Generic.ICollection<string> _InactiveFeatures;
 
         public string Email
         {
@@ -27,10 +30,25 @@ namespace QROrganizer.Web.Models
             get => _Username;
             set { _Username = value; Changed(nameof(Username)); }
         }
+        public string SubscriptionName
+        {
+            get => _SubscriptionName;
+            set { _SubscriptionName = value; Changed(nameof(SubscriptionName)); }
+        }
         public System.Collections.Generic.ICollection<string> Roles
         {
             get => _Roles;
             set { _Roles = value; Changed(nameof(Roles)); }
+        }
+        public System.Collections.Generic.ICollection<string> ActiveFeatures
+        {
+            get => _ActiveFeatures;
+            set { _ActiveFeatures = value; Changed(nameof(ActiveFeatures)); }
+        }
+        public System.Collections.Generic.ICollection<string> InactiveFeatures
+        {
+            get => _InactiveFeatures;
+            set { _InactiveFeatures = value; Changed(nameof(InactiveFeatures)); }
         }
 
         /// <summary>
@@ -45,7 +63,10 @@ namespace QROrganizer.Web.Models
 
             this.Email = obj.Email;
             this.Username = obj.Username;
+            this.SubscriptionName = obj.SubscriptionName;
             this.Roles = obj.Roles;
+            this.ActiveFeatures = obj.ActiveFeatures;
+            this.InactiveFeatures = obj.InactiveFeatures;
         }
 
         /// <summary>
@@ -59,7 +80,10 @@ namespace QROrganizer.Web.Models
 
             if (ShouldMapTo(nameof(Email))) entity.Email = Email;
             if (ShouldMapTo(nameof(Username))) entity.Username = Username;
+            if (ShouldMapTo(nameof(SubscriptionName))) entity.SubscriptionName = SubscriptionName;
             if (ShouldMapTo(nameof(Roles))) entity.Roles = Roles;
+            if (ShouldMapTo(nameof(ActiveFeatures))) entity.ActiveFeatures = ActiveFeatures;
+            if (ShouldMapTo(nameof(InactiveFeatures))) entity.InactiveFeatures = InactiveFeatures;
         }
     }
 }

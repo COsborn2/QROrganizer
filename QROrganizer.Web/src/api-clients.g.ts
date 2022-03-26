@@ -19,6 +19,11 @@ export class ItemApiClient extends ModelApiClient<$models.Item> {
 }
 
 
+export class ItemBarcodeInformationApiClient extends ModelApiClient<$models.ItemBarcodeInformation> {
+  constructor() { super($metadata.ItemBarcodeInformation) }
+}
+
+
 export class LogApiClient extends ModelApiClient<$models.Log> {
   constructor() { super($metadata.Log) }
 }
@@ -44,12 +49,36 @@ export class RestrictedAccessCodeApiClient extends ModelApiClient<$models.Restri
 }
 
 
+export class SubscriptionFeatureApiClient extends ModelApiClient<$models.SubscriptionFeature> {
+  constructor() { super($metadata.SubscriptionFeature) }
+}
+
+
+export class SubscriptionLevelApiClient extends ModelApiClient<$models.SubscriptionLevel> {
+  constructor() { super($metadata.SubscriptionLevel) }
+}
+
+
 export class AccessCodeServiceApiClient extends ServiceApiClient<typeof $metadata.AccessCodeService> {
   constructor() { super($metadata.AccessCodeService) }
   public isAccessCodeValid(code: string | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<boolean>> {
     const $method = this.$metadata.methods.isAccessCodeValid
     const $params =  {
       code,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
+export class ItemScanningServiceApiClient extends ServiceApiClient<typeof $metadata.ItemScanningService> {
+  constructor() { super($metadata.ItemScanningService) }
+  public createItemForUpcCodeAndStartSearch(upcCode: string | null, containerId: number | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Item>> {
+    const $method = this.$metadata.methods.createItemForUpcCodeAndStartSearch
+    const $params =  {
+      upcCode,
+      containerId,
     }
     return this.$invoke($method, $params, $config)
   }

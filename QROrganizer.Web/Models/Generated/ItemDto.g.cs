@@ -14,7 +14,8 @@ namespace QROrganizer.Web.Models
         public ItemDtoGen() { }
 
         private int? _Id;
-        private string _BarcodeNumber;
+        private string _UpcCode;
+        private QROrganizer.Web.Models.ItemBarcodeInformationDtoGen _ItemBarcodeInformation;
         private string _Name;
         private int? _Quantity;
         private string _UserId;
@@ -27,10 +28,15 @@ namespace QROrganizer.Web.Models
             get => _Id;
             set { _Id = value; Changed(nameof(Id)); }
         }
-        public string BarcodeNumber
+        public string UpcCode
         {
-            get => _BarcodeNumber;
-            set { _BarcodeNumber = value; Changed(nameof(BarcodeNumber)); }
+            get => _UpcCode;
+            set { _UpcCode = value; Changed(nameof(UpcCode)); }
+        }
+        public QROrganizer.Web.Models.ItemBarcodeInformationDtoGen ItemBarcodeInformation
+        {
+            get => _ItemBarcodeInformation;
+            set { _ItemBarcodeInformation = value; Changed(nameof(ItemBarcodeInformation)); }
         }
         public string Name
         {
@@ -74,11 +80,14 @@ namespace QROrganizer.Web.Models
             // Fill the properties of the object.
 
             this.Id = obj.Id;
-            this.BarcodeNumber = obj.BarcodeNumber;
+            this.UpcCode = obj.UpcCode;
             this.Name = obj.Name;
             this.Quantity = obj.Quantity;
             this.UserId = obj.UserId;
             this.ContainerId = obj.ContainerId;
+            if (tree == null || tree[nameof(this.ItemBarcodeInformation)] != null)
+                this.ItemBarcodeInformation = obj.ItemBarcodeInformation.MapToDto<QROrganizer.Data.Models.ItemBarcodeInformation, ItemBarcodeInformationDtoGen>(context, tree?[nameof(this.ItemBarcodeInformation)]);
+
             if (tree == null || tree[nameof(this.User)] != null)
                 this.User = obj.User.MapToDto<QROrganizer.Data.Models.ApplicationUser, ApplicationUserDtoGen>(context, tree?[nameof(this.User)]);
 
@@ -97,7 +106,7 @@ namespace QROrganizer.Web.Models
             if (OnUpdate(entity, context)) return;
 
             if (ShouldMapTo(nameof(Id))) entity.Id = (Id ?? entity.Id);
-            if (ShouldMapTo(nameof(BarcodeNumber))) entity.BarcodeNumber = BarcodeNumber;
+            if (ShouldMapTo(nameof(UpcCode))) entity.UpcCode = UpcCode;
             if (ShouldMapTo(nameof(Name))) entity.Name = Name;
             if (ShouldMapTo(nameof(Quantity))) entity.Quantity = (Quantity ?? entity.Quantity);
             if (ShouldMapTo(nameof(UserId))) entity.UserId = UserId;

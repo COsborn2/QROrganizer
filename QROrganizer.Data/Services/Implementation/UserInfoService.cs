@@ -27,12 +27,7 @@ namespace QROrganizer.Data.Services.Implementation
         [Execute(SecurityPermissionLevels.AllowAll)]
         public UserInfo GetUserInfo(ClaimsPrincipal claimsPrincipal)
         {
-            return new UserInfo
-            {
-                Email = claimsPrincipal.Email(),
-                Username = claimsPrincipal.Username(),
-                Roles = claimsPrincipal.Roles()
-            };
+            return new UserInfo(claimsPrincipal);
         }
 
         [Coalesce]
