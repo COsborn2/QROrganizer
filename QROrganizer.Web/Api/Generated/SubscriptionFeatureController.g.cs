@@ -32,7 +32,7 @@ namespace QROrganizer.Web.Api
         }
 
         [HttpGet("get/{id}")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<SubscriptionFeatureDtoGen>> Get(
             int id,
             DataSourceParameters parameters,
@@ -40,21 +40,21 @@ namespace QROrganizer.Web.Api
             => GetImplementation(id, parameters, dataSource);
 
         [HttpGet("list")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ListResult<SubscriptionFeatureDtoGen>> List(
             ListParameters parameters,
             IDataSource<QROrganizer.Data.Models.SubscriptionFeature> dataSource)
             => ListImplementation(parameters, dataSource);
 
         [HttpGet("count")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<int>> Count(
             FilterParameters parameters,
             IDataSource<QROrganizer.Data.Models.SubscriptionFeature> dataSource)
             => CountImplementation(parameters, dataSource);
 
         [HttpPost("save")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<SubscriptionFeatureDtoGen>> Save(
             SubscriptionFeatureDtoGen dto,
             [FromQuery] DataSourceParameters parameters,
@@ -63,7 +63,7 @@ namespace QROrganizer.Web.Api
             => SaveImplementation(dto, parameters, dataSource, behaviors);
 
         [HttpPost("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         public virtual Task<ItemResult<SubscriptionFeatureDtoGen>> Delete(
             int id,
             IBehaviors<QROrganizer.Data.Models.SubscriptionFeature> behaviors,

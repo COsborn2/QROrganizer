@@ -12,7 +12,7 @@ using QROrganizer.Data;
 namespace QROrganizer.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220326080322_AddSubscriptionLevelAndItemBarcodeInfo")]
+    [Migration("20220326085303_AddSubscriptionLevelAndItemBarcodeInfo")]
     partial class AddSubscriptionLevelAndItemBarcodeInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
