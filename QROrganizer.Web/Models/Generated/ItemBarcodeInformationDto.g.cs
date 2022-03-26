@@ -16,6 +16,7 @@ namespace QROrganizer.Web.Models
         private int? _Id;
         private string _Title;
         private string _UpcCode;
+        private System.Collections.Generic.ICollection<QROrganizer.Web.Models.ItemDtoGen> _Items;
         private string _EanCode;
         private string _ParentCategory;
         private string _Category;
@@ -48,6 +49,11 @@ namespace QROrganizer.Web.Models
         {
             get => _UpcCode;
             set { _UpcCode = value; Changed(nameof(UpcCode)); }
+        }
+        public System.Collections.Generic.ICollection<QROrganizer.Web.Models.ItemDtoGen> Items
+        {
+            get => _Items;
+            set { _Items = value; Changed(nameof(Items)); }
         }
         public string EanCode
         {
@@ -165,6 +171,18 @@ namespace QROrganizer.Web.Models
             this.Description = obj.Description;
             this.LowestPrice = obj.LowestPrice;
             this.HighestPrice = obj.HighestPrice;
+            var propValItems = obj.Items;
+            if (propValItems != null && (tree == null || tree[nameof(this.Items)] != null))
+            {
+                this.Items = propValItems
+                    .OrderBy(f => f.Name)
+                    .Select(f => f.MapToDto<QROrganizer.Data.Models.Item, ItemDtoGen>(context, tree?[nameof(this.Items)])).ToList();
+            }
+            else if (propValItems == null && tree?[nameof(this.Items)] != null)
+            {
+                this.Items = new ItemDtoGen[0];
+            }
+
         }
 
         /// <summary>

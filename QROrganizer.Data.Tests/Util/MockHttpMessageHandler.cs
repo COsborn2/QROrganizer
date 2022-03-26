@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace QROrganizer.Data.Tests;
+namespace QROrganizer.Data.Tests.Util;
 
 public class MockHttpMessageHandler : DelegatingHandler
 {

@@ -153,6 +153,7 @@ public class Startup
         services.AddScoped<IAccessCodeService, AccessCodeService>();
         services.AddScoped<ISiteInfoService, SiteInfoService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IUpcLookupService, UpcLookupService>();
 
         services.AddSingleton<HttpContextInfo>();
     }

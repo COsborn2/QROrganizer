@@ -74,7 +74,8 @@ export namespace Container {
 
 export interface Item extends Model<typeof metadata.Item> {
   id: number | null
-  barcodeNumber: string | null
+  upcCode: string | null
+  itemBarcodeInformation: ItemBarcodeInformation | null
   name: string | null
   quantity: number | null
   userId: string | null
@@ -118,6 +119,7 @@ export interface ItemBarcodeInformation extends Model<typeof metadata.ItemBarcod
   id: number | null
   title: string | null
   upcCode: string | null
+  items: Item[] | null
   eanCode: string | null
   parentCategory: string | null
   category: string | null

@@ -5,7 +5,7 @@ namespace QROrganizer.Data.Services.Models;
 public class BarcodeSpiderItemResponse
 {
     [JsonProperty("code")]
-    public string StatusCode { get; set; }
+    public int StatusCode { get; set; }
 
     [JsonProperty("status")]
     public string Status { get; set; }

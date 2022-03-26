@@ -67,7 +67,8 @@ export class ContainerListViewModel extends ListViewModel<$models.Container, $ap
 
 export interface ItemViewModel extends $models.Item {
   id: number | null;
-  barcodeNumber: string | null;
+  upcCode: string | null;
+  itemBarcodeInformation: ItemBarcodeInformationViewModel | null;
   name: string | null;
   quantity: number | null;
   userId: string | null;
@@ -95,6 +96,7 @@ export interface ItemBarcodeInformationViewModel extends $models.ItemBarcodeInfo
   id: number | null;
   title: string | null;
   upcCode: string | null;
+  items: ItemViewModel[] | null;
   eanCode: string | null;
   parentCategory: string | null;
   category: string | null;
@@ -114,6 +116,11 @@ export interface ItemBarcodeInformationViewModel extends $models.ItemBarcodeInfo
   highestPrice: string | null;
 }
 export class ItemBarcodeInformationViewModel extends ViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, number> implements $models.ItemBarcodeInformation  {
+  
+  
+  public addToItems() {
+    return this.$addChild('items') as ItemViewModel
+  }
   
   constructor(initialData?: DeepPartial<$models.ItemBarcodeInformation> | null) {
     super($metadata.ItemBarcodeInformation, new $apiClients.ItemBarcodeInformationApiClient(), initialData)

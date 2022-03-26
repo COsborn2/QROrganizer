@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -11,7 +12,11 @@ public class Item
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public string BarcodeNumber { get; set; }
+    [InverseProperty(nameof(UpcCode))]
+    public string UpcCode { get; set; }
+
+    [ForeignKey(nameof(UpcCode))]
+    public ItemBarcodeInformation ItemBarcodeInformation { get; set; }
 
     [Required(AllowEmptyStrings = false)]
     public string Name { get; set; }

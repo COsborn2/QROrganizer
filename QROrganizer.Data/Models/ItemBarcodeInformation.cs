@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using IntelliTect.Coalesce.DataAnnotations;
 
@@ -15,8 +16,11 @@ public class ItemBarcodeInformation
     [Column("Title")]
     public string Title { get; set; }
 
+    [InverseProperty(nameof(UpcCode))]
     [Column("UpcCode")]
     public string UpcCode { get; set; }
+
+    public ICollection<Item> Items { get; set; }
 
     [Column("EanCode")]
     public string EanCode { get; set; }

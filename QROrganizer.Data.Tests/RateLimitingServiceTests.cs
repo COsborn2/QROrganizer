@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using QROrganizer.Data.Services.Implementation;
+using QROrganizer.Data.Tests.Util;
 using Xunit;
 
 namespace QROrganizer.Data.Tests;

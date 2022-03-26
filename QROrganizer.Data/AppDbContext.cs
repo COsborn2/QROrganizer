@@ -49,7 +49,13 @@ public class AppDbContext
 
         builder.Entity<ItemBarcodeInformation>()
             .HasIndex(x => x.UpcCode)
-            .IsUnique(false);
+            .IsUnique();
+
+        builder.Entity<Item>()
+            .HasOne(x => x.ItemBarcodeInformation)
+            .WithMany(x => x.Items)
+            .HasForeignKey(x => x.UpcCode)
+            .HasPrincipalKey(x => x.UpcCode);
     }
 
     /// <summary>
