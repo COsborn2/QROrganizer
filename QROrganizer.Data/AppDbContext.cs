@@ -5,6 +5,7 @@ using QROrganizer.Data.Models;
 using IntelliTect.Coalesce;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using QROrganizer.Data.Util;
 
 namespace QROrganizer.Data;
 
@@ -26,6 +27,7 @@ public class AppDbContext
     public DbSet<Log> Logs { get; set; }
     public DbSet<ItemBarcodeInformation> ItemBarcodeInformation { get; set; }
     public DbSet<SubscriptionLevel> SubscriptionLevels { get; set; }
+    public DbSet<SubscriptionFeature> SubscriptionFeatures { get; set; }
 
     public AppDbContext()
     {
@@ -44,6 +46,10 @@ public class AppDbContext
         {
             relationship.DeleteBehavior = DeleteBehavior.Restrict;
         }
+
+        builder.Entity<ItemBarcodeInformation>()
+            .HasIndex(x => x.UpcCode)
+            .IsUnique(false);
     }
 
     /// <summary>
@@ -72,6 +78,20 @@ public class AppDbContext
             });
 
         Roles.AddRange(rolesMissing);
+
+        var features = typeof(Feature).GetValues();
+        var presentFeatures = SubscriptionFeatures
+            .Where(x => features.Contains(x.Name));
+        var featuresMissing = features
+            .Where(x => !presentFeatures.Select(xi => xi.Name).Contains(x))
+            .Select(x => new SubscriptionFeature
+            {
+                Name = x,
+                IsEnabled = true
+            });
+
+        SubscriptionFeatures.AddRange(featuresMissing);
+
         SaveChanges();
     }
 }

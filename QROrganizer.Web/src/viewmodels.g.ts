@@ -202,10 +202,32 @@ export class RestrictedAccessCodeListViewModel extends ListViewModel<$models.Res
 }
 
 
+export interface SubscriptionFeatureViewModel extends $models.SubscriptionFeature {
+  id: number | null;
+  name: string | null;
+  isEnabled: boolean | null;
+  subscriptionLevels: SubscriptionLevelViewModel[] | null;
+}
+export class SubscriptionFeatureViewModel extends ViewModel<$models.SubscriptionFeature, $apiClients.SubscriptionFeatureApiClient, number> implements $models.SubscriptionFeature  {
+  
+  constructor(initialData?: DeepPartial<$models.SubscriptionFeature> | null) {
+    super($metadata.SubscriptionFeature, new $apiClients.SubscriptionFeatureApiClient(), initialData)
+  }
+}
+defineProps(SubscriptionFeatureViewModel, $metadata.SubscriptionFeature)
+
+export class SubscriptionFeatureListViewModel extends ListViewModel<$models.SubscriptionFeature, $apiClients.SubscriptionFeatureApiClient, SubscriptionFeatureViewModel> {
+  
+  constructor() {
+    super($metadata.SubscriptionFeature, new $apiClients.SubscriptionFeatureApiClient())
+  }
+}
+
+
 export interface SubscriptionLevelViewModel extends $models.SubscriptionLevel {
   id: number | null;
   subscriptionName: string | null;
-  subscriptionFeature: $models.SubscriptionFeature | null;
+  features: SubscriptionFeatureViewModel[] | null;
 }
 export class SubscriptionLevelViewModel extends ViewModel<$models.SubscriptionLevel, $apiClients.SubscriptionLevelApiClient, number> implements $models.SubscriptionLevel  {
   
@@ -298,6 +320,7 @@ const viewModelTypeLookup = ViewModel.typeLookup = {
   ItemBarcodeInformation: ItemBarcodeInformationViewModel,
   Log: LogViewModel,
   RestrictedAccessCode: RestrictedAccessCodeViewModel,
+  SubscriptionFeature: SubscriptionFeatureViewModel,
   SubscriptionLevel: SubscriptionLevelViewModel,
 }
 const listViewModelTypeLookup = ListViewModel.typeLookup = {
@@ -307,6 +330,7 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
   ItemBarcodeInformation: ItemBarcodeInformationListViewModel,
   Log: LogListViewModel,
   RestrictedAccessCode: RestrictedAccessCodeListViewModel,
+  SubscriptionFeature: SubscriptionFeatureListViewModel,
   SubscriptionLevel: SubscriptionLevelListViewModel,
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {

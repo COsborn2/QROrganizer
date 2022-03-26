@@ -10,4 +10,9 @@ public static class EnumExtensions
     {
         return Enum.GetValues(e.GetType()).Cast<Enum>().Where(e.HasFlag).Select(x => x.ToString());
     }
+
+    public static IEnumerable<string> GetValues(this Type e)
+    {
+        return Enum.GetValues(e).Cast<Enum>().Select(x => x.ToString());
+    }
 }

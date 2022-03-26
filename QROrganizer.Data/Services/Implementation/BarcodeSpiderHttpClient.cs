@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using QROrganizer.Data.Services.Interface;
@@ -29,10 +28,7 @@ public class BarcodeSpiderHttpClient : IBarcodeSpiderHttpClient
     {
 // TODO: Check that feature is enabled
 // TODO: Requeue if 429 response
-// TODO: When calling this from controller - don't return actual response
 // TODO: Consider having a in-queue table with pending queries -- something like Caller, MetaData, etc. -- if inqueue, don't request again
-// TODO: On client side -- have list of "pending" requests -- update the request once it has been completed
-// TODO: For feature toggle table add a column for feature enabled/disabled
 
         var urlSegment = "lookup" + QueryString.Create("upc", upcCode).ToUriComponent();
         var uri = new Uri(urlSegment, UriKind.Relative);

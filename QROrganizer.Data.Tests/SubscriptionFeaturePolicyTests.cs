@@ -13,11 +13,11 @@ public class SubscriptionFeaturePolicyTests
     [Fact]
     public async Task HandleRequirementAsync_UserHasClaim()
     {
-        var requiredFeature = SubscriptionFeature.BARCODE_LOOKUP;
+        var requiredFeature = Feature.BARCODE_LOOKUP;
         var sut = new SubscriptionFeaturePolicy(requiredFeature);
 
         var cp = GetClaimsPrincipalWithClaim(
-            new Claim(AppClaimsTypes.Feature,
+            new Claim(AppClaimsTypes.ActiveFeature,
             requiredFeature.ToString()));
         var context = new AuthorizationHandlerContext(
             new[] { new SubscriptionFeatureRequirement(requiredFeature) },
@@ -31,7 +31,7 @@ public class SubscriptionFeaturePolicyTests
     [Fact]
     public async Task HandleRequirementAsync_UserMissingClaim()
     {
-        var requiredFeature = SubscriptionFeature.BARCODE_LOOKUP;
+        var requiredFeature = Feature.BARCODE_LOOKUP;
         var sut = new SubscriptionFeaturePolicy(requiredFeature);
 
         var cp = new ClaimsPrincipal();

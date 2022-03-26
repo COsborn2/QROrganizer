@@ -17,7 +17,8 @@ namespace QROrganizer.Web.Models
         private string _Username;
         private string _SubscriptionName;
         private System.Collections.Generic.ICollection<string> _Roles;
-        private System.Collections.Generic.ICollection<string> _Features;
+        private System.Collections.Generic.ICollection<string> _ActiveFeatures;
+        private System.Collections.Generic.ICollection<string> _InactiveFeatures;
 
         public string Email
         {
@@ -39,10 +40,15 @@ namespace QROrganizer.Web.Models
             get => _Roles;
             set { _Roles = value; Changed(nameof(Roles)); }
         }
-        public System.Collections.Generic.ICollection<string> Features
+        public System.Collections.Generic.ICollection<string> ActiveFeatures
         {
-            get => _Features;
-            set { _Features = value; Changed(nameof(Features)); }
+            get => _ActiveFeatures;
+            set { _ActiveFeatures = value; Changed(nameof(ActiveFeatures)); }
+        }
+        public System.Collections.Generic.ICollection<string> InactiveFeatures
+        {
+            get => _InactiveFeatures;
+            set { _InactiveFeatures = value; Changed(nameof(InactiveFeatures)); }
         }
 
         /// <summary>
@@ -59,7 +65,8 @@ namespace QROrganizer.Web.Models
             this.Username = obj.Username;
             this.SubscriptionName = obj.SubscriptionName;
             this.Roles = obj.Roles;
-            this.Features = obj.Features;
+            this.ActiveFeatures = obj.ActiveFeatures;
+            this.InactiveFeatures = obj.InactiveFeatures;
         }
 
         /// <summary>
@@ -75,7 +82,8 @@ namespace QROrganizer.Web.Models
             if (ShouldMapTo(nameof(Username))) entity.Username = Username;
             if (ShouldMapTo(nameof(SubscriptionName))) entity.SubscriptionName = SubscriptionName;
             if (ShouldMapTo(nameof(Roles))) entity.Roles = Roles;
-            if (ShouldMapTo(nameof(Features))) entity.Features = Features;
+            if (ShouldMapTo(nameof(ActiveFeatures))) entity.ActiveFeatures = ActiveFeatures;
+            if (ShouldMapTo(nameof(InactiveFeatures))) entity.InactiveFeatures = InactiveFeatures;
         }
     }
 }

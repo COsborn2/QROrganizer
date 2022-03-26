@@ -4,10 +4,10 @@ namespace QROrganizer.Data.Policies;
 
 public class SubscriptionFeatureRequirement : IAuthorizationRequirement
 {
-    public SubscriptionFeatureRequirement(SubscriptionFeature subscriptionFeature)
+    public SubscriptionFeatureRequirement(Feature feature)
     {
-        SubscriptionFeature = subscriptionFeature;
+        Feature = feature;
     }
 
-    public SubscriptionFeature SubscriptionFeature { get; }
+    public Feature Feature { get; }
 }

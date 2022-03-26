@@ -32,7 +32,6 @@ namespace QROrganizer.Web.Api
         private readonly IAccessCodeService _accessCodeService;
         private readonly IEmailService _emailService;
         private readonly IHcaptchaHttpClient _hcaptchaHttpClient;
-        private readonly ILogger<AccountController> _logger; // TODO: Use this
 
         public AccountController(
             SignInManager<ApplicationUser> signInManager,
@@ -40,8 +39,7 @@ namespace QROrganizer.Web.Api
             IOptions<AppConfigSettings> appConfigSettings,
             IAccessCodeService accessCodeService,
             IEmailService emailService,
-            IHcaptchaHttpClient hcaptchaHttpClient,
-            ILogger<AccountController> logger)
+            IHcaptchaHttpClient hcaptchaHttpClient)
         {
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -49,7 +47,6 @@ namespace QROrganizer.Web.Api
             _accessCodeService = accessCodeService ?? throw new ArgumentNullException(nameof(accessCodeService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _hcaptchaHttpClient = hcaptchaHttpClient ?? throw new ArgumentNullException(nameof(hcaptchaHttpClient));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("login")]
@@ -84,14 +81,9 @@ namespace QROrganizer.Web.Api
                 return new UnauthorizedResult();
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
 
-            var loggedInUser = new UserInfo
-            {
-                Email = user.Email,
-                Roles = roles,
-                Username = user.UserName
-            };
+            var loggedInUser = new UserInfo(claimsPrincipal);
 
             return Ok(loggedInUser);
         }

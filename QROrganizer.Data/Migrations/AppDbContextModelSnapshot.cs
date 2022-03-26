@@ -17,7 +17,7 @@ namespace QROrganizer.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -200,9 +200,6 @@ namespace QROrganizer.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubscriptionLevelId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -219,8 +216,6 @@ namespace QROrganizer.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("SubscriptionLevelId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -244,7 +239,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Containers");
+                    b.ToTable("Containers", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.Item", b =>
@@ -278,96 +273,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("QROrganizer.Data.Models.ItemBarcodeInformation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AsinCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("AsinCode");
-
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Brand");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Category");
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Color");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Description");
-
-                    b.Property<string>("EanCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("EanCode");
-
-                    b.Property<string>("HighestPrice")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("HighestPrice");
-
-                    b.Property<string>("ImageLink")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ImageLink");
-
-                    b.Property<string>("IsAdult")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("IsAdult");
-
-                    b.Property<string>("LowestPrice")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("LowestPrice");
-
-                    b.Property<string>("Manufacturer")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Manufacturer");
-
-                    b.Property<string>("Model")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Model");
-
-                    b.Property<string>("MpnCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("MpnCode");
-
-                    b.Property<string>("ParentCategory")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ParentCategory");
-
-                    b.Property<string>("Publisher")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Publisher");
-
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Size");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Title");
-
-                    b.Property<string>("UpcCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UpcCode");
-
-                    b.Property<string>("Weight")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Weight");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ItemBarcodeInformation");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.Log", b =>
@@ -421,7 +327,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.RestrictedAccessCode", b =>
@@ -443,26 +349,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessCodes");
-                });
-
-            modelBuilder.Entity("QROrganizer.Data.Models.SubscriptionLevel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("SubscriptionFeature")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SubscriptionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SubscriptionLevels");
+                    b.ToTable("AccessCodes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -514,16 +401,6 @@ namespace QROrganizer.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("QROrganizer.Data.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("QROrganizer.Data.Models.SubscriptionLevel", "SubscriptionLevel")
-                        .WithMany()
-                        .HasForeignKey("SubscriptionLevelId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("SubscriptionLevel");
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.Container", b =>

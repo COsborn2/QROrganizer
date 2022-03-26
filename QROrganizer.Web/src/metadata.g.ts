@@ -6,14 +6,6 @@ import {
 
 
 const domain: Domain = { enums: {}, types: {}, services: {} }
-export const SubscriptionFeature = domain.enums.SubscriptionFeature = {
-  name: "SubscriptionFeature",
-  displayName: "Subscription Feature",
-  type: "enum",
-  ...getEnumMeta<"BARCODE_LOOKUP">([
-    { value: 1, strValue: 'BARCODE_LOOKUP', displayName: 'B A R C O D E_ L O O K U P' },
-  ]),
-}
 export const ApplicationUser = domain.types.ApplicationUser = {
   name: "ApplicationUser",
   displayName: "Application User",
@@ -611,6 +603,57 @@ export const RestrictedAccessCode = domain.types.RestrictedAccessCode = {
   dataSources: {
   },
 }
+export const SubscriptionFeature = domain.types.SubscriptionFeature = {
+  name: "SubscriptionFeature",
+  displayName: "Subscription Feature",
+  get displayProp() { return this.props.name }, 
+  type: "model",
+  controllerRoute: "SubscriptionFeature",
+  get keyProp() { return this.props.id }, 
+  behaviorFlags: 7,
+  props: {
+    id: {
+      name: "id",
+      displayName: "Id",
+      type: "number",
+      role: "primaryKey",
+      hidden: 3,
+    },
+    name: {
+      name: "name",
+      displayName: "Name",
+      type: "string",
+      role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Name is required.",
+      }
+    },
+    isEnabled: {
+      name: "isEnabled",
+      displayName: "Is Enabled",
+      type: "boolean",
+      role: "value",
+    },
+    subscriptionLevels: {
+      name: "subscriptionLevels",
+      displayName: "Subscription Levels",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.SubscriptionLevel as ModelType) },
+      },
+      role: "value",
+      dontSerialize: true,
+    },
+  },
+  methods: {
+  },
+  dataSources: {
+  },
+}
 export const SubscriptionLevel = domain.types.SubscriptionLevel = {
   name: "SubscriptionLevel",
   displayName: "Subscription Level",
@@ -632,13 +675,23 @@ export const SubscriptionLevel = domain.types.SubscriptionLevel = {
       displayName: "Subscription Name",
       type: "string",
       role: "value",
+      rules: {
+        required: val => (val != null && val !== '') || "Subscription Name is required.",
+      }
     },
-    subscriptionFeature: {
-      name: "subscriptionFeature",
-      displayName: "Subscription Feature",
-      type: "enum",
-      get typeDef() { return domain.enums.SubscriptionFeature },
+    features: {
+      name: "features",
+      displayName: "Features",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "model",
+        get typeDef() { return (domain.types.SubscriptionFeature as ModelType) },
+      },
       role: "value",
+      dontSerialize: true,
     },
   },
   methods: {
@@ -701,9 +754,21 @@ export const UserInfo = domain.types.UserInfo = {
       },
       role: "value",
     },
-    features: {
-      name: "features",
-      displayName: "Features",
+    activeFeatures: {
+      name: "activeFeatures",
+      displayName: "Active Features",
+      type: "collection",
+      itemType: {
+        name: "$collectionItem",
+        displayName: "",
+        role: "value",
+        type: "string",
+      },
+      role: "value",
+    },
+    inactiveFeatures: {
+      name: "inactiveFeatures",
+      displayName: "Inactive Features",
       type: "collection",
       itemType: {
         name: "$collectionItem",
@@ -818,7 +883,6 @@ export const UserInfoService = domain.services.UserInfoService = {
 
 interface AppDomain extends Domain {
   enums: {
-    SubscriptionFeature: typeof SubscriptionFeature
   }
   types: {
     ApplicationUser: typeof ApplicationUser
@@ -828,6 +892,7 @@ interface AppDomain extends Domain {
     Log: typeof Log
     RestrictedAccessCode: typeof RestrictedAccessCode
     SiteInfoDto: typeof SiteInfoDto
+    SubscriptionFeature: typeof SubscriptionFeature
     SubscriptionLevel: typeof SubscriptionLevel
     UserInfo: typeof UserInfo
   }

@@ -1,11 +1,6 @@
 import * as metadata from './metadata.g'
 import { Model, DataSource, convertToModel, mapToModel } from 'coalesce-vue/lib/model'
 
-export enum SubscriptionFeature {
-  BARCODE_LOOKUP = 1,
-}
-
-
 export interface ApplicationUser extends Model<typeof metadata.ApplicationUser> {
   subscriptionLevelId: number | null
   subscriptionLevel: SubscriptionLevel | null
@@ -217,10 +212,35 @@ export class RestrictedAccessCode {
 }
 
 
+export interface SubscriptionFeature extends Model<typeof metadata.SubscriptionFeature> {
+  id: number | null
+  name: string | null
+  isEnabled: boolean | null
+  subscriptionLevels: SubscriptionLevel[] | null
+}
+export class SubscriptionFeature {
+  
+  /** Mutates the input object and its descendents into a valid SubscriptionFeature implementation. */
+  static convert(data?: Partial<SubscriptionFeature>): SubscriptionFeature {
+    return convertToModel(data || {}, metadata.SubscriptionFeature) 
+  }
+  
+  /** Maps the input object and its descendents to a new, valid SubscriptionFeature implementation. */
+  static map(data?: Partial<SubscriptionFeature>): SubscriptionFeature {
+    return mapToModel(data || {}, metadata.SubscriptionFeature) 
+  }
+  
+  /** Instantiate a new SubscriptionFeature, optionally basing it on the given data. */
+  constructor(data?: Partial<SubscriptionFeature> | {[k: string]: any}) {
+      Object.assign(this, SubscriptionFeature.map(data || {}));
+  }
+}
+
+
 export interface SubscriptionLevel extends Model<typeof metadata.SubscriptionLevel> {
   id: number | null
   subscriptionName: string | null
-  subscriptionFeature: SubscriptionFeature | null
+  features: SubscriptionFeature[] | null
 }
 export class SubscriptionLevel {
   
@@ -269,7 +289,8 @@ export interface UserInfo extends Model<typeof metadata.UserInfo> {
   username: string | null
   subscriptionName: string | null
   roles: string[] | null
-  features: string[] | null
+  activeFeatures: string[] | null
+  inactiveFeatures: string[] | null
 }
 export class UserInfo {
   

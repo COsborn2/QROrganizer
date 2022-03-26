@@ -3,7 +3,7 @@ using System;
 namespace QROrganizer.Data;
 
 [Flags]
-public enum SubscriptionFeature
+public enum Feature
 {
     BARCODE_LOOKUP = 1
 }

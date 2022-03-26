@@ -115,7 +115,7 @@ public class Startup
         // Add policy for each
         services.AddAuthorization(options =>
         {
-            var features = Enum.GetValues<SubscriptionFeature>();
+            var features = Enum.GetValues<Feature>();
             foreach (var feature in features)
             {
                 options.AddPolicy(

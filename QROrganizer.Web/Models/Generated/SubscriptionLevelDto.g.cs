@@ -15,7 +15,7 @@ namespace QROrganizer.Web.Models
 
         private int? _Id;
         private string _SubscriptionName;
-        private QROrganizer.Data.SubscriptionFeature? _SubscriptionFeature;
+        private System.Collections.Generic.ICollection<QROrganizer.Web.Models.SubscriptionFeatureDtoGen> _Features;
 
         public int? Id
         {
@@ -27,10 +27,10 @@ namespace QROrganizer.Web.Models
             get => _SubscriptionName;
             set { _SubscriptionName = value; Changed(nameof(SubscriptionName)); }
         }
-        public QROrganizer.Data.SubscriptionFeature? SubscriptionFeature
+        public System.Collections.Generic.ICollection<QROrganizer.Web.Models.SubscriptionFeatureDtoGen> Features
         {
-            get => _SubscriptionFeature;
-            set { _SubscriptionFeature = value; Changed(nameof(SubscriptionFeature)); }
+            get => _Features;
+            set { _Features = value; Changed(nameof(Features)); }
         }
 
         /// <summary>
@@ -45,7 +45,18 @@ namespace QROrganizer.Web.Models
 
             this.Id = obj.Id;
             this.SubscriptionName = obj.SubscriptionName;
-            this.SubscriptionFeature = obj.SubscriptionFeature;
+            var propValFeatures = obj.Features;
+            if (propValFeatures != null && (tree == null || tree[nameof(this.Features)] != null))
+            {
+                this.Features = propValFeatures
+                    .OrderBy(f => f.Name)
+                    .Select(f => f.MapToDto<QROrganizer.Data.Models.SubscriptionFeature, SubscriptionFeatureDtoGen>(context, tree?[nameof(this.Features)])).ToList();
+            }
+            else if (propValFeatures == null && tree?[nameof(this.Features)] != null)
+            {
+                this.Features = new SubscriptionFeatureDtoGen[0];
+            }
+
         }
 
         /// <summary>
@@ -59,7 +70,6 @@ namespace QROrganizer.Web.Models
 
             if (ShouldMapTo(nameof(Id))) entity.Id = (Id ?? entity.Id);
             if (ShouldMapTo(nameof(SubscriptionName))) entity.SubscriptionName = SubscriptionName;
-            if (ShouldMapTo(nameof(SubscriptionFeature))) entity.SubscriptionFeature = (SubscriptionFeature ?? entity.SubscriptionFeature);
         }
     }
 }

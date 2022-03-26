@@ -49,6 +49,11 @@ export class RestrictedAccessCodeApiClient extends ModelApiClient<$models.Restri
 }
 
 
+export class SubscriptionFeatureApiClient extends ModelApiClient<$models.SubscriptionFeature> {
+  constructor() { super($metadata.SubscriptionFeature) }
+}
+
+
 export class SubscriptionLevelApiClient extends ModelApiClient<$models.SubscriptionLevel> {
   constructor() { super($metadata.SubscriptionLevel) }
 }

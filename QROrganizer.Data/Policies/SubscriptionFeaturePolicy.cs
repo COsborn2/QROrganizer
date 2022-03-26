@@ -6,19 +6,20 @@ namespace QROrganizer.Data.Policies;
 
 public class SubscriptionFeaturePolicy : AuthorizationHandler<SubscriptionFeatureRequirement>
 {
-    private readonly SubscriptionFeature _subscriptionFeature;
+    private readonly Feature _feature;
 
-    public SubscriptionFeaturePolicy(SubscriptionFeature subscriptionFeature)
+    public SubscriptionFeaturePolicy(Feature feature)
     {
-        _subscriptionFeature = subscriptionFeature;
+        _feature = feature;
     }
 
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         SubscriptionFeatureRequirement requirement)
     {
-        var hasClaim = context.User.Claims.Where(x => x.Type == AppClaimsTypes.Feature)
-            .Any(x => x.Value == _subscriptionFeature.ToString());
+        var hasClaim = context.User.Claims
+            .Where(x => x.Type == AppClaimsTypes.ActiveFeature)
+            .Any(x => x.Value == _feature.ToString());
 
         if (hasClaim)
         {

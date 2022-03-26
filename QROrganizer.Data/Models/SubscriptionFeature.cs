@@ -4,13 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QROrganizer.Data.Models;
 
-public class SubscriptionLevel
+public class SubscriptionFeature
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Required(AllowEmptyStrings = false)]
-    public string SubscriptionName { get; set; }
+    public string Name { get; set; }
 
-    public ICollection<SubscriptionFeature> Features { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
+    public ICollection<SubscriptionLevel> SubscriptionLevels { get; set; }
 }

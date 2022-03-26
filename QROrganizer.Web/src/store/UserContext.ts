@@ -13,17 +13,30 @@ export enum UserActions {
   LOGOUT = "LOGOUT"
 }
 
+function setString(from: any, to: any, prop: string) {
+  if ((from[prop]?.length ?? 0) > 0) {
+    to[prop] = from[prop];
+  }
+}
+
+function setArrayLower(from: any, to: any, prop: string) {
+  if ((from[prop]?.length ?? 0) > 0) {
+    to[prop] = from[prop]?.map((x: any) => x.toLowerCase()) ?? [];
+  }
+}
+
 export const user: Module<UserInfo, any> = {
   state: () => new UserInfo(),
   mutations: {
     [UserMutations.SET_ACCOUNT](state, payload: UserInfo) {
       if (payload) {
-        if ((payload.email?.length ?? 0) > 0) {
-          state.email = payload.email;
-        }
-        if ((payload.roles?.length ?? 0) > 0) {
-          state.roles = payload.roles?.map(x => x.toLowerCase()) ?? [];
-        }
+        setString(payload, state, 'email');
+        setString(payload, state, 'subscriptionName');
+
+        setArrayLower(payload, state, 'roles');
+        setArrayLower(payload, state, 'activeFeatures');
+        setArrayLower(payload, state, 'inactiveFeatures');
+
         if ((payload.username?.length ?? 0) > 0) {
           state.username = payload.username;
           if (payload.username) {
@@ -36,8 +49,8 @@ export const user: Module<UserInfo, any> = {
       }
     },
     [UserMutations.REMOVE_ACCOUNT](state) {
-      state.email = null;
-      state.roles = [];
+      state.email = state.username = state.subscriptionName = null;
+      state.roles = state.activeFeatures = state.inactiveFeatures = [];
     }
   },
   getters: {
@@ -46,6 +59,12 @@ export const user: Module<UserInfo, any> = {
     },
     roles: (state) => {
       return state?.roles ?? [];
+    },
+    activeFeatures: (state) => {
+      return state?.activeFeatures ?? [];
+    },
+    inactiveFeatures: (state) => {
+      return state?.inactiveFeatures ?? [];
     }
   },
   actions: {

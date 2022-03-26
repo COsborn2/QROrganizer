@@ -43,15 +43,21 @@ public class ClaimsPrincipalFactoryTests : IClassFixture<DatabaseFixture<AppDbCo
     public async Task GenerateClaimsAsync_ValidSubscriptionLevel()
     {
         ClaimsPrincipal? claimsPrincipal = null;
+        var subscriptionFeature = new SubscriptionFeature
+        {
+            Name = Feature.BARCODE_LOOKUP.ToString(),
+            IsEnabled = true
+        };
         var subscriptionLevel = new SubscriptionLevel
         {
-            SubscriptionFeature = SubscriptionFeature.BARCODE_LOOKUP,
+            Features = new[] { subscriptionFeature },
             SubscriptionName = "Basic Subscription"
         };
 
         await _dbFixture.PerformDatabaseOperation(async context =>
         {
             _autoMocker.Use(context);
+            context.SubscriptionFeatures.Add(subscriptionFeature);
             context.SubscriptionLevels.Add(subscriptionLevel);
             await context.SaveChangesAsync();
 
@@ -66,7 +72,7 @@ public class ClaimsPrincipalFactoryTests : IClassFixture<DatabaseFixture<AppDbCo
 
         claims.ValidateClaim(subscriptionLevel.Id.ToString(), AppClaimsTypes.SubscriptionLevelId);
         claims.ValidateClaim(subscriptionLevel.SubscriptionName, AppClaimsTypes.SubscriptionLevelName);
-        claims.ValidateClaim(SubscriptionFeature.BARCODE_LOOKUP.ToString(), AppClaimsTypes.Feature);
+        claims.ValidateClaim(Feature.BARCODE_LOOKUP.ToString(), AppClaimsTypes.ActiveFeature);
     }
 
     [Fact]
@@ -88,6 +94,6 @@ public class ClaimsPrincipalFactoryTests : IClassFixture<DatabaseFixture<AppDbCo
 
         Assert.Empty(claims.Where(x => x.Type == AppClaimsTypes.SubscriptionLevelId));
         Assert.Empty(claims.Where(x => x.Type == AppClaimsTypes.SubscriptionLevelName));
-        Assert.Empty(claims.Where(x => x.Type == AppClaimsTypes.Feature));
+        Assert.Empty(claims.Where(x => x.Type == AppClaimsTypes.ActiveFeature));
     }
 }

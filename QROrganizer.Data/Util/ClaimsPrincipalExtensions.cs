@@ -21,8 +21,11 @@ public static class ClaimsPrincipalExtensions
     public static ICollection<string> Roles(this ClaimsPrincipal claimsPrincipal)
         => claimsPrincipal.GetClaimsOfType(ClaimTypes.Role);
 
-    public static ICollection<string> Features(this ClaimsPrincipal claimsPrincipal)
-        => claimsPrincipal.GetClaimsOfType(AppClaimsTypes.Feature);
+    public static ICollection<string> ActiveFeatures(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.GetClaimsOfType(AppClaimsTypes.ActiveFeature);
+
+    public static ICollection<string> InactiveFeatures(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.GetClaimsOfType(AppClaimsTypes.InactiveFeature);
 
     public static string SubscriptionLevel(this ClaimsPrincipal claimsPrincipal)
         => claimsPrincipal.FindFirstValue(AppClaimsTypes.SubscriptionLevelName);
