@@ -1,9 +1,10 @@
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IntelliTect.Coalesce.DataAnnotations;
+using IntelliTect.Coalesce.Models;
 using IntelliTect.Coalesce.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using QROrganizer.Data.Models;
 using QROrganizer.Data.Services.Interface;
 
@@ -13,18 +14,37 @@ public class ItemScanningService : IItemScanningService
 {
     private readonly AppDbContext _context;
     private readonly IUpcLookupService _upcLookupService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public ItemScanningService(AppDbContext context, IUpcLookupService upcLookupService)
+    public ItemScanningService(
+        AppDbContext context,
+        IUpcLookupService upcLookupService,
+        IAuthorizationService authorizationService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _upcLookupService = upcLookupService ?? throw new ArgumentNullException(nameof(upcLookupService));
+        _authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
     }
 
-    public async Task<Item> CreateItemForUpcCodeAndStartSearch(
+    public async Task<ItemResult<Item>> CreateItemForUpcCodeAndStartSearch(
         [Inject] ClaimsPrincipal claimsPrincipal,
         string upcCode,
         int containerId)
     {
+        var requiredFeature = Feature.BARCODE_LOOKUP.ToString();
+        var authorized = await _authorizationService.AuthorizeAsync(
+            claimsPrincipal,
+            requiredFeature);
+
+        if (!authorized.Succeeded)
+        {
+            return new ItemResult<Item>($"Unauthorized. Required Subscription Feature '{requiredFeature}'");
+        }
+
+        var itemBarcodeInformation = new ItemBarcodeInformation
+        {
+            UpcCode = upcCode
+        };
         var newItem = new Item
         {
             UpcCode = upcCode,
@@ -33,11 +53,13 @@ public class ItemScanningService : IItemScanningService
             UserId = claimsPrincipal.GetUserId(),
             ContainerId = containerId,
         };
-        _context.Items.Add(newItem);
+        await _context.ItemBarcodeInformation.AddAsync(itemBarcodeInformation);
+        await _context.Items.AddAsync(newItem);
         await _context.SaveChangesAsync();
 
-        // Item already has a UPC Code found
-        if (newItem.ItemBarcodeInformation is not null)
+        // Item already has a UPC Code found -- and it's not the one we just added
+        if (newItem.ItemBarcodeInformation is not null
+            && newItem.ItemBarcodeInformation.Id != itemBarcodeInformation.Id)
         {
             newItem.Name = newItem.ItemBarcodeInformation.Title;
             await _context.SaveChangesAsync();

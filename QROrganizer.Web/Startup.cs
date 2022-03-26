@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using QROrganizer.Data.Models;
 using QROrganizer.Data.Policies;
@@ -123,6 +124,7 @@ public class Startup
                     policy => policy.Requirements.Add(new SubscriptionFeatureRequirement(feature)));
             }
         });
+        services.AddSingleton<IAuthorizationHandler, SubscriptionFeaturePolicy>();
 
         // Build SendGridTemplateIds
         var sendGridTemplateIds = Configuration.GetSection("SendGridTemplateIds");
@@ -154,6 +156,7 @@ public class Startup
         services.AddScoped<ISiteInfoService, SiteInfoService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUpcLookupService, UpcLookupService>();
+        services.AddScoped<IItemScanningService, ItemScanningService>();
 
         services.AddSingleton<HttpContextInfo>();
     }

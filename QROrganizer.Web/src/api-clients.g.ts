@@ -72,6 +72,20 @@ export class AccessCodeServiceApiClient extends ServiceApiClient<typeof $metadat
 }
 
 
+export class ItemScanningServiceApiClient extends ServiceApiClient<typeof $metadata.ItemScanningService> {
+  constructor() { super($metadata.ItemScanningService) }
+  public createItemForUpcCodeAndStartSearch(upcCode: string | null, containerId: number | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Item>> {
+    const $method = this.$metadata.methods.createItemForUpcCodeAndStartSearch
+    const $params =  {
+      upcCode,
+      containerId,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
+}
+
+
 export class SiteInfoServiceApiClient extends ServiceApiClient<typeof $metadata.SiteInfoService> {
   constructor() { super($metadata.SiteInfoService) }
   public getSiteInfo($config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.SiteInfoDto>> {

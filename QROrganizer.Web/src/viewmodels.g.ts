@@ -271,6 +271,25 @@ export class AccessCodeServiceViewModel extends ServiceViewModel<typeof $metadat
 }
 
 
+export class ItemScanningServiceViewModel extends ServiceViewModel<typeof $metadata.ItemScanningService, $apiClients.ItemScanningServiceApiClient> {
+  
+  public get createItemForUpcCodeAndStartSearch() {
+    const createItemForUpcCodeAndStartSearch = this.$apiClient.$makeCaller(
+      this.$metadata.methods.createItemForUpcCodeAndStartSearch,
+      (c, upcCode: string | null, containerId: number | null) => c.createItemForUpcCodeAndStartSearch(upcCode, containerId),
+      () => ({upcCode: null as string | null, containerId: null as number | null, }),
+      (c, args) => c.createItemForUpcCodeAndStartSearch(args.upcCode, args.containerId))
+    
+    Object.defineProperty(this, 'createItemForUpcCodeAndStartSearch', {value: createItemForUpcCodeAndStartSearch});
+    return createItemForUpcCodeAndStartSearch
+  }
+  
+  constructor() {
+    super($metadata.ItemScanningService, new $apiClients.ItemScanningServiceApiClient())
+  }
+}
+
+
 export class SiteInfoServiceViewModel extends ServiceViewModel<typeof $metadata.SiteInfoService, $apiClients.SiteInfoServiceApiClient> {
   
   public get getSiteInfo() {
@@ -342,6 +361,7 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   AccessCodeService: AccessCodeServiceViewModel,
+  ItemScanningService: ItemScanningServiceViewModel,
   SiteInfoService: SiteInfoServiceViewModel,
   UserInfoService: UserInfoServiceViewModel,
 }
