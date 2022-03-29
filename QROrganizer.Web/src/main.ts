@@ -36,8 +36,9 @@ const vuetify = new Vuetify({
     themes: {
       light: {
         primary: '#2fad7b',
-        // secondary: "#4d97bc",
-        // accent: "#e98f07",
+        secondary: '#7F6A93',
+        accent: "#FF6F59",
+        warning: '#F5D547',
         error: '#df323b', // This is the default error color with darken-1,
         background: '#FFFFFF'
       },
