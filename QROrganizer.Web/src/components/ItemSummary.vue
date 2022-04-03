@@ -16,12 +16,12 @@
           <h4>{{ item.quantity }}</h4>
         </v-col>
       </v-row>
-      <v-row class="mt-0">
+      <v-row class="mt-0" v-if="item.itemBarcodeInformation">
         <v-col>
           <h4>Upc Code</h4>
         </v-col>
         <v-col>
-          <h4>{{ item.upcCode }}</h4>
+          <h4>{{ item.itemBarcodeInformation.upcCode }}</h4>
         </v-col>
       </v-row>
       <v-row class="mt-0" v-if="!wasSuccessful">
@@ -37,12 +37,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
 import {ItemViewModel} from "@/viewmodels.g";
 
 @Component({})
 export default class ItemSummary extends Vue {
-  @Prop({ type: ItemViewModel, required: true })
+  @VModel({ type: ItemViewModel, required: true })
   item!: ItemViewModel;
 
   get wasSuccessful(): boolean {

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, VModel, Vue} from 'vue-property-decorator';
+import {Component, Prop, VModel, Vue, Watch} from 'vue-property-decorator';
 
 @Component({})
 export default class TimeoutAlert extends Vue {
@@ -26,27 +26,36 @@ export default class TimeoutAlert extends Vue {
   timeOutSeconds!: number;
 
   timeRemainingMS: number = 0;
+  interval: any;
 
   get percent(): number {
     return ((this.timeRemainingMS) / (this.timeOutSeconds * 1000)) * 100;
   }
 
+  @Watch('open')
+  dispose() {
+    if (!this.open) {
+      this.timeRemainingMS = 0;
+      clearInterval(this.interval);
+    }
+  }
+
   open: boolean = true;
-  interval = 500;
+  intervalDelay = 500;
 
   mounted() {
     this.timeRemainingMS = this.timeOutSeconds * 1000;
 
-    let interval = setInterval(() => {
+    this.interval = setInterval(() => {
       if (this.timeRemainingMS < 0) {
         this.open = false;
         this.$emit('closed');
-        clearInterval(interval);
+        clearInterval(this.interval);
         return;
       }
 
-      this.timeRemainingMS -= this.interval;
-    }, this.interval);
+      this.timeRemainingMS -= this.intervalDelay;
+    }, this.intervalDelay);
   }
 }
 </script>
