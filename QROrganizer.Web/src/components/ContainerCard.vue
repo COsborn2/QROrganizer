@@ -1,6 +1,9 @@
 <template>
   <v-card class="mx-auto" width="550px">
-    <item-scanning-modal v-model="scanningItems" />
+    <item-scanning-modal
+      :container-id="container.id"
+      v-model="scanningItems"
+    />
     <cancel-save-modal
       v-model="editContainerModal"
       header-text="Edit Container"
@@ -254,6 +257,13 @@ export default class ContainerCard extends Vue {
   async reload() {
     await this.itemListVM.$load()
     this.noItems = (this.itemListVM.$load.totalCount ?? 0) < 1;
+  }
+
+  @Watch('scanningItems')
+  updateContainer() {
+    if (!this.scanningItems) {
+      this.container.$load();
+    }
   }
 
   @Watch('itemListVM.$pageSize')

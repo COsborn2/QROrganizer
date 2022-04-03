@@ -48,7 +48,8 @@ namespace QROrganizer.Data.Migrations
                     IsAdult = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LowestPrice = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HighestPrice = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    HighestPrice = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WasSuccessful = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,8 +121,7 @@ namespace QROrganizer.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ItemBarcodeInformation_UpcCode",
                 table: "ItemBarcodeInformation",
-                column: "UpcCode",
-                unique: true);
+                column: "UpcCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubscriptionFeatureSubscriptionLevel_SubscriptionLevelsId",
@@ -134,14 +134,6 @@ namespace QROrganizer.Data.Migrations
                 column: "SubscriptionLevelId",
                 principalTable: "SubscriptionLevels",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Items_ItemBarcodeInformation_UpcCode",
-                table: "Items",
-                column: "UpcCode",
-                principalTable: "ItemBarcodeInformation",
-                principalColumn: "UpcCode",
                 onDelete: ReferentialAction.Restrict);
         }
 

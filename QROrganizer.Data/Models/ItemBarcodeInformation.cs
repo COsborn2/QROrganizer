@@ -16,7 +16,6 @@ public class ItemBarcodeInformation
     [Column("Title")]
     public string Title { get; set; }
 
-    [InverseProperty(nameof(UpcCode))]
     [Column("UpcCode")]
     public string UpcCode { get; set; }
 
@@ -72,4 +71,7 @@ public class ItemBarcodeInformation
 
     [Column("HighestPrice")]
     public string HighestPrice { get; set; }
+
+    [Column("WasSuccessful")]
+    public bool WasSuccessful { get; set; }
 }

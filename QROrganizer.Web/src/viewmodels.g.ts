@@ -78,6 +78,17 @@ export interface ItemViewModel extends $models.Item {
 }
 export class ItemViewModel extends ViewModel<$models.Item, $apiClients.ItemApiClient, number> implements $models.Item  {
   
+  public get startSearchingForUpcCode() {
+    const startSearchingForUpcCode = this.$apiClient.$makeCaller(
+      this.$metadata.methods.startSearchingForUpcCode,
+      (c) => c.startSearchingForUpcCode(this.$primaryKey, ),
+      () => ({}),
+      (c, args) => c.startSearchingForUpcCode(this.$primaryKey, ))
+    
+    Object.defineProperty(this, 'startSearchingForUpcCode', {value: startSearchingForUpcCode});
+    return startSearchingForUpcCode
+  }
+  
   constructor(initialData?: DeepPartial<$models.Item> | null) {
     super($metadata.Item, new $apiClients.ItemApiClient(), initialData)
   }
@@ -114,6 +125,7 @@ export interface ItemBarcodeInformationViewModel extends $models.ItemBarcodeInfo
   description: string | null;
   lowestPrice: string | null;
   highestPrice: string | null;
+  wasSuccessful: boolean | null;
 }
 export class ItemBarcodeInformationViewModel extends ViewModel<$models.ItemBarcodeInformation, $apiClients.ItemBarcodeInformationApiClient, number> implements $models.ItemBarcodeInformation  {
   
@@ -271,25 +283,6 @@ export class AccessCodeServiceViewModel extends ServiceViewModel<typeof $metadat
 }
 
 
-export class ItemScanningServiceViewModel extends ServiceViewModel<typeof $metadata.ItemScanningService, $apiClients.ItemScanningServiceApiClient> {
-  
-  public get createItemForUpcCodeAndStartSearch() {
-    const createItemForUpcCodeAndStartSearch = this.$apiClient.$makeCaller(
-      this.$metadata.methods.createItemForUpcCodeAndStartSearch,
-      (c, upcCode: string | null, containerId: number | null) => c.createItemForUpcCodeAndStartSearch(upcCode, containerId),
-      () => ({upcCode: null as string | null, containerId: null as number | null, }),
-      (c, args) => c.createItemForUpcCodeAndStartSearch(args.upcCode, args.containerId))
-    
-    Object.defineProperty(this, 'createItemForUpcCodeAndStartSearch', {value: createItemForUpcCodeAndStartSearch});
-    return createItemForUpcCodeAndStartSearch
-  }
-  
-  constructor() {
-    super($metadata.ItemScanningService, new $apiClients.ItemScanningServiceApiClient())
-  }
-}
-
-
 export class SiteInfoServiceViewModel extends ServiceViewModel<typeof $metadata.SiteInfoService, $apiClients.SiteInfoServiceApiClient> {
   
   public get getSiteInfo() {
@@ -361,7 +354,6 @@ const listViewModelTypeLookup = ListViewModel.typeLookup = {
 }
 const serviceViewModelTypeLookup = ServiceViewModel.typeLookup = {
   AccessCodeService: AccessCodeServiceViewModel,
-  ItemScanningService: ItemScanningServiceViewModel,
   SiteInfoService: SiteInfoServiceViewModel,
   UserInfoService: UserInfoServiceViewModel,
 }

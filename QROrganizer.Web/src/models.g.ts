@@ -137,6 +137,7 @@ export interface ItemBarcodeInformation extends Model<typeof metadata.ItemBarcod
   description: string | null
   lowestPrice: string | null
   highestPrice: string | null
+  wasSuccessful: boolean | null
 }
 export class ItemBarcodeInformation {
   
