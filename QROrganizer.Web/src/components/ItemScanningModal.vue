@@ -38,7 +38,6 @@
                 v-for="(item, index) in results"
                 :key="item.upcCode"
                 v-model="results[index]"
-                upc-item-code="887276168630"
                 :visible="modalEnabled"
             />
           </div>
