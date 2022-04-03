@@ -47,8 +47,9 @@
         <v-row justify="center" class="mt-2" style="overflow-y: scroll" no-gutters>
           <item-summary
             style="width: 80%"
-            v-for="item in results"
-            :item="item"
+            v-for="(item, index) in results"
+            :key="item.id"
+            v-model="results[index]"
           />
         </v-row>
       </template>
