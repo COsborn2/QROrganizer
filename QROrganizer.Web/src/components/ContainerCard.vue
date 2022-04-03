@@ -261,9 +261,7 @@ export default class ContainerCard extends Vue {
 
   @Watch('scanningItems')
   updateContainer() {
-    if (!this.scanningItems) {
-      this.container.$load();
-    }
+    this.itemListVM.$load();
   }
 
   @Watch('itemListVM.$pageSize')
