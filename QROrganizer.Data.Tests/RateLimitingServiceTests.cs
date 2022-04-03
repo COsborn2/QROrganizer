@@ -123,7 +123,7 @@ public class RateLimitingServiceTests
         stopWatch.Stop();
 
         Assert.True(stopWatch.Elapsed > TimeSpan.FromMilliseconds(100));
-        Assert.True(stopWatch.Elapsed < TimeSpan.FromMilliseconds(150));
+        Assert.True(stopWatch.Elapsed < TimeSpan.FromMilliseconds(200));
     }
 
     [Fact]
