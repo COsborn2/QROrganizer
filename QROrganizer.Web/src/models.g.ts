@@ -79,7 +79,6 @@ export interface Item extends Model<typeof metadata.Item> {
   name: string | null
   quantity: number | null
   userId: string | null
-  user: ApplicationUser | null
   containerId: number | null
   container: Container | null
 }

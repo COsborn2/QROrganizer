@@ -266,16 +266,6 @@ export const Item = domain.types.Item = {
         required: val => (val != null && val !== '') || "User is required.",
       }
     },
-    user: {
-      name: "user",
-      displayName: "User",
-      type: "model",
-      get typeDef() { return (domain.types.ApplicationUser as ModelType) },
-      role: "referenceNavigation",
-      get foreignKey() { return (domain.types.Item as ModelType).props.userId as ForeignKeyProperty },
-      get principalKey() { return (domain.types.ApplicationUser as ModelType).props.id as PrimaryKeyProperty },
-      dontSerialize: true,
-    },
     containerId: {
       name: "containerId",
       displayName: "Container Id",

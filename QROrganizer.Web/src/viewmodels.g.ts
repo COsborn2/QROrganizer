@@ -72,7 +72,6 @@ export interface ItemViewModel extends $models.Item {
   name: string | null;
   quantity: number | null;
   userId: string | null;
-  user: ApplicationUserViewModel | null;
   containerId: number | null;
   container: ContainerViewModel | null;
 }
