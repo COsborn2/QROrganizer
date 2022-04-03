@@ -244,7 +244,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Containers");
+                    b.ToTable("Containers", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.Item", b =>
@@ -280,7 +280,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.ItemBarcodeInformation", b =>
@@ -364,16 +364,19 @@ namespace QROrganizer.Data.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UpcCode");
 
+                    b.Property<bool>("WasSuccessful")
+                        .HasColumnType("bit")
+                        .HasColumnName("WasSuccessful");
+
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Weight");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UpcCode")
-                        .IsUnique();
+                    b.HasIndex("UpcCode");
 
-                    b.ToTable("ItemBarcodeInformation");
+                    b.ToTable("ItemBarcodeInformation", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.Log", b =>
@@ -427,7 +430,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.RestrictedAccessCode", b =>
@@ -449,7 +452,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessCodes");
+                    b.ToTable("AccessCodes", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.SubscriptionFeature", b =>
@@ -469,7 +472,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionFeatures");
+                    b.ToTable("SubscriptionFeatures", (string)null);
                 });
 
             modelBuilder.Entity("QROrganizer.Data.Models.SubscriptionLevel", b =>
@@ -486,7 +489,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionLevels");
+                    b.ToTable("SubscriptionLevels", (string)null);
                 });
 
             modelBuilder.Entity("SubscriptionFeatureSubscriptionLevel", b =>
@@ -501,7 +504,7 @@ namespace QROrganizer.Data.Migrations
 
                     b.HasIndex("SubscriptionLevelsId");
 
-                    b.ToTable("SubscriptionFeatureSubscriptionLevel");
+                    b.ToTable("SubscriptionFeatureSubscriptionLevel", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

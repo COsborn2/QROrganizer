@@ -1,5 +1,9 @@
 <template>
   <v-card class="mx-auto" width="550px">
+    <item-scanning-modal
+      :container-id="container.id"
+      v-model="scanningItems"
+    />
     <cancel-save-modal
       v-model="editContainerModal"
       header-text="Edit Container"
@@ -55,7 +59,6 @@
         left
         offset-y
         transition="slide-y-transition"
-        rounded="b-xl"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -77,20 +80,26 @@
             <v-list-item-icon>
               <v-icon>fa fa-trash</v-icon>
             </v-list-item-icon>
-            Delete Container
+            <v-list-item-title>Delete Container</v-list-item-title>
           </v-list-item>
           <v-list-item @click="editContainerModal = true">
             <v-list-item-icon>
               <v-icon>fa fa-edit</v-icon>
             </v-list-item-icon>
-            Edit Container
+            <v-list-item-title>Edit Container</v-list-item-title>
           </v-list-item>
           <v-list-item @click="addItem">
             <v-list-item-icon>
               <v-icon>fa fa-plus</v-icon>
             </v-list-item-icon>
-            Add Item
+            <v-list-item-title>Add Item</v-list-item-title>
           </v-list-item>
+          <premium-feature-list-item
+            fa-icon="fa fa-barcode"
+            required-feature="BARCODE_LOOKUP"
+            text="Scan Items"
+            v-on:clicked="scanningItems = true"
+          />
         </v-list>
       </v-menu>
     </v-card-title>
@@ -194,9 +203,11 @@ import {Item} from "@/models.g";
 import ItemsInContainer = Item.DataSources.ItemsInContainer;
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal.vue";
 import CancelSaveModal from "@/components/CancelSaveModal.vue";
+import PremiumFeatureListItem from "@/components/PremiumFeatureListItem.vue";
+import ItemScanningModal from "@/components/ItemScanningModal.vue";
 
 @Component({
-  components: {CancelSaveModal, DeleteConfirmationModal}
+  components: {ItemScanningModal, PremiumFeatureListItem, CancelSaveModal, DeleteConfirmationModal}
 })
 export default class ContainerCard extends Vue {
   headers = [
@@ -204,6 +215,7 @@ export default class ContainerCard extends Vue {
     { text: 'Quantity', value: 'quantity' }
   ]
 
+  scanningItems = false;
   itemListVM = new ItemListViewModel();
   itemVM = new ItemViewModel();
   noItems = false;
@@ -245,6 +257,11 @@ export default class ContainerCard extends Vue {
   async reload() {
     await this.itemListVM.$load()
     this.noItems = (this.itemListVM.$load.totalCount ?? 0) < 1;
+  }
+
+  @Watch('scanningItems')
+  updateContainer() {
+    this.itemListVM.$load();
   }
 
   @Watch('itemListVM.$pageSize')

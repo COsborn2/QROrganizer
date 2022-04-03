@@ -34,6 +34,7 @@ namespace QROrganizer.Web.Models
         private string _Description;
         private string _LowestPrice;
         private string _HighestPrice;
+        private bool? _WasSuccessful;
 
         public int? Id
         {
@@ -140,6 +141,11 @@ namespace QROrganizer.Web.Models
             get => _HighestPrice;
             set { _HighestPrice = value; Changed(nameof(HighestPrice)); }
         }
+        public bool? WasSuccessful
+        {
+            get => _WasSuccessful;
+            set { _WasSuccessful = value; Changed(nameof(WasSuccessful)); }
+        }
 
         /// <summary>
         /// Map from the domain object to the properties of the current DTO instance.
@@ -171,6 +177,7 @@ namespace QROrganizer.Web.Models
             this.Description = obj.Description;
             this.LowestPrice = obj.LowestPrice;
             this.HighestPrice = obj.HighestPrice;
+            this.WasSuccessful = obj.WasSuccessful;
             var propValItems = obj.Items;
             if (propValItems != null && (tree == null || tree[nameof(this.Items)] != null))
             {
@@ -214,6 +221,7 @@ namespace QROrganizer.Web.Models
             if (ShouldMapTo(nameof(Description))) entity.Description = Description;
             if (ShouldMapTo(nameof(LowestPrice))) entity.LowestPrice = LowestPrice;
             if (ShouldMapTo(nameof(HighestPrice))) entity.HighestPrice = HighestPrice;
+            if (ShouldMapTo(nameof(WasSuccessful))) entity.WasSuccessful = (WasSuccessful ?? entity.WasSuccessful);
         }
     }
 }

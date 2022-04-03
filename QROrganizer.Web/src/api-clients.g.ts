@@ -16,6 +16,14 @@ export class ContainerApiClient extends ModelApiClient<$models.Container> {
 
 export class ItemApiClient extends ModelApiClient<$models.Item> {
   constructor() { super($metadata.Item) }
+  public startSearchingForUpcCode(id: number, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<void>> {
+    const $method = this.$metadata.methods.startSearchingForUpcCode
+    const $params =  {
+      id,
+    }
+    return this.$invoke($method, $params, $config)
+  }
+  
 }
 
 
@@ -65,20 +73,6 @@ export class AccessCodeServiceApiClient extends ServiceApiClient<typeof $metadat
     const $method = this.$metadata.methods.isAccessCodeValid
     const $params =  {
       code,
-    }
-    return this.$invoke($method, $params, $config)
-  }
-  
-}
-
-
-export class ItemScanningServiceApiClient extends ServiceApiClient<typeof $metadata.ItemScanningService> {
-  constructor() { super($metadata.ItemScanningService) }
-  public createItemForUpcCodeAndStartSearch(upcCode: string | null, containerId: number | null, $config?: AxiosRequestConfig): AxiosPromise<ItemResult<$models.Item>> {
-    const $method = this.$metadata.methods.createItemForUpcCodeAndStartSearch
-    const $params =  {
-      upcCode,
-      containerId,
     }
     return this.$invoke($method, $params, $config)
   }

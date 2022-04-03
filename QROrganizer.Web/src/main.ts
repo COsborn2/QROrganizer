@@ -10,7 +10,7 @@ const appInsights = new ApplicationInsights({
   config: {
     instrumentationKey: environment.applicationInsightsKey,
   }
-})
+});
 appInsights.loadAppInsights();
 Vue.prototype.$appInsights = appInsights;
 
@@ -36,9 +36,10 @@ const vuetify = new Vuetify({
     themes: {
       light: {
         primary: '#2fad7b',
-        // secondary: "#4d97bc",
-        // accent: "#e98f07",
-        error: '#df323b', // This is the default error color with darken-1,
+        secondary: '#7F6A93',
+        accent: "#F0F6F6",
+        warning: '#F5D547',
+        error: '#FF6F59',
         background: '#FFFFFF'
       },
       dark: {

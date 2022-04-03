@@ -19,7 +19,6 @@ namespace QROrganizer.Web.Models
         private string _Name;
         private int? _Quantity;
         private string _UserId;
-        private QROrganizer.Web.Models.ApplicationUserDtoGen _User;
         private int? _ContainerId;
         private QROrganizer.Web.Models.ContainerDtoGen _Container;
 
@@ -53,11 +52,6 @@ namespace QROrganizer.Web.Models
             get => _UserId;
             set { _UserId = value; Changed(nameof(UserId)); }
         }
-        public QROrganizer.Web.Models.ApplicationUserDtoGen User
-        {
-            get => _User;
-            set { _User = value; Changed(nameof(User)); }
-        }
         public int? ContainerId
         {
             get => _ContainerId;
@@ -87,9 +81,6 @@ namespace QROrganizer.Web.Models
             this.ContainerId = obj.ContainerId;
             if (tree == null || tree[nameof(this.ItemBarcodeInformation)] != null)
                 this.ItemBarcodeInformation = obj.ItemBarcodeInformation.MapToDto<QROrganizer.Data.Models.ItemBarcodeInformation, ItemBarcodeInformationDtoGen>(context, tree?[nameof(this.ItemBarcodeInformation)]);
-
-            if (tree == null || tree[nameof(this.User)] != null)
-                this.User = obj.User.MapToDto<QROrganizer.Data.Models.ApplicationUser, ApplicationUserDtoGen>(context, tree?[nameof(this.User)]);
 
             if (tree == null || tree[nameof(this.Container)] != null)
                 this.Container = obj.Container.MapToDto<QROrganizer.Data.Models.Container, ContainerDtoGen>(context, tree?[nameof(this.Container)]);

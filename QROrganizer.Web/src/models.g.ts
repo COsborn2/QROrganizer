@@ -79,7 +79,6 @@ export interface Item extends Model<typeof metadata.Item> {
   name: string | null
   quantity: number | null
   userId: string | null
-  user: ApplicationUser | null
   containerId: number | null
   container: Container | null
 }
@@ -137,6 +136,7 @@ export interface ItemBarcodeInformation extends Model<typeof metadata.ItemBarcod
   description: string | null
   lowestPrice: string | null
   highestPrice: string | null
+  wasSuccessful: boolean | null
 }
 export class ItemBarcodeInformation {
   

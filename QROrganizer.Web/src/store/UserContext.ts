@@ -60,7 +60,7 @@ export const user: Module<UserInfo, any> = {
     roles: (state) => {
       return state?.roles ?? [];
     },
-    activeFeatures: (state) => {
+    activeFeatures: (state): string[] => {
       return state?.activeFeatures ?? [];
     },
     inactiveFeatures: (state) => {

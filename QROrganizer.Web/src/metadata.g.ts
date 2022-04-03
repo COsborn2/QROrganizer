@@ -266,16 +266,6 @@ export const Item = domain.types.Item = {
         required: val => (val != null && val !== '') || "User is required.",
       }
     },
-    user: {
-      name: "user",
-      displayName: "User",
-      type: "model",
-      get typeDef() { return (domain.types.ApplicationUser as ModelType) },
-      role: "referenceNavigation",
-      get foreignKey() { return (domain.types.Item as ModelType).props.userId as ForeignKeyProperty },
-      get principalKey() { return (domain.types.ApplicationUser as ModelType).props.id as PrimaryKeyProperty },
-      dontSerialize: true,
-    },
     containerId: {
       name: "containerId",
       displayName: "Container Id",
@@ -299,6 +289,26 @@ export const Item = domain.types.Item = {
     },
   },
   methods: {
+    startSearchingForUpcCode: {
+      name: "startSearchingForUpcCode",
+      displayName: "Start Searching For Upc Code",
+      transportType: "item",
+      httpMethod: "POST",
+      params: {
+        id: {
+          name: "id",
+          displayName: "Primary Key",
+          role: "value",
+          type: "number",
+        },
+      },
+      return: {
+        name: "$return",
+        displayName: "Result",
+        type: "void",
+        role: "value",
+      },
+    },
   },
   dataSources: {
     defaultDataSource: {
@@ -468,6 +478,12 @@ export const ItemBarcodeInformation = domain.types.ItemBarcodeInformation = {
       name: "highestPrice",
       displayName: "Highest Price",
       type: "string",
+      role: "value",
+    },
+    wasSuccessful: {
+      name: "wasSuccessful",
+      displayName: "Was Successful",
+      type: "boolean",
       role: "value",
     },
   },
@@ -839,41 +855,6 @@ export const AccessCodeService = domain.services.AccessCodeService = {
     },
   },
 }
-export const ItemScanningService = domain.services.ItemScanningService = {
-  name: "ItemScanningService",
-  displayName: "Item Scanning Service",
-  type: "service",
-  controllerRoute: "ItemScanningService",
-  methods: {
-    createItemForUpcCodeAndStartSearch: {
-      name: "createItemForUpcCodeAndStartSearch",
-      displayName: "Create Item For Upc Code And Start Search",
-      transportType: "item",
-      httpMethod: "POST",
-      params: {
-        upcCode: {
-          name: "upcCode",
-          displayName: "Upc Code",
-          type: "string",
-          role: "value",
-        },
-        containerId: {
-          name: "containerId",
-          displayName: "Container Id",
-          type: "number",
-          role: "value",
-        },
-      },
-      return: {
-        name: "$return",
-        displayName: "Result",
-        type: "model",
-        get typeDef() { return (domain.types.Item as ModelType) },
-        role: "value",
-      },
-    },
-  },
-}
 export const SiteInfoService = domain.services.SiteInfoService = {
   name: "SiteInfoService",
   displayName: "Site Info Service",
@@ -964,7 +945,6 @@ interface AppDomain extends Domain {
   }
   services: {
     AccessCodeService: typeof AccessCodeService
-    ItemScanningService: typeof ItemScanningService
     SiteInfoService: typeof SiteInfoService
     UserInfoService: typeof UserInfoService
   }

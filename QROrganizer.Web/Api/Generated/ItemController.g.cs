@@ -69,5 +69,27 @@ namespace QROrganizer.Web.Api
             IBehaviors<QROrganizer.Data.Models.Item> behaviors,
             IDataSource<QROrganizer.Data.Models.Item> dataSource)
             => DeleteImplementation(id, new DataSourceParameters(), dataSource, behaviors);
+
+        // Methods from data class exposed through API Controller.
+
+        /// <summary>
+        /// Method: StartSearchingForUpcCode
+        /// </summary>
+        [HttpPost("StartSearchingForUpcCode")]
+        [Authorize]
+        public virtual async Task<ItemResult> StartSearchingForUpcCode([FromServices] IDataSourceFactory dataSourceFactory, int id, [FromServices] QROrganizer.Data.Services.Interface.IUpcLookupService upcLookupService, [FromServices] Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+        {
+            var dataSource = dataSourceFactory.GetDataSource<QROrganizer.Data.Models.Item, QROrganizer.Data.Models.Item>("Default");
+            var (itemResult, _) = await dataSource.GetItemAsync(id, new ListParameters());
+            if (!itemResult.WasSuccessful)
+            {
+                return new ItemResult(itemResult);
+            }
+            var item = itemResult.Object;
+            var _methodResult = await item.StartSearchingForUpcCode(upcLookupService, authorizationService, User);
+            await Db.SaveChangesAsync();
+            var _result = new ItemResult(_methodResult);
+            return _result;
+        }
     }
 }

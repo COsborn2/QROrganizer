@@ -12,7 +12,7 @@ using QROrganizer.Data;
 namespace QROrganizer.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220326085303_AddSubscriptionLevelAndItemBarcodeInfo")]
+    [Migration("20220403042738_AddSubscriptionLevelAndItemBarcodeInfo")]
     partial class AddSubscriptionLevelAndItemBarcodeInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -366,14 +366,17 @@ namespace QROrganizer.Data.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UpcCode");
 
+                    b.Property<bool>("WasSuccessful")
+                        .HasColumnType("bit")
+                        .HasColumnName("WasSuccessful");
+
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Weight");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UpcCode")
-                        .IsUnique();
+                    b.HasIndex("UpcCode");
 
                     b.ToTable("ItemBarcodeInformation");
                 });
