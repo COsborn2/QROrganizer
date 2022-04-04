@@ -59,11 +59,6 @@ public class Item
 
         if (string.IsNullOrWhiteSpace(UpcCode)) return new ItemResult("Invalid UPC code");
 
-        if (ItemBarcodeInformation is not null)
-        {
-            return new ItemResult();
-        }
-
 #pragma warning disable CS4014 // Don't want to await this here
         upcLookupService.LookupUpcCode(UpcCode);
 #pragma warning restore CS4014

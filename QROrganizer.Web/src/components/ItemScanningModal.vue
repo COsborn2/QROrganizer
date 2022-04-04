@@ -89,6 +89,9 @@ export default class ItemScanningModal extends Vue {
   async onDecode(str: any) {
     if (this.previousScanOpen) return;
 
+    this.lastScannedUpcCode = str;
+    this.previousScanOpen = true;
+
     let item = new ItemViewModel();
     item.name = item.upcCode = str;
     item.containerId = this.containerId;
@@ -100,9 +103,6 @@ export default class ItemScanningModal extends Vue {
 
     await item.$save();
     this.results.push(item);
-
-    this.lastScannedUpcCode = str;
-    this.previousScanOpen = true;
   }
 }
 </script>
