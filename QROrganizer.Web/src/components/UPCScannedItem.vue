@@ -35,7 +35,7 @@ export default class UPCScannedItem extends Vue {
   timeRemainingMS: number = 0;
   timeoutSeconds = 5;
 
-  searchIntervalSeconds = 5;
+  searchIntervalSeconds = 2;
 
   get percent(): number {
     return ((this.timeRemainingMS) / (this.timeoutSeconds * 1000)) * 100;
