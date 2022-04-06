@@ -92,18 +92,12 @@ export default class ItemScanningModal extends Vue {
   }
 
   closeModal() {
-    console.log('close');
     this.modalEnabled = false
     this.destroy();
   }
 
   beforeUnmount() {
-    console.log('destory');
     this.browserBarcodeReader?.reset();
-  }
-
-  unmounted() {
-    console.log('unmounted');
   }
 
   mounted() {
