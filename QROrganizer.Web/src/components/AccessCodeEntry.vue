@@ -62,7 +62,6 @@ export default class AccessCodeEntry extends Vue {
 
   @Watch('accessCode')
   watchValue() {
-    console.log('here');
     this.searchFunc();
 
     this.$emit('input', this.accessCode);

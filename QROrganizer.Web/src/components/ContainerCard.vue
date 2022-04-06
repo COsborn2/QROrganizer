@@ -1,6 +1,7 @@
 <template>
   <v-card class="mx-auto" width="550px">
     <item-scanning-modal
+      v-if="scanningItems"
       :container-id="container.id"
       v-model="scanningItems"
     />

@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn dark icon @click="modalEnabled = false">
+        <v-btn dark icon @click="closeModal">
           <v-icon dark>fas fa-times</v-icon>
         </v-btn>
         <v-spacer />
@@ -31,7 +31,8 @@
           </div>
         </div>
 
-        <StreamBarcodeReader v-if="modalEnabled" @decode="onDecode" ></StreamBarcodeReader>
+        <video poster="data:image/gif,AAAA" ref="scanner"></video>
+
         <div style="position: absolute; bottom: 5px; width: 100%; height: 25%; overflow-y: scroll; vertical-align: bottom;">
           <div style="position: absolute; bottom: 0; width: 100%; max-height: 100%">
             <UPCScannedItem
@@ -59,14 +60,14 @@
 
 <script lang="ts">
 import {Component, Prop, VModel, Vue, Watch} from 'vue-property-decorator';
-import {StreamBarcodeReader} from 'vue-barcode-reader';
 import TimeoutAlert from "@/components/TimeoutAlert.vue";
 import UPCScannedItem from "@/components/UPCScannedItem.vue";
 import {ItemViewModel} from "@/viewmodels.g";
 import ItemSummary from "@/components/ItemSummary.vue";
+import {BarcodeFormat, BrowserMultiFormatReader} from "@zxing/library";
 
 @Component({
-  components: {ItemSummary, UPCScannedItem, StreamBarcodeReader, TimeoutAlert}
+  components: {ItemSummary, UPCScannedItem, TimeoutAlert}
 })
 export default class ItemScanningModal extends Vue {
   @VModel({ type: Boolean })
@@ -75,11 +76,50 @@ export default class ItemScanningModal extends Vue {
   @Prop({ type: Number, required: true })
   containerId!: number;
 
+  browserBarcodeReader: BrowserMultiFormatReader | null = null;
   reviewingItems: boolean = false;
   previousScanOpen: boolean = false;
   lastScannedUpcCode: string | null = null;
 
   results: ItemViewModel[] = [];
+
+  create() {
+    this.browserBarcodeReader = new BrowserMultiFormatReader();
+  }
+
+  destroy() {
+    this.browserBarcodeReader?.reset();
+  }
+
+  closeModal() {
+    this.modalEnabled = false
+    this.destroy();
+  }
+
+  beforeUnmount() {
+    this.browserBarcodeReader?.reset();
+  }
+
+  mounted() {
+    this.create();
+
+    if (!this.browserBarcodeReader) return;
+
+    this.browserBarcodeReader.decodeFromVideoDevice(null, this.$refs.scanner as any, (result, error) => {
+      if (result) {
+        const value = result.getText();
+        const barcodeFormat = result.getBarcodeFormat();
+        let trimmedValue = value;
+
+        // zxing decoder is flaky *at best* - reads UPC-A as EAN_13
+        if (barcodeFormat === BarcodeFormat.EAN_13) {
+          trimmedValue = value.substr(1, value.length - 1);
+        }
+
+        this.onDecode(trimmedValue);
+      }
+    })
+  }
 
   @Watch('modalEnabled')
   disposeModal() {
