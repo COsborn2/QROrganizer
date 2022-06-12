@@ -16,7 +16,7 @@
     "@hcaptcha/vue-hcaptcha": "^0.3.2",
     "@microsoft/applicationinsights-web": "^2.8.4",
     "@zxing/library": "^0.17.1",
-    "axios": "^0.27.2",
+    "axios": "^0.21.1",
     "coalesce-vue": "3.0.0-alpha.20210324.5",
     "coalesce-vue-vuetify": "3.0.0-alpha.20210324.5",
     "lodash": "^4.17.21",
