@@ -1,10 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
 using QROrganizer.Data.Services.Implementation;
+using QROrganizer.Data.Services.Interface;
 using QROrganizer.Data.Tests.Util;
 using Xunit;
 
@@ -65,9 +66,12 @@ public class RateLimitingServiceTests
     }
 
     [Fact]
-    public async Task RateLimitingService_EnqueuedTaskHasNoDelay_DelayBetweenTwoRequests()
+    public async Task RateLimitingService_TasksDelayed_DelayBetweenTwoRequests()
     {
-        using var rlq = new RateLimitingService(TimeSpan.FromMilliseconds(100));
+        var mockDelay = new Mock<IAsyncDelay>();
+        mockDelay.Setup(x => x.Delay(It.IsAny<TimeSpan>()))
+            .Returns(Task.CompletedTask);
+        using var rlq = new RateLimitingService(TimeSpan.FromMilliseconds(100), mockDelay.Object);
 
         Task<bool> MyAction1()
         {
@@ -85,45 +89,12 @@ public class RateLimitingServiceTests
         var task1 = rlq.EnqueueHttpRequest(httpClient, MockHttpRequestMessage);
         var task2 = rlq.EnqueueHttpRequest(httpClient, MockHttpRequestMessage);
 
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
         await task1;
         await task2;
-        stopWatch.Stop();
-
-        Assert.True(stopWatch.Elapsed > TimeSpan.FromMilliseconds(100));
+        
+        mockDelay.Verify(delay => delay.Delay(It.IsAny<TimeSpan>()), Times.Exactly(2));
     }
 
-    [Fact]
-    public async Task RateLimitingService_EnqueuedTaskHasDelay_DelayBetweenTwoRequests()
-    {
-        using var rlq = new RateLimitingService(TimeSpan.FromMilliseconds(100));
-
-        async Task<bool> MyAction1()
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(100));
-            return true;
-        }
-
-        Task<bool> MyAction2()
-        {
-            return Task.FromResult(true);
-        }
-
-        var mockHandler = new MockHttpMessageHandler(MyAction1, MyAction2);
-        var httpClient = new HttpClient(mockHandler);
-
-        var task1 = rlq.EnqueueHttpRequest(httpClient, MockHttpRequestMessage);
-        var task2 = rlq.EnqueueHttpRequest(httpClient, MockHttpRequestMessage);
-
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
-        await task1;
-        await task2;
-        stopWatch.Stop();
-
-        Assert.True(stopWatch.Elapsed > TimeSpan.FromMilliseconds(100));
-    }
 
     [Fact]
     public async Task RateLimitingService_TasksCompletedInOrderQueued()

@@ -12,6 +12,9 @@ public class RateLimitingService : RateLimitingService<object>
 {
     public RateLimitingService(TimeSpan rateLimitInterval) : base(rateLimitInterval)
     { }
+
+    public RateLimitingService(TimeSpan rateLimitInterval, IAsyncDelay asyncDelay) : base(rateLimitInterval, asyncDelay)
+    { }
 }
 
 public class RateLimitingService<T> : IRateLimitingService<T>, IDisposable
@@ -21,11 +24,16 @@ public class RateLimitingService<T> : IRateLimitingService<T>, IDisposable
     private readonly TimeSpan _rateLimit;
     private Task<Task> _drivingTask;
     private readonly SemaphoreSlim _semaphore;
+    private readonly IAsyncDelay _asyncDelay;
 
-    public RateLimitingService(TimeSpan rateLimitInterval)
+    public RateLimitingService(TimeSpan rateLimitInterval) : this(rateLimitInterval, new AsyncDelay()) 
+    { }
+
+    public RateLimitingService(TimeSpan rateLimitInterval, IAsyncDelay asyncDelay)
     {
         _rateLimit = rateLimitInterval;
         _semaphore = new SemaphoreSlim(1);
+        _asyncDelay = asyncDelay;
     }
 
     public Task<HttpResponseMessage> EnqueueHttpRequest(
@@ -81,7 +89,7 @@ public class RateLimitingService<T> : IRateLimitingService<T>, IDisposable
                 var remainingTime = _rateLimit - stopWatch.Elapsed;
                 if (remainingTime > TimeSpan.Zero)
                 {
-                    await Task.Delay(remainingTime);
+                    await _asyncDelay.Delay(remainingTime);
                 }
             }
             catch (Exception)
