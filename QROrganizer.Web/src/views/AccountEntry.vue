@@ -273,6 +273,10 @@ export default class AccountEntry extends Vue {
   someMissingLength(...toEvaluate: string[]) {
     return toEvaluate.some(x => x.length < 1);
   }
+  
+  get isDevMode() {
+    return Vue.config.devtools;
+  }
 
   get disableButton() {
     if (this.isInLoginMode) {
@@ -282,7 +286,7 @@ export default class AccountEntry extends Vue {
     return this.someMissingLength(this.email, this.username, this.password, this.confirmPassword)
         || this.password !== this.confirmPassword
         || !this.formValid
-        || !this.captchaToken;
+        || (!this.isDevMode && !this.captchaToken);
   }
 
   async submit() {
