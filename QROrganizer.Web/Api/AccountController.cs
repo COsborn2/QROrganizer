@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QROrganizer.Data;
@@ -32,6 +33,8 @@ namespace QROrganizer.Web.Api
         private readonly IAccessCodeService _accessCodeService;
         private readonly IEmailService _emailService;
         private readonly IHcaptchaHttpClient _hcaptchaHttpClient;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger _logger;
 
         public AccountController(
             SignInManager<ApplicationUser> signInManager,
@@ -39,7 +42,9 @@ namespace QROrganizer.Web.Api
             IOptions<AppConfigSettings> appConfigSettings,
             IAccessCodeService accessCodeService,
             IEmailService emailService,
-            IHcaptchaHttpClient hcaptchaHttpClient)
+            IHcaptchaHttpClient hcaptchaHttpClient,
+            IWebHostEnvironment webHostEnvironment,
+            ILogger<AccountController> logger)
         {
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -47,6 +52,8 @@ namespace QROrganizer.Web.Api
             _accessCodeService = accessCodeService ?? throw new ArgumentNullException(nameof(accessCodeService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _hcaptchaHttpClient = hcaptchaHttpClient ?? throw new ArgumentNullException(nameof(hcaptchaHttpClient));
+            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("login")]
@@ -91,12 +98,19 @@ namespace QROrganizer.Web.Api
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] LoginCredentials creds)
         {
-            var hCaptchaToken = HttpContext.Request.Headers["h-captcha-response"];
-            var hCaptchaVerifyResponse = await _hcaptchaHttpClient.VerifyCaptcha(hCaptchaToken);
-
-            if (!hCaptchaVerifyResponse.Success)
+            if (!_webHostEnvironment.IsDevelopment())
             {
-                return BadRequest("Captcha verification failed. Refresh and try again");
+                var hCaptchaToken = HttpContext.Request.Headers["h-captcha-response"];
+                var hCaptchaVerifyResponse = await _hcaptchaHttpClient.VerifyCaptcha(hCaptchaToken);
+
+                if (!hCaptchaVerifyResponse.Success)
+                {
+                    return BadRequest("Captcha verification failed. Refresh and try again");
+                }
+            }
+            else
+            {
+                _logger.LogWarning("In Development, skipping HCaptcha verification!");
             }
 
             if (_appConfigSettings.RestrictedEnvironment)

@@ -12,7 +12,7 @@ public static class SendGridMessageHelpers
     {
         From = new EmailAddress
         {
-            Email = "donotreply@cameronosborn.dev"
+            Email = "donotreply@itemstorage.app"
         }
     };
 

@@ -6,5 +6,6 @@ namespace QROrganizer.Data.Util
         public bool RestrictedEnvironment { get; set; }
         public string HCaptchaSecret { get; set; }
         public string BarcodeSpiderApiKey { get; set; }
+        public bool SendEmails { get; set; }
     }
 }
