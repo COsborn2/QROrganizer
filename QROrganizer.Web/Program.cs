@@ -47,7 +47,11 @@ public static class Program
             .ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
+
+#if !DEBUG
                 logging.AddNLog("nlog.config");
+#endif
+
                 logging.AddConsole();
                 logging.SetMinimumLevel(LogLevel.Trace);
             })
